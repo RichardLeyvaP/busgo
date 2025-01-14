@@ -1,0 +1,31 @@
+{
+    "@@locale": "pt",
+    "helloWorld": "Olá Mundo",
+    "title": "Aplicação em Português",
+   "cartName":"Página inicial",
+ "cartSearch":"Pesquisar",
+ "cartPdf":"(Gerar PDF)",
+ "cartOpction":"Opções",
+ "loadTitle":"Carregando dados...",
+ "closeAccount":"Fechar minha conta",
+ "authMessage":"Por favor, autentique-se",
+ "noResults":"Nenhum resultado",
+ "serverError": "Erro ao conectar ao servidor",
+ "searchTitle": "O que você quer fazer?",
+ "searchDescription": "Agendar Tarefas - Lembretes - Bate-papo",
+
+ "menuWishes": "Desejos",
+ "menuFinance": "Finanças",
+ "menuHealth": "Saúde",
+ "menuTasks": "Tarefas",
+ "menuProducts": "Loja",
+ "menuArchives": "Arquivos",
+ "titleLanguage": "Selecione seu idioma",
+
+ "acceptButton": "Aceitar",
+"cancelButton": "Cancelar",
+"loginButton": "Entrar", 
+"googleButton": "Entrar no Google",
+ "facebookButton": "Entrar no Facebook",
+ "rememberPassword": "Esqueci minha senha"
+  }

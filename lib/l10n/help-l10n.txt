@@ -1,0 +1,7 @@
+
+Traducir un texto en la apk
+
+TranslationManager.translate('noResults')
+
+ejemplo:
+        Text(TranslationManager.translate('noResults'));

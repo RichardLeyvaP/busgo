@@ -1,0 +1,32 @@
+{
+    "@@locale": "en",
+    "helloWorld": "Hello World",
+    "title": "Application in English",
+    "cartName":"Home",
+"cartSearch":"Search",
+"cartPdf":"(Generate pdf)",
+"cartOpction":"Options",
+"loadTitle":"Loading data...",
+"closeAccount":"Close my account",
+"authMessage":"Please authenticate",
+"noResults":"No results",
+"serverError": "Error connecting to server",
+"searchTitle": "What do you want to do?",
+"searchDescription": "Schedule Tasks - Reminders - Chat",
+
+"menuWishes": "Wishes",
+"menuFinance": "Finance",
+"menuHealth": "Health",
+"menuTasks": "Tasks",
+"menuProducts": "Store",
+"menuArchives": "Archives",
+
+"titleLanguage": "Select your language",
+"acceptButton": "Accept",
+"cancelButton": "Cancel",
+"loginButton": "Log in",
+"googleButton": "Log in with Google",
+"facebookButton": "Log in with Facebook",
+"rememberPassword": "I forgot my password"
+
+  }

@@ -1,0 +1,41 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+
+
+android {
+    namespace = "com.example.BusGo"
+    compileSdk = 34 // Actualizado a la API 33 (Android 13)
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    defaultConfig {
+        applicationId = "com.example.BusGo"
+        minSdk = 28 // Compatible desde Android 9 (API 28)
+        targetSdk = 34 // Optimizado para Android 13 (API 33)
+        versionCode = 1
+        versionName = "1.2.0"
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
