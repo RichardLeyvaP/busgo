@@ -1,8 +1,9 @@
+import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/ui/component/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-
+import 'package:signals/signals_flutter.dart';
 
 class SalesPage extends StatelessWidget {
   @override
@@ -19,22 +20,21 @@ class SalesPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.blue[400],
               ),
-              child:  Padding(
+              child: Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     InkWell(
+                    InkWell(
                       onTap: () {
-                         GoRouter.of(context).pop();
+                        GoRouter.of(context).pop();
                       },
-                       child: Padding(
-                         padding: EdgeInsets.only(left: 8.0),
-                         child: Icon(Icons.arrow_back, color:  Colors.white),
-                       ),
-                     ),
-                                
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Icon(Icons.arrow_back, color: Colors.white),
+                      ),
+                    ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -56,7 +56,7 @@ class SalesPage extends StatelessWidget {
               ),
             ),
             // Card para detalles "From" y "To"
-            Expanded(
+            Expanded(  // Añadimos Expanded para que ocupe el espacio restante
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -72,7 +72,7 @@ class SalesPage extends StatelessWidget {
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
                         children: [
-                          SizedBox(height: 20,),
+                          SizedBox(height: 20),
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -104,64 +104,73 @@ class SalesPage extends StatelessWidget {
                                         Icon(Icons.location_on, color: const Color.fromARGB(255, 85, 105, 143)),
                                       ],
                                     ),
-                                    SizedBox(width: 20,),
-                                 Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                  "ORIGEN",
-                                  style: TextStyle(color: Colors.grey[600]),
-                                                           ),Text(
-                                  "Aeropuerto el Tepual",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                                           ),
-                                                           SizedBox(height: 12),
-                                                           Container(
+                                    SizedBox(width: 20),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "ORIGEN",
+                                          style: TextStyle(color: Colors.grey[600]),
+                                        ),
+                                        Text(
+                                          "Aeropuerto el Tepual",
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(height: 12),
+                                        Container(
                                           width: 200,
                                           height: 1,
                                           color: Colors.grey[400],
                                         ),
                                         SizedBox(height: 12),
-                                        
-                                 Text(
-                                  "DESTINO",
-                                  style: TextStyle(color: Colors.grey[600]),
-                                                           ),Text(
-                                  "Terminanl de buses Puerto Montt",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                                           ),
-                                 
-                                  ],
-                                 ),
-                                 
+                                        Text(
+                                          "DESTINO",
+                                          style: TextStyle(color: Colors.grey[600]),
+                                        ),
+                                        Text(
+                                          "Terminal de buses Puerto Montt",
+                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
                                 SizedBox(height: 5),
-                                
-                                
                               ],
                             ),
                           ),
                           SizedBox(height: 20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Seleccionar Recorrido",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                          tripsSignal.watch(context) == null || tripsSignal.watch(context)!.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    "No hay recorridos disponibles",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  itemCount: tripsSignal.watch(context)!.length,
+                                  itemBuilder: (context, index) {
+                                    final trip = tripsSignal.watch(context)![index];
+                                    return ScheduleCard(
+                                      timeIni: trip.schedule?.split('-')[0] ?? "N/A",
+                                      timeFin: trip.schedule != null && trip.schedule!.contains('-') 
+                                          ? trip.schedule!.split('-')[1] 
+                                          : "N/A",
+                                      price: trip.price ?? "0.0",
+                                      place: trip.name ?? "Desconocido",
+                                      amount: trip.seats ?? 0,
+                                      seats: trip.seats ?? 0,
+                                      seatsAvailable: trip.seats! - (trip.reservedSeats!.length),
+                                    );
+                                  },
                                 ),
-                              ),
-                              SizedBox(height: 10),
-                              ScheduleCard(timeIni: "10:00",timeFin: '10:30', price: "5.0",place: '001',amount: 0,),
-                              ScheduleCard(timeIni: "11:05",timeFin: '11:55', price: "5.0",place: '090',amount: 20,),
-                              ScheduleCard(timeIni: "12:00",timeFin: '01:30', price: "3.0",place: '058',amount: 40,),
-                              
-                              
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -176,14 +185,198 @@ class SalesPage extends StatelessWidget {
   }
 }
 
+
+// class SalesPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.blue[400],
+//       body: SafeArea(
+//         child: Column(
+//           children: [
+//             // Header con imagen y título
+//             Container(
+//               height: 200,
+//               width: double.infinity,
+//               decoration: BoxDecoration(
+//                 color: Colors.blue[400],
+//               ),
+//               child: Padding(
+//                 padding: EdgeInsets.all(8.0),
+//                 child: Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     InkWell(
+//                       onTap: () {
+//                         GoRouter.of(context).pop();
+//                       },
+//                       child: Padding(
+//                         padding: EdgeInsets.only(left: 8.0),
+//                         child: Icon(Icons.arrow_back, color: Colors.white),
+//                       ),
+//                     ),
+//                     Column(
+//                       mainAxisAlignment: MainAxisAlignment.start,
+//                       children: [
+//                         Text(
+//                           "",
+//                           style: TextStyle(
+//                             color: Colors.white,
+//                             fontSize: 24,
+//                             fontWeight: FontWeight.bold,
+//                           ),
+//                         ),
+//                         SizedBox(height: 10),
+//                         Icon(MdiIcons.busMultiple, color: Colors.white, size: 100),
+//                       ],
+//                     ),
+//                     Text('      '),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//             // Card para detalles "From" y "To"
+//             Container(
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 borderRadius: BorderRadius.only(
+//                   topLeft: Radius.circular(30),
+//                   topRight: Radius.circular(30),
+//                 ),
+//               ),
+//               child: Padding(
+//                 padding: const EdgeInsets.all(10.0),
+//                 child: SingleChildScrollView(
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(10.0),
+//                     child: Column(
+//                       children: [
+//                         SizedBox(height: 20),
+//                         Container(
+//                           padding: const EdgeInsets.all(20),
+//                           decoration: BoxDecoration(
+//                             color: Colors.white,
+//                             borderRadius: BorderRadius.circular(15),
+//                             boxShadow: [
+//                               BoxShadow(
+//                                 color: Colors.grey.shade400,
+//                                 blurRadius: 10,
+//                                 offset: Offset(0, 5),
+//                               ),
+//                             ],
+//                           ),
+//                           child: Column(
+//                             crossAxisAlignment: CrossAxisAlignment.start,
+//                             children: [
+//                               Row(
+//                                 children: [
+//                                   Column(
+//                                     children: [
+//                                       Icon(Icons.location_on, color: Colors.blue),
+//                                       SizedBox(height: 5),
+//                                       Container(
+//                                         width: 1,
+//                                         height: 40,
+//                                         color: Colors.grey[400],
+//                                       ),
+//                                       SizedBox(height: 5),
+//                                       Icon(Icons.location_on, color: const Color.fromARGB(255, 85, 105, 143)),
+//                                     ],
+//                                   ),
+//                                   SizedBox(width: 20),
+//                                   Column(
+//                                     mainAxisAlignment: MainAxisAlignment.start,
+//                                     crossAxisAlignment: CrossAxisAlignment.start,
+//                                     children: [
+//                                       Text(
+//                                         "ORIGEN",
+//                                         style: TextStyle(color: Colors.grey[600]),
+//                                       ),
+//                                       Text(
+//                                         "Aeropuerto el Tepual",
+//                                         style: TextStyle(fontWeight: FontWeight.bold),
+//                                       ),
+//                                       SizedBox(height: 12),
+//                                       Container(
+//                                         width: 200,
+//                                         height: 1,
+//                                         color: Colors.grey[400],
+//                                       ),
+//                                       SizedBox(height: 12),
+//                                       Text(
+//                                         "DESTINO",
+//                                         style: TextStyle(color: Colors.grey[600]),
+//                                       ),
+//                                       Text(
+//                                         "Terminanl de buses Puerto Montt",
+//                                         style: TextStyle(fontWeight: FontWeight.bold),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                 ],
+//                               ),
+//                               SizedBox(height: 5),
+//                             ],
+//                           ),
+//                         ),
+//                         SizedBox(height: 20),
+//                         tripsSignal.watch(context) == null || tripsSignal.watch(context)!.isEmpty
+//                             ? Center(
+//                                 child: Text(
+//                                   "No hay recorridos disponibles",
+//                                   style: TextStyle(
+//                                     fontSize: 16,
+//                                     fontStyle: FontStyle.italic,
+//                                     color: Colors.grey,
+//                                   ),
+//                                 ),
+//                               )
+//                             : ListView.builder(
+//                                 shrinkWrap: true,
+//                                 physics: BouncingScrollPhysics(),
+//                                 itemCount: tripsSignal.watch(context)!.length,
+//                                 itemBuilder: (context, index) {
+//                                   final trip = tripsSignal.watch(context)![index];
+//                                   return ScheduleCard(
+//                                     timeIni: trip.schedule?.split('-')[0] ?? "N/A",
+//                                     timeFin: trip.schedule != null && trip.schedule!.contains('-') 
+//           ? trip.schedule!.split('-')[1] 
+//           : "N/A",
+
+//                                     price: trip.price ?? "0.0",
+//                                     place: trip.name ?? "Desconocido",
+//                                     amount: trip.seats ?? 0,
+//                                     seats: trip.seats??0,
+//                                     seatsAvailable: trip.seats! - (trip.reservedSeats!.length )  ,
+//                                   );
+//                                 },
+//                               ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
 class ScheduleCard extends StatelessWidget {
   final String timeIni;
   final String timeFin;
   final String price;
   final String place;
   final int amount;
+  final int seats;
+  final int seatsAvailable;
 
-  ScheduleCard({required this.timeIni, required this.price, required this.timeFin, required this.place, required this.amount});
+  ScheduleCard({required this.timeIni, required this.price, required this.timeFin, required this.place, required this.amount, required this.seats, required this.seatsAvailable});
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +449,7 @@ class ScheduleCard extends StatelessWidget {
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       Text(
-                        '46',
+                        seats.toString(),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -270,11 +463,19 @@ class ScheduleCard extends StatelessWidget {
           
           Column(
             children: [
-             amount == 0 ? CustomButton(
+             seatsAvailable ==0 ? CustomButton(
             title: "Saliendo",
             onTap: () {
-              print("Botón presionado");
+               if(seatsAvailable != 0)
+              {
               GoRouter.of(context).push('/TicketPage');
+              }
+              else{
+                 ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text('No hay disponibilidad para este viaje')),
+                                        );
+              }
               // Aquí puedes implementar la lógica deseada
             },
             color: Colors.red,
@@ -284,15 +485,24 @@ class ScheduleCard extends StatelessWidget {
             CustomButton(
             title: "Seleccionar",
             onTap: () {
-              print("Botón presionado");
+              if(seatsAvailable != 0)
+              {
               GoRouter.of(context).push('/TicketPage');
+              }
+              else{
+                 ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                              content: Text('No hay disponibilidad para este viaje')),
+                                        );
+              }
+             
               // Aquí puedes implementar la lógica deseada
             },
             color: Colors.blue,
           )
               ,
               SizedBox(height: 5),
-            amount == 0 ?  Row(
+            seatsAvailable == 0 ?  Row(
                 children: [
                   Icon(MdiIcons.carSeat,size: 15, color: Colors.red),
                   SizedBox(width: 5,),
@@ -303,7 +513,7 @@ class ScheduleCard extends StatelessWidget {
                         style: TextStyle(color: Colors.red),
                       ),
                       Text(
-                        amount.toString(),
+                        seatsAvailable.toString(),
                         style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -321,7 +531,7 @@ class ScheduleCard extends StatelessWidget {
                         style: TextStyle(color: Colors.green),
                       ),
                       Text(
-                        amount.toString(),
+                        seatsAvailable.toString(),
                         style: TextStyle( color: Colors.green,fontWeight: FontWeight.bold),
                       ),
                     ],

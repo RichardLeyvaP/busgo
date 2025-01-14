@@ -1,4 +1,5 @@
 
+import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -130,7 +131,8 @@ class ModuleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
+       await fetchTrips(1);
         GoRouter.of(context).push(route);
       },
       child: Container(
