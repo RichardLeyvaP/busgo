@@ -43,17 +43,19 @@ return null;
   }
   
  Future<dynamic> storeTripRepository(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors) async {
-    final endpoint = '${Env.apiEndpoint}/trip';
+    final endpoint = '${Env.apiEndpoint}/ticket';
     final body = {
   'branch_id': branch_id,
   'trip_id': trip_id,
-  'method': method,
-  'status': status,
+   'method': 'Efectivo',
+  // 'method': method,
+  'status': 1,
+  // 'status': status,
   'quantity': quantity,
   'price': price,
   'total': total,
   'seats': seats,
-  'date': '2024-10-03',
+  'date': date.toString(),
   'adults': adults,
   'minors': minors,
 };

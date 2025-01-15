@@ -20,7 +20,7 @@ checkingIfLogget(setState, context) async {
     setState(() {
       _userData = userData;
       //  goToHomeFb(userData, context);
-      .of(context).go(
+      GoRouter.of(context).go(
         '/HomePrincipal'
       );
     });
