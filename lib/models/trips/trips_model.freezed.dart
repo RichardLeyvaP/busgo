@@ -174,9 +174,9 @@ Trip _$TripFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Trip {
   int? get id => throw _privateConstructorUsedError;
-  int? get tripId => throw _privateConstructorUsedError;
   DateTime? get date => throw _privateConstructorUsedError;
   String? get schedule => throw _privateConstructorUsedError;
+  String? get arrival => throw _privateConstructorUsedError;
   int? get seats => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   String? get origin => throw _privateConstructorUsedError;
@@ -184,6 +184,7 @@ mixin _$Trip {
   String? get originImage => throw _privateConstructorUsedError;
   String? get destination => throw _privateConstructorUsedError;
   String? get destinationImage => throw _privateConstructorUsedError;
+  String? get plate => throw _privateConstructorUsedError;
   List<int>? get reservedSeats => throw _privateConstructorUsedError;
 
   /// Serializes this Trip to a JSON map.
@@ -202,9 +203,9 @@ abstract class $TripCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
-      int? tripId,
       DateTime? date,
       String? schedule,
+      String? arrival,
       int? seats,
       String? name,
       String? origin,
@@ -212,6 +213,7 @@ abstract class $TripCopyWith<$Res> {
       String? originImage,
       String? destination,
       String? destinationImage,
+      String? plate,
       List<int>? reservedSeats});
 }
 
@@ -231,9 +233,9 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
   @override
   $Res call({
     Object? id = freezed,
-    Object? tripId = freezed,
     Object? date = freezed,
     Object? schedule = freezed,
+    Object? arrival = freezed,
     Object? seats = freezed,
     Object? name = freezed,
     Object? origin = freezed,
@@ -241,16 +243,13 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
     Object? originImage = freezed,
     Object? destination = freezed,
     Object? destinationImage = freezed,
+    Object? plate = freezed,
     Object? reservedSeats = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      tripId: freezed == tripId
-          ? _value.tripId
-          : tripId // ignore: cast_nullable_to_non_nullable
               as int?,
       date: freezed == date
           ? _value.date
@@ -259,6 +258,10 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
       schedule: freezed == schedule
           ? _value.schedule
           : schedule // ignore: cast_nullable_to_non_nullable
+              as String?,
+      arrival: freezed == arrival
+          ? _value.arrival
+          : arrival // ignore: cast_nullable_to_non_nullable
               as String?,
       seats: freezed == seats
           ? _value.seats
@@ -287,6 +290,10 @@ class _$TripCopyWithImpl<$Res, $Val extends Trip>
       destinationImage: freezed == destinationImage
           ? _value.destinationImage
           : destinationImage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      plate: freezed == plate
+          ? _value.plate
+          : plate // ignore: cast_nullable_to_non_nullable
               as String?,
       reservedSeats: freezed == reservedSeats
           ? _value.reservedSeats
@@ -305,9 +312,9 @@ abstract class _$$TripImplCopyWith<$Res> implements $TripCopyWith<$Res> {
   @useResult
   $Res call(
       {int? id,
-      int? tripId,
       DateTime? date,
       String? schedule,
+      String? arrival,
       int? seats,
       String? name,
       String? origin,
@@ -315,6 +322,7 @@ abstract class _$$TripImplCopyWith<$Res> implements $TripCopyWith<$Res> {
       String? originImage,
       String? destination,
       String? destinationImage,
+      String? plate,
       List<int>? reservedSeats});
 }
 
@@ -331,9 +339,9 @@ class __$$TripImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? tripId = freezed,
     Object? date = freezed,
     Object? schedule = freezed,
+    Object? arrival = freezed,
     Object? seats = freezed,
     Object? name = freezed,
     Object? origin = freezed,
@@ -341,16 +349,13 @@ class __$$TripImplCopyWithImpl<$Res>
     Object? originImage = freezed,
     Object? destination = freezed,
     Object? destinationImage = freezed,
+    Object? plate = freezed,
     Object? reservedSeats = freezed,
   }) {
     return _then(_$TripImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      tripId: freezed == tripId
-          ? _value.tripId
-          : tripId // ignore: cast_nullable_to_non_nullable
               as int?,
       date: freezed == date
           ? _value.date
@@ -359,6 +364,10 @@ class __$$TripImplCopyWithImpl<$Res>
       schedule: freezed == schedule
           ? _value.schedule
           : schedule // ignore: cast_nullable_to_non_nullable
+              as String?,
+      arrival: freezed == arrival
+          ? _value.arrival
+          : arrival // ignore: cast_nullable_to_non_nullable
               as String?,
       seats: freezed == seats
           ? _value.seats
@@ -388,6 +397,10 @@ class __$$TripImplCopyWithImpl<$Res>
           ? _value.destinationImage
           : destinationImage // ignore: cast_nullable_to_non_nullable
               as String?,
+      plate: freezed == plate
+          ? _value.plate
+          : plate // ignore: cast_nullable_to_non_nullable
+              as String?,
       reservedSeats: freezed == reservedSeats
           ? _value._reservedSeats
           : reservedSeats // ignore: cast_nullable_to_non_nullable
@@ -401,9 +414,9 @@ class __$$TripImplCopyWithImpl<$Res>
 class _$TripImpl implements _Trip {
   const _$TripImpl(
       {this.id,
-      this.tripId,
       this.date,
       this.schedule,
+      this.arrival,
       this.seats,
       this.name,
       this.origin,
@@ -411,6 +424,7 @@ class _$TripImpl implements _Trip {
       this.originImage,
       this.destination,
       this.destinationImage,
+      this.plate,
       final List<int>? reservedSeats})
       : _reservedSeats = reservedSeats;
 
@@ -420,11 +434,11 @@ class _$TripImpl implements _Trip {
   @override
   final int? id;
   @override
-  final int? tripId;
-  @override
   final DateTime? date;
   @override
   final String? schedule;
+  @override
+  final String? arrival;
   @override
   final int? seats;
   @override
@@ -439,6 +453,8 @@ class _$TripImpl implements _Trip {
   final String? destination;
   @override
   final String? destinationImage;
+  @override
+  final String? plate;
   final List<int>? _reservedSeats;
   @override
   List<int>? get reservedSeats {
@@ -451,7 +467,7 @@ class _$TripImpl implements _Trip {
 
   @override
   String toString() {
-    return 'Trip(id: $id, tripId: $tripId, date: $date, schedule: $schedule, seats: $seats, name: $name, origin: $origin, price: $price, originImage: $originImage, destination: $destination, destinationImage: $destinationImage, reservedSeats: $reservedSeats)';
+    return 'Trip(id: $id, date: $date, schedule: $schedule, arrival: $arrival, seats: $seats, name: $name, origin: $origin, price: $price, originImage: $originImage, destination: $destination, destinationImage: $destinationImage, plate: $plate, reservedSeats: $reservedSeats)';
   }
 
   @override
@@ -460,10 +476,10 @@ class _$TripImpl implements _Trip {
         (other.runtimeType == runtimeType &&
             other is _$TripImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.tripId, tripId) || other.tripId == tripId) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.schedule, schedule) ||
                 other.schedule == schedule) &&
+            (identical(other.arrival, arrival) || other.arrival == arrival) &&
             (identical(other.seats, seats) || other.seats == seats) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.origin, origin) || other.origin == origin) &&
@@ -474,6 +490,7 @@ class _$TripImpl implements _Trip {
                 other.destination == destination) &&
             (identical(other.destinationImage, destinationImage) ||
                 other.destinationImage == destinationImage) &&
+            (identical(other.plate, plate) || other.plate == plate) &&
             const DeepCollectionEquality()
                 .equals(other._reservedSeats, _reservedSeats));
   }
@@ -483,9 +500,9 @@ class _$TripImpl implements _Trip {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      tripId,
       date,
       schedule,
+      arrival,
       seats,
       name,
       origin,
@@ -493,6 +510,7 @@ class _$TripImpl implements _Trip {
       originImage,
       destination,
       destinationImage,
+      plate,
       const DeepCollectionEquality().hash(_reservedSeats));
 
   /// Create a copy of Trip
@@ -514,9 +532,9 @@ class _$TripImpl implements _Trip {
 abstract class _Trip implements Trip {
   const factory _Trip(
       {final int? id,
-      final int? tripId,
       final DateTime? date,
       final String? schedule,
+      final String? arrival,
       final int? seats,
       final String? name,
       final String? origin,
@@ -524,6 +542,7 @@ abstract class _Trip implements Trip {
       final String? originImage,
       final String? destination,
       final String? destinationImage,
+      final String? plate,
       final List<int>? reservedSeats}) = _$TripImpl;
 
   factory _Trip.fromJson(Map<String, dynamic> json) = _$TripImpl.fromJson;
@@ -531,11 +550,11 @@ abstract class _Trip implements Trip {
   @override
   int? get id;
   @override
-  int? get tripId;
-  @override
   DateTime? get date;
   @override
   String? get schedule;
+  @override
+  String? get arrival;
   @override
   int? get seats;
   @override
@@ -550,6 +569,8 @@ abstract class _Trip implements Trip {
   String? get destination;
   @override
   String? get destinationImage;
+  @override
+  String? get plate;
   @override
   List<int>? get reservedSeats;
 

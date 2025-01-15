@@ -114,7 +114,7 @@ class ApiService {
       'Content-Type': 'application/json',
     };
     headers['Authorization'] = 'Bearer $token';
-    //print('mandando para el get-geader:${token}');
+    print('mandando para el get-geader:${token}');
     return headers;
   }
 

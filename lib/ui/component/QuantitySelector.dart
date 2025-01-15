@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 
 class QuantitySelector extends StatefulWidget {
   final int initialQuantity;
+  final String title;
   final ValueChanged<int> onQuantityChanged; // Función callback
 
   const QuantitySelector({
     Key? key,
+    required this.title,
     required this.initialQuantity,
     required this.onQuantityChanged, // Recibimos la función callback
   }) : super(key: key);
@@ -30,12 +32,12 @@ class _QuantitySelectorState extends State<QuantitySelector> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('Cantidad: ', style: TextStyle(fontSize: 14)),
+        Text('${widget.title}: ', style: TextStyle(fontSize: 14)),
         IconButton(
           icon: Icon(Icons.remove_circle_outline),
-          onPressed: quantity > 1
+          onPressed: quantity > 0
               ? () {
-                  decreaseQuantity();
+                 // decreaseQuantity();
                   setState(() {
                     quantity--;
                   });
@@ -47,7 +49,7 @@ class _QuantitySelectorState extends State<QuantitySelector> {
         IconButton(
           icon: Icon(Icons.add_circle_outline),
           onPressed: () {
-            increaseQuantity();
+           // increaseQuantity();
             setState(() {
               quantity++;
             });
@@ -60,14 +62,14 @@ class _QuantitySelectorState extends State<QuantitySelector> {
 }
 
 // Métodos para aumentar o disminuir la cantidad
-void increaseQuantity() {
-  quantitySignal.value += 1;
-}
+// void increaseQuantity() {
+//   quantitySignal.value += 1;
+// }
 
-void decreaseQuantity() {
-  if (quantitySignal.value > 1) {
-    quantitySignal.value -= 1;
-  }
-}
+// void decreaseQuantity() {
+//   if (quantitySignal.value > 0) {
+//     quantitySignal.value -= 1;
+//   }
+// }
 //******************* */
 //selccionador de cantidades

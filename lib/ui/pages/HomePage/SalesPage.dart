@@ -1,3 +1,4 @@
+import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/ui/component/CustomButton.dart';
 import 'package:flutter/material.dart';
@@ -159,15 +160,15 @@ class SalesPage extends StatelessWidget {
                                   itemBuilder: (context, index) {
                                     final trip = tripsSignal.watch(context)![index];
                                     return ScheduleCard(
-                                      timeIni: trip.schedule?.split('-')[0] ?? "N/A",
-                                      timeFin: trip.schedule != null && trip.schedule!.contains('-') 
-                                          ? trip.schedule!.split('-')[1] 
-                                          : "N/A",
+                                      timeIni: trip.schedule.toString(),
+                                      timeFin: trip.arrival.toString(),
                                       price: trip.price ?? "0.0",
                                       place: trip.name ?? "Desconocido",
                                       amount: trip.seats ?? 0,
                                       seats: trip.seats ?? 0,
-                                      seatsAvailable: trip.seats! - (trip.reservedSeats!.length),
+                                      seatsAvailable: trip.seats! - (trip.reservedSeats!.length),//-ojo-verificar si fuera null que no de error
+                                      idTrip: trip.id??0,
+
                                     );
                                   },
                                 ),
@@ -374,9 +375,10 @@ class ScheduleCard extends StatelessWidget {
   final String place;
   final int amount;
   final int seats;
+  final int idTrip;
   final int seatsAvailable;
 
-  ScheduleCard({required this.timeIni, required this.price, required this.timeFin, required this.place, required this.amount, required this.seats, required this.seatsAvailable});
+  ScheduleCard({required this.timeIni, required this.price, required this.timeFin, required this.place, required this.amount, required this.seats, required this.seatsAvailable, required this.idTrip});
 
   @override
   Widget build(BuildContext context) {
@@ -463,7 +465,7 @@ class ScheduleCard extends StatelessWidget {
           
           Column(
             children: [
-             seatsAvailable ==0 ? CustomButton(
+             seatsAvailable == 0 ? CustomButton(
             title: "Saliendo",
             onTap: () {
                if(seatsAvailable != 0)
@@ -487,6 +489,7 @@ class ScheduleCard extends StatelessWidget {
             onTap: () {
               if(seatsAvailable != 0)
               {
+                dataSelectedRoute(idTrip);
               GoRouter.of(context).push('/TicketPage');
               }
               else{

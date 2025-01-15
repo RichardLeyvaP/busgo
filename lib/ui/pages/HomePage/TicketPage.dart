@@ -1,7 +1,9 @@
+import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/CustomButton.dart';
 import 'package:BusGo/ui/component/QuantitySelector.dart';
+import 'package:BusGo/ui/component/showCustomSnackBar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -71,7 +73,7 @@ class TicketPage extends StatelessWidget {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          SizedBox(height: 120,),
+                          SizedBox(height: 150,),
                          
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,7 +86,7 @@ class TicketPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 10),
-                              PaymentCard(timeIni: "10:00",timeFin: '10:30', price: "5.0",place: '001',amount: 550,),
+                              PaymentCard(timeIni: tripsSelectSignal.value!.schedule.toString(),timeFin: '10:30xxx', price: tripsSelectSignal.value!.price.toString()),
                               
                              
                               
@@ -102,135 +104,133 @@ class TicketPage extends StatelessWidget {
   // left: (MediaQuery.of(context).size.width - 100) / 2, // Centra horizontalmente
    left: 35, // Centra horizontalmente
    right: 35,
-  child:   Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade400,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Icon(Icons.location_on, color: Colors.blue),
-                                        SizedBox(height: 5),
-                                        Container(
-                                          width: 1,
-                                          height: 40,
-                                          color: Colors.grey[400],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Icon(Icons.location_on, color: const Color.fromARGB(255, 85, 105, 143)),
-                                      ],
-                                    ),
-                                    SizedBox(width: 20,),
-                                 Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                  "ORIGEN",
-                                  style: TextStyle(color: Colors.grey[600]),
-                                                           ),Text(
-                                  "Aeropuerto el Tepual",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                                           ),
-                                                           SizedBox(height: 12),
-                                                           Container(
-                                          width: 200,
-                                          height: 1,
-                                          color: Colors.grey[400],
-                                        ),
-                                        SizedBox(height: 12),
-                                        
-                                 Text(
-                                  "DESTINO",
-                                  style: TextStyle(color: Colors.grey[600]),
-                                                           ),Text(
-                                  "Terminanl de buses Puerto Montt",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                                           ),
-                                 
-                                  ],
-                                 ),
-                                 
-                                  ],
-                                ),
-                                SizedBox(height: 15),
-                                Row(
-                children: [
-                  Icon(Icons.access_time,size: 15, color: Colors.black),
-                  SizedBox(width: 5,),
-                  Text(
-                    "10:00",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5,right: 5),
-                    child: Icon(MdiIcons.rayStartArrow, size: 24, color: Colors.black),
-                  ),
-                  Text(
-                    '10:30',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
+  child:   
+ Container(
+  padding: const EdgeInsets.all(20),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(15),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.shade400,
+        blurRadius: 10,
+        offset: Offset(0, 5),
+      ),
+    ],
+  ),
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            children: [
+              Icon(Icons.location_on, color: Colors.blue),
+              SizedBox(height: 5),
+              Container(
+                width: 1,
+                height: 40,
+                color: Colors.grey[400],
               ),
               SizedBox(height: 5),
-              Row(
-                children: [
-                  Icon(MdiIcons.bus,size: 15, color: Colors.black),
-                  SizedBox(width: 5,),
-                  Row(
-                    children: [
-                      Text(
-                        'Bus: ',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      Text(
-                        '001',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ],
+              Icon(Icons.location_on, color: const Color.fromARGB(255, 85, 105, 143)),
+            ],
+          ),
+          SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "ORIGEN",
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+                Text(
+                  tripsSelectSignal.value!.origin.toString(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                ),
+                SizedBox(height: 4),
+                Divider(color: Colors.grey[400]),
+                SizedBox(height: 4),
+                Text(
+                  "DESTINO",
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+                Text(
+                  tripsSelectSignal.value!.destination.toString(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      SizedBox(height: 10),
+      Row(
+        children: [
+          Icon(Icons.access_time, size: 15, color: Colors.black),
+          SizedBox(width: 5),
+          Text(
+            tripsSelectSignal.value!.schedule.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 5, right: 5),
+            child: Icon(MdiIcons.rayStartArrow, size: 24, color: Colors.black),
+          ),
+          Text(
+            tripsSelectSignal.value!.arrival.toString(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+      SizedBox(height: 5),
+      Row(
+        children: [
+          Icon(MdiIcons.bus, size: 15, color: Colors.black),
+          SizedBox(width: 5),
+          Row(
+            children: [
+              Text(
+                'Bus: ',
+                style: TextStyle(color: Colors.grey[600]),
               ),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  Icon(MdiIcons.seatReclineExtra,size: 15, color: Colors.black),
-                  SizedBox(width: 5,),
-                  Row(
-                    children: [
-                      Text(
-                        'Capacidad: ',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      Text(
-                        '46',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                 
-                ],
+              Text(
+                tripsSelectSignal.value!.plate.toString(),//tripsSelectSignal.value!.schedule.toString(),//chapa
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              
-              
-                                
-                              ],
-                            ),
-                          ),
-                        
+            ],
+          ),
+        ],
+      ),
+      SizedBox(height: 5),
+      Row(
+        children: [
+          Icon(MdiIcons.seatReclineExtra, size: 15, color: Colors.black),
+          SizedBox(width: 5),
+          Row(
+            children: [
+              Text(
+                'Capacidad: ',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              Text(
+                tripsSelectSignal.value!.seats.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  ),
+),
+                      
 ),
 
           ],
@@ -244,10 +244,8 @@ class PaymentCard extends StatelessWidget {
   final String timeIni;
   final String timeFin;
   final String price;
-  final String place;
-  final int amount;
 
-  PaymentCard({required this.timeIni, required this.price, required this.timeFin, required this.place, required this.amount});
+  PaymentCard({required this.timeIni, required this.price, required this.timeFin});
 
   @override
   Widget build(BuildContext context) {
@@ -288,7 +286,7 @@ class PaymentCard extends StatelessWidget {
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       Text(
-                        amount.toString(),
+                        price.toString(),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -301,12 +299,30 @@ class PaymentCard extends StatelessWidget {
                  
                   SizedBox(height: 10),
                  QuantitySelector(
+                  title: 'Mayores de edad  ',
                       initialQuantity: quantitySignal.value,
-                      onQuantityChanged: (newQuantity) {                        
+                      onQuantityChanged: (newQuantity) {   
+                        if((quantitySignal.value + quantityMenoresSignal.value) <= tripsSelectSignal.value!.seats!)
+                        {
+
+                        }                     
 quantitySignal.value = newQuantity;
  // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-    if (newQuantity < selectedSeatNumbersSN.value.length) {
-      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value.sublist(0, newQuantity);
+    if ((newQuantity + quantityMenoresSignal.value) < selectedSeatNumbersSN.value.length) {
+      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value.sublist(0, (newQuantity + quantityMenoresSignal.value));
+    }
+                        // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
+                      },
+                    ),
+                     SizedBox(height: 10,),
+                     QuantitySelector(
+                  title: 'Menores 50% Valor',
+                      initialQuantity: quantityMenoresSignal.value,
+                      onQuantityChanged: (newQuantity) {                        
+quantityMenoresSignal.value = newQuantity;
+ // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
+    if ((newQuantity +quantitySignal.value)  < selectedSeatNumbersSN.value.length) {
+      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value.sublist(0, (newQuantity +quantitySignal.value));
     }
                         // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                       },
@@ -317,9 +333,9 @@ quantitySignal.value = newQuantity;
             onTap: () {
     //final seats = generateSeats(25, [5, 10]); // Generar asientos
    // final seats = generateSeats(21, [5, 10]); // Generar asientos
-    final seats = generateSeats(29, [5, 10]); // Generar asientos
+    final seats = generateSeats(29,  tripsSelectSignal.value!.reservedSeats!); // Generar asientos
   //  final seats = generateSeats(33, [5, 10]); // Generar asientos
-    final int maxPassengers = quantitySignal.value;
+    final int maxPassengers = quantitySignal.value + quantityMenoresSignal.value ;
     showSeatSelectionModal(context, seats, maxPassengers);
   },
             color: Colors.blue,
@@ -365,8 +381,9 @@ quantitySignal.value = newQuantity;
                         'Total a Pagar: ',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
-                      Text(
-                        (amount*quantitySignal.watch(context)).toString(),
+                      Text(//(double.parse(price) * quantitySignal.watch(context)) +
+                       (  ((double.parse(price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(price)) * quantitySignal.watch(context))).toStringAsFixed(2),
+
                         style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -377,10 +394,9 @@ quantitySignal.value = newQuantity;
        
        CustomButton(
             title: "Comprar Ticket",
-            onTap: () {
-              print("Botón presionado");
-              //GoRouter.of(context).push('/TicketPage');
-              // Aquí puedes implementar la lógica deseada
+            onTap: () async {
+            await  verifyPurchaseTicket(context);           
+                      
             },
             color: Colors.blue,
             width: 250,
@@ -390,6 +406,62 @@ quantitySignal.value = newQuantity;
         ],
       ),
     );
+  }
+  
+ Future<void> verifyPurchaseTicket(context) async {
+    if(selectedSeatNumbersSN.value.length <= 0)//no hay asientos seleccionados
+              {
+              
+                                          showCustomSnackBar(
+                                              context: context,
+  title: 'No hay asientos seleccionados', // Obligatorio
+ 
+);
+              }
+              
+              else//td bien
+              {
+
+//       branch_id,
+//       trip_id,
+//       method,
+//       status,
+//       quantity,
+//       price,
+//       total,
+//       seats,
+//       date,
+//       adults,
+//       minors,
+// seats es asi ej: [5,7,8]
+
+                
+                int branch_id = 1;
+                int trip_id = tripsSelectSignal.value!.id!;
+             int quantity =  quantityMenoresSignal.value + quantitySignal.value;
+             double total = ((double.parse(price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(price)) * quantitySignal.watch(context));
+             List<int> seats = selectedSeatNumbersSN.value;
+           DateTime date =  tripsSelectSignal.value!.date!;
+           int adults = quantitySignal.value;
+           int minors = quantityMenoresSignal.value;
+                 // storeTrips(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors);
+                 storeTrip(branch_id,trip_id,'method','status',quantity,price,total,seats,date,adults,minors);
+                 showCustomSnackBar(
+  context: context,
+  title: 'Compra de pasaje realizada con éxito', // Obligatorio
+  titleColor: Colors.white, // Opcional
+  icon: Icons.check_circle, // Opcional
+  backgroundColor: Colors.green, // Opcional
+  duration: Duration(seconds: 3), // Opcional
+);
+
+              GoRouter.of(context).go(
+        '/DashboardPage'
+      ); 
+              
+                                         }
+
+    
   }
 }
 

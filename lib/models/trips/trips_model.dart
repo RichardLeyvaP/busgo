@@ -28,9 +28,9 @@ class Trips with _$Trips {
 class Trip with _$Trip {
     const factory Trip({
         int? id,
-        int? tripId,
-        DateTime? date,
+        DateTime ? date,
         String? schedule,
+        String? arrival,
         int?  seats,
         String?  name,
         String? origin,
@@ -38,6 +38,7 @@ class Trip with _$Trip {
         String? originImage,
         String? destination,
         String? destinationImage,
+        String? plate,
         List<int>? reservedSeats,
     }) = _Trip;
 
