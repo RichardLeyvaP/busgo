@@ -99,6 +99,19 @@ class HomePage extends StatelessWidget {
                       complement: 'Buses',
                       value: '12',
                     ),
+                    SizedBox(height: 10,),
+                    InkWell(
+                      onTap: () {
+                        GoRouter.of(context).push('/PaymentScreen');
+                      },
+                      child: StatisticCard(
+                        color: Colors.deepOrangeAccent,
+                        icon: MdiIcons.dolly,
+                        title: 'Prueba de',
+                        complement: 'Pago',
+                        value: '\$',
+                      ),
+                    ),
                    
                   ],
                 ),

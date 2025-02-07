@@ -1,6 +1,7 @@
 
     // Configuración de rutas con GoRouter
   import 'package:BusGo/MyApp/MyApp.dart';
+import 'package:BusGo/ui/PaymentScreen/paymentScreen.dart';
 import 'package:BusGo/ui/pages/FunPage.dart';
 import 'package:BusGo/ui/pages/HomePage/HomePage.dart';
 import 'package:BusGo/ui/pages/HomePage/ReportPage.dart';
@@ -72,6 +73,11 @@ GoRoute(
       GoRoute(
   path: '/ProfilePage',
   builder: (context, state) =>  ProfilePage(),
+),
+//rutas de pagos
+      GoRoute(
+  path: '/PaymentScreen',
+  builder: (context, state) =>  PaymentScreen(),
 ),
 
       

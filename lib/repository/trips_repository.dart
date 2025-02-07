@@ -58,6 +58,10 @@ return null;
   'date': date.toString(),
   'adults': adults,
   'minors': minors,
+  //agregar datos de pago
+  // 'amount': amount,
+  //       'description': description,
+  //       'transactionId': transactionId,
 };
 print('mostrar que es lo que va por el body:$body');
 

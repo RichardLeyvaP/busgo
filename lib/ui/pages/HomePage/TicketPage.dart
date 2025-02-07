@@ -4,13 +4,23 @@ import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/CustomButton.dart';
 import 'package:BusGo/ui/component/QuantitySelector.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar.dart';
+import 'package:BusGo/ui/pages/HomePage/additionalData.dart';
+import 'package:BusGo/util/HaulmerPayment/haulmerPayment%20_http.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:signals/signals_flutter.dart';
 
 
-class TicketPage extends StatelessWidget {
+class TicketPage extends StatefulWidget {
+
+  @override
+  State<TicketPage> createState() => _TicketPageState();
+}
+
+class _TicketPageState extends State<TicketPage> {
+ 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +70,8 @@ class TicketPage extends StatelessWidget {
                   ),
                 ),
                 // Card para detalles "From" y "To"
-                Expanded(
+                Flexible(
+
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -71,28 +82,30 @@ class TicketPage extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          SizedBox(height: 150,),
-                         
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Pago de Pasaje",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 150,),
+                           
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Pago de Pasaje",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 10),
-                              PaymentCard(timeIni: tripsSelectSignal.value!.schedule.toString(),timeFin: '10:30xxx', price: tripsSelectSignal.value!.price.toString()),
-                              
-                             
-                              
-                            ],
-                          ),
-                        ],
+                                SizedBox(height: 10),
+                                PaymentCard(timeIni: tripsSelectSignal.value!.schedule.toString(),timeFin: '10:30xxx', price: tripsSelectSignal.value!.price.toString()),
+                                
+                               
+                                
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -240,12 +253,164 @@ class TicketPage extends StatelessWidget {
   }
 }
 
-class PaymentCard extends StatelessWidget {
+class PaymentCard extends StatefulWidget {
   final String timeIni;
   final String timeFin;
   final String price;
 
   PaymentCard({required this.timeIni, required this.price, required this.timeFin});
+
+  @override
+  State<PaymentCard> createState() => _PaymentCardState();
+}
+
+class _PaymentCardState extends State<PaymentCard> {
+   late HaulmerPayment paymentService;
+// Datos dinámicos del pago
+  double amount = 3000;
+
+  String description = "Servicio de afiliación";
+  String device = "TJ44245N20440";
+
+  int dteType = 48;
+
+  String contact = "9 51221345";
+
+  String sourceName = "POS Pagos";
+
+  String sourceVersion = "v1.17v0.2";
+
+  String deviceId = "TJ44245N20440";
+
+  @override
+  void initState() {
+    super.initState();
+    paymentService = HaulmerPayment(
+      apiKey: "TU_API_KEY",
+      deviceId: deviceId,
+    );
+  }
+
+  Future<void> _handlePayment(amount,description,dteType,contact,sourceName,sourceVersion) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator(color: Colors.cyan,)),
+    );
+
+    final result = await paymentService.startPayment(
+      amount: amount,
+      description: description,
+      dteType: dteType,
+      contact: contact,
+      sourceName: sourceName,
+      sourceVersion: sourceVersion,
+      
+    );
+
+    Navigator.pop(context);
+
+if(result["success"])
+{
+    // storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
+     int branch_id = 1;
+                int trip_id = tripsSelectSignal.value!.id!;
+             int quantity =  quantityMenoresSignal.value + quantitySignal.value;
+             double total = ((double.parse(widget.price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(widget.price)) * quantitySignal.watch(context));
+             List<int> seats = selectedSeatNumbersSN.value;
+           DateTime date =  tripsSelectSignal.value!.date!;
+           int adults = quantitySignal.value;
+           int minors = quantityMenoresSignal.value;
+    storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
+                 showCustomSnackBar(
+  context: context,
+  title: 'Compra de pasaje realizada con éxito', // Obligatorio
+  titleColor: Colors.white, // Opcional
+  icon: Icons.check_circle, // Opcional
+  backgroundColor: Colors.green, // Opcional
+  duration: Duration(seconds: 3), // Opcional
+);
+
+              GoRouter.of(context).go(
+        '/DashboardPage'
+      ); 
+
+}
+else{
+  showCustomSnackBar( context: context,   title: 'Error en el Pago', // Obligatorio
+  titleColor: Colors.white, // Opcional
+  icon: Icons.error, // Opcional
+  backgroundColor: Colors.red, // Opcional
+  duration: Duration(seconds: 3), // Opcional
+);
+
+}
+
+   
+
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: Colors.white, // Fondo blanco
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
+      ),
+      title: Row(
+        children: [
+          Icon(
+            result["success"] ? Icons.check_circle : Icons.error,
+            color: result["success"] ? Colors.green : Colors.red,
+            size: 30,
+          ),
+          SizedBox(width: 10), // Espacio entre el ícono y el texto
+          Text(
+            result["success"] ? "Pago Exitoso" : "Error en el Pago",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+        ],
+      ),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        child: Text(
+          result["message"],
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.black54,
+          ),
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade600,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                "OK",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +451,7 @@ class PaymentCard extends StatelessWidget {
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       Text(
-                        price.toString(),
+                        widget.price.toString(),
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -371,6 +536,22 @@ quantityMenoresSignal.value = newQuantity;
                                         ),
                  
       SizedBox(height: 15),
+       AdditionalDataWidget(
+  onDataChanged: (newDevice, newDescription, newDteType, newContact) {
+    device = newDevice;
+    description = newDescription;
+    dteType = newDteType;
+    contact = newContact;
+  },
+),SizedBox(height: 15),
+Container(
+                                          width: 1000,
+                                          height: 1,
+                                          color: Colors.grey[400],
+                                        ),
+
+      SizedBox(height: 15),
+
       Row(
                 children: [
                   Icon(MdiIcons.receiptOutline,size: 15, color: Colors.black),
@@ -382,7 +563,7 @@ quantityMenoresSignal.value = newQuantity;
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                       Text(//(double.parse(price) * quantitySignal.watch(context)) +
-                       (  ((double.parse(price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(price)) * quantitySignal.watch(context))).toStringAsFixed(2),
+                       (  ((double.parse(widget.price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(widget.price)) * quantitySignal.watch(context))).toStringAsFixed(2),
 
                         style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
                       ),
@@ -407,7 +588,7 @@ quantityMenoresSignal.value = newQuantity;
       ),
     );
   }
-  
+
  Future<void> verifyPurchaseTicket(context) async {
     if(selectedSeatNumbersSN.value.length <= 0)//no hay asientos seleccionados
               {
@@ -422,42 +603,12 @@ quantityMenoresSignal.value = newQuantity;
               else//td bien
               {
 
-//       branch_id,
-//       trip_id,
-//       method,
-//       status,
-//       quantity,
-//       price,
-//       total,
-//       seats,
-//       date,
-//       adults,
-//       minors,
-// seats es asi ej: [5,7,8]
 
                 
-                int branch_id = 1;
-                int trip_id = tripsSelectSignal.value!.id!;
-             int quantity =  quantityMenoresSignal.value + quantitySignal.value;
-             double total = ((double.parse(price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(price)) * quantitySignal.watch(context));
-             List<int> seats = selectedSeatNumbersSN.value;
-           DateTime date =  tripsSelectSignal.value!.date!;
-           int adults = quantitySignal.value;
-           int minors = quantityMenoresSignal.value;
+               
                  // storeTrips(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors);
-                 storeTrip(branch_id,trip_id,'method','status',quantity,price,total,seats,date,adults,minors);
-                 showCustomSnackBar(
-  context: context,
-  title: 'Compra de pasaje realizada con éxito', // Obligatorio
-  titleColor: Colors.white, // Opcional
-  icon: Icons.check_circle, // Opcional
-  backgroundColor: Colors.green, // Opcional
-  duration: Duration(seconds: 3), // Opcional
-);
-
-              GoRouter.of(context).go(
-        '/DashboardPage'
-      ); 
+               await  _handlePayment(amount,description,dteType,contact,sourceName,sourceVersion);
+               
               
                                          }
 

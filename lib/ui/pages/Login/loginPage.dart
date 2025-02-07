@@ -95,7 +95,7 @@ class _LoginFormPageState extends State<LoginFormPage> {
     return FadeIn(
       duration: const Duration(seconds: 2),
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: 10.0,
           backgroundColor: const Color.fromARGB(255, 110, 135, 206),
@@ -106,17 +106,24 @@ class _LoginFormPageState extends State<LoginFormPage> {
             Expanded(
                 flex: 2,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'BusGo',
-                      style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                            color: Colors.white,
-                            // Cambia alguna propiedad aqui
-                          ),
-                    ),
-                  ],
-                )),
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    Icon(
+      Icons.directions_bus,
+      color: Colors.blue.shade900, // Color del ícono
+    ),
+    SizedBox(width: 8), // Espacio entre el ícono y el texto
+    Text(
+      'BusGo',
+      style: Theme.of(context).textTheme.displayMedium!.copyWith(
+            color: Colors.blue.shade900,
+            // Cambia alguna propiedad aqui
+          ),
+    ),
+  ],
+)
+
+                ),
             Expanded(
                 flex: 12,
                 child: Container(
@@ -138,14 +145,14 @@ class _LoginFormPageState extends State<LoginFormPage> {
                               hintStyle: TextStyle(color: Colors.grey.shade500), // Color del hint
                               prefixIcon: Icon(
                                 Icons.person,
-                                color: StyleGlobalApk.getColorPrimary(), // Icono de usuario en color naranja
+                                color: Colors.blue.shade900, // Icono de usuario en color naranja
                               ),
                               filled: true,
                               fillColor: Colors.grey.shade200, // Fondo gris suave
                               border: InputBorder.none, // Sin borde visible
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: StyleGlobalApk.getColorPrimary(),
+                                    color: Colors.blue.shade900,
                                     width: 2.0), // Borde naranja cuando tenga foco
                                 borderRadius: BorderRadius.circular(30.0), // Bordes redondeados más suaves
                               ),
@@ -176,12 +183,12 @@ class _LoginFormPageState extends State<LoginFormPage> {
                               hintStyle: TextStyle(color: Colors.grey.shade500), // Color del hint
                               prefixIcon: Icon(
                                 Icons.lock,
-                                color: StyleGlobalApk.getColorPrimary(), // Icono de candado en color naranja
+                                color: Colors.blue.shade900, // Icono de candado en color naranja
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                                  color: StyleGlobalApk.getColorPrimary(),
+                                  color: Colors.blue.shade900,
                                 ),
                                 onPressed: _togglePasswordVisibility,
                               ),
@@ -190,7 +197,7 @@ class _LoginFormPageState extends State<LoginFormPage> {
                               border: InputBorder.none, // Sin borde visible
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: StyleGlobalApk.getColorPrimary(),
+                                    color: Colors.blue.shade900,
                                     width: 2.0), // Borde naranja cuando tiene foco
                                 borderRadius: BorderRadius.circular(30.0), // Bordes redondeados
                               ),
@@ -227,7 +234,7 @@ class _LoginFormPageState extends State<LoginFormPage> {
                                       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
                                         const EdgeInsets.symmetric(vertical: 14.0, horizontal: 40.0),
                                       ),
-                                      backgroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                                      backgroundColor: WidgetStateProperty.all<Color>(Colors.blue.shade900),
                                     ),
                                     onPressed: () async {
                                       if (_usserController.text.isEmpty || _passController.text.isEmpty) {
@@ -250,31 +257,31 @@ class _LoginFormPageState extends State<LoginFormPage> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 40,
-                            child: SignInButton(
-                              Buttons.google,
-                              text: TranslationManager.translate('googleButton'),
-                              onPressed: () {
-                                loginFuntionDeprived();
-                                //loginWithGoogle(context);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 40,
-                            child: SignInButton(
-                              Buttons.facebook,
-                              text: TranslationManager.translate('facebookButton'),
-                              onPressed: () {
-                                loginFuntionDeprived();
-                                // loginFb(setState, context);
-                              },
-                            ),
-                          )
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   height: 40,
+                          //   child: SignInButton(
+                          //     Buttons.google,
+                          //     text: TranslationManager.translate('googleButton'),
+                          //     onPressed: () {
+                          //       loginFuntionDeprived();
+                          //       //loginWithGoogle(context);
+                          //     },
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 12),
+                          // SizedBox(
+                          //   width: double.infinity,
+                          //   height: 40,
+                          //   child: SignInButton(
+                          //     Buttons.facebook,
+                          //     text: TranslationManager.translate('facebookButton'),
+                          //     onPressed: () {
+                          //       loginFuntionDeprived();
+                          //       // loginFb(setState, context);
+                          //     },
+                          //   ),
+                          // )
                         ],
                       ),
                     ),
