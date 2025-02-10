@@ -19,11 +19,11 @@ class HaulmerPayment {
     final headers = {
       "Accept": "application/json",
       "Content-Type": "application/json",
-       "X-Api-Key": apiKey, // 🔹 Agregamos la API Key en los headers
+       "X-Api-Key": 'VGtcyYOqUM0x7ttAd2FL2CYuL2XiKhRC83AVT1GQMZ4PSacINB5gu9FTClvy9oijcNh3oY9j74bldwDQWVBvu8gLVYCa1DoxlbJBOod1oEcn2fbPGI3UWhkYi8mJrq', // 🔹 Agregamos la API Key en los headers
     };
     final body = jsonEncode({
       "Amount": amount.toInt(), // Convertimos a entero (sin centavos en CLP)
-      "Device": deviceId,
+      "Device": 'TJ44243320217',
       "Description": description,
       "DteType": dteType,
       "extraData": {
