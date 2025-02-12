@@ -11,16 +11,12 @@ import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:signals/signals_flutter.dart';
 
-
 class TicketPage extends StatefulWidget {
-
   @override
   State<TicketPage> createState() => _TicketPageState();
 }
 
 class _TicketPageState extends State<TicketPage> {
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +24,6 @@ class _TicketPageState extends State<TicketPage> {
       body: SafeArea(
         child: Stack(
           children: [
-             
             Column(
               children: [
                 // Header con imagen y título
@@ -38,22 +33,21 @@ class _TicketPageState extends State<TicketPage> {
                   decoration: BoxDecoration(
                     color: Colors.blue[400],
                   ),
-                  child:  Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                         InkWell(
+                        InkWell(
                           onTap: () {
-                             GoRouter.of(context).pop();
+                            GoRouter.of(context).pop();
                           },
-                           child: Padding(
-                             padding: EdgeInsets.only(left: 8.0),
-                             child: Icon(Icons.arrow_back, color:  Colors.white),
-                           ),
-                         ),
-                                    
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 8.0),
+                            child: Icon(Icons.arrow_back, color: Colors.white),
+                          ),
+                        ),
                         Text(
                           "Ticket",
                           style: TextStyle(
@@ -62,16 +56,15 @@ class _TicketPageState extends State<TicketPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                       
                         Text(
-                          "       ", ),
+                          "       ",
+                        ),
                       ],
                     ),
                   ),
                 ),
                 // Card para detalles "From" y "To"
                 Flexible(
-
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -85,8 +78,9 @@ class _TicketPageState extends State<TicketPage> {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            SizedBox(height: 150,),
-                           
+                            SizedBox(
+                              height: 150,
+                            ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -98,10 +92,12 @@ class _TicketPageState extends State<TicketPage> {
                                   ),
                                 ),
                                 SizedBox(height: 10),
-                                PaymentCard(timeIni: tripsSelectSignal.value!.schedule.toString(),timeFin: '10:30xxx', price: tripsSelectSignal.value!.price.toString()),
-                                
-                               
-                                
+                                PaymentCard(
+                                    timeIni: tripsSelectSignal.value!.schedule
+                                        .toString(),
+                                    timeFin: '10:30xxx',
+                                    price: tripsSelectSignal.value!.price
+                                        .toString()),
                               ],
                             ),
                           ],
@@ -112,140 +108,141 @@ class _TicketPageState extends State<TicketPage> {
                 ),
               ],
             ),
-        Positioned(
-  top: 80,
-  // left: (MediaQuery.of(context).size.width - 100) / 2, // Centra horizontalmente
-   left: 35, // Centra horizontalmente
-   right: 35,
-  child:   
- Container(
-  padding: const EdgeInsets.all(20),
-  decoration: BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(15),
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.shade400,
-        blurRadius: 10,
-        offset: Offset(0, 5),
-      ),
-    ],
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              Icon(Icons.location_on, color: Colors.blue),
-              SizedBox(height: 5),
-              Container(
-                width: 1,
-                height: 40,
-                color: Colors.grey[400],
+            Positioned(
+              top: 80,
+              // left: (MediaQuery.of(context).size.width - 100) / 2, // Centra horizontalmente
+              left: 35, // Centra horizontalmente
+              right: 35,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade400,
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            Icon(Icons.location_on, color: Colors.blue),
+                            SizedBox(height: 5),
+                            Container(
+                              width: 1,
+                              height: 40,
+                              color: Colors.grey[400],
+                            ),
+                            SizedBox(height: 5),
+                            Icon(Icons.location_on,
+                                color: const Color.fromARGB(255, 85, 105, 143)),
+                          ],
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "ORIGEN",
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              Text(
+                                tripsSelectSignal.value!.origin.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                              SizedBox(height: 4),
+                              Divider(color: Colors.grey[400]),
+                              SizedBox(height: 4),
+                              Text(
+                                "DESTINO",
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              Text(
+                                tripsSelectSignal.value!.destination.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, size: 15, color: Colors.black),
+                        SizedBox(width: 5),
+                        Text(
+                          tripsSelectSignal.value!.schedule.toString(),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5, right: 5),
+                          child: Icon(MdiIcons.rayStartArrow,
+                              size: 24, color: Colors.black),
+                        ),
+                        Text(
+                          tripsSelectSignal.value!.arrival.toString(),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(MdiIcons.bus, size: 15, color: Colors.black),
+                        SizedBox(width: 5),
+                        Row(
+                          children: [
+                            Text(
+                              'Bus: ',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                            Text(
+                              tripsSelectSignal.value!.plate
+                                  .toString(), //tripsSelectSignal.value!.schedule.toString(),//chapa
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Icon(MdiIcons.seatReclineExtra,
+                            size: 15, color: Colors.black),
+                        SizedBox(width: 5),
+                        Row(
+                          children: [
+                            Text(
+                              'Capacidad: ',
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
+                            Text(
+                              tripsSelectSignal.value!.seats.toString(),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 5),
-              Icon(Icons.location_on, color: const Color.fromARGB(255, 85, 105, 143)),
-            ],
-          ),
-          SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "ORIGEN",
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                Text(
-                  tripsSelectSignal.value!.origin.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                ),
-                SizedBox(height: 4),
-                Divider(color: Colors.grey[400]),
-                SizedBox(height: 4),
-                Text(
-                  "DESTINO",
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                Text(
-                  tripsSelectSignal.value!.destination.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  softWrap: true,
-                  overflow: TextOverflow.visible,
-                ),
-              ],
             ),
-          ),
-        ],
-      ),
-      SizedBox(height: 10),
-      Row(
-        children: [
-          Icon(Icons.access_time, size: 15, color: Colors.black),
-          SizedBox(width: 5),
-          Text(
-            tripsSelectSignal.value!.schedule.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 5, right: 5),
-            child: Icon(MdiIcons.rayStartArrow, size: 24, color: Colors.black),
-          ),
-          Text(
-            tripsSelectSignal.value!.arrival.toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-      SizedBox(height: 5),
-      Row(
-        children: [
-          Icon(MdiIcons.bus, size: 15, color: Colors.black),
-          SizedBox(width: 5),
-          Row(
-            children: [
-              Text(
-                'Bus: ',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              Text(
-                tripsSelectSignal.value!.plate.toString(),//tripsSelectSignal.value!.schedule.toString(),//chapa
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ],
-      ),
-      SizedBox(height: 5),
-      Row(
-        children: [
-          Icon(MdiIcons.seatReclineExtra, size: 15, color: Colors.black),
-          SizedBox(width: 5),
-          Row(
-            children: [
-              Text(
-                'Capacidad: ',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              Text(
-                tripsSelectSignal.value!.seats.toString(),
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ],
-  ),
-),
-                      
-),
-
           ],
         ),
       ),
@@ -258,14 +255,15 @@ class PaymentCard extends StatefulWidget {
   final String timeFin;
   final String price;
 
-  PaymentCard({required this.timeIni, required this.price, required this.timeFin});
+  PaymentCard(
+      {required this.timeIni, required this.price, required this.timeFin});
 
   @override
   State<PaymentCard> createState() => _PaymentCardState();
 }
 
 class _PaymentCardState extends State<PaymentCard> {
-   late HaulmerPayment paymentService;
+  late HaulmerPayment paymentService;
 // Datos dinámicos del pago
   double amount = 3000;
 
@@ -291,125 +289,116 @@ class _PaymentCardState extends State<PaymentCard> {
     );
   }
 
-  Future<void> _handlePayment(amount,description,dteType,contact,sourceName,sourceVersion) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Center(child: CircularProgressIndicator(color: Colors.cyan,)),
-    );
+  Future<void> _handlePayment(
+      amount,
+      cashback,
+      dteType,
+      customFields,
+      exemptAmount,
+      externalReferenceId,
+      flagAccountPayProvider,
+      idProviderAccount,
+      netAmount,
+      sourceName,
+      sourceVersion,
+      taxIdnValidation,
+      installmentsQuantity,
+      method,
+      printVoucherOnApp,
+      tip) async {
+        
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false,
+    //   builder: (context) => Center(
+    //       child: CircularProgressIndicator(
+    //     color: Colors.cyan,
+    //   )),
+    // );
+    
+try {
+   final result = await paymentService.sendPaymentIntentClick(
+      amount,
+      cashback,
+      dteType,
+      customFields,
+      exemptAmount,
+      externalReferenceId,
+      flagAccountPayProvider,
+      idProviderAccount,
+      netAmount,
+      sourceName,
+      sourceVersion,
+      taxIdnValidation,
+      installmentsQuantity,
+      method,
+      printVoucherOnApp,
+      tip);
 
-    final result = await paymentService.startPayment(
-      amount: amount,
-      description: description,
-      dteType: dteType,
-      contact: contact,
-      sourceName: sourceName,
-      sourceVersion: sourceVersion,
-      
-    );
+  
+    if (result["success"] == true) {
+      // storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
+      int branch_id = 1;
+      int trip_id = tripsSelectSignal.value!.id!;
+      int quantity = quantityMenoresSignal.value + quantitySignal.value;
+      double total = ((double.parse(widget.price) / 2) *
+              quantityMenoresSignal.watch(context)) +
+          ((double.parse(widget.price)) * quantitySignal.watch(context));
+      List<int> seats = selectedSeatNumbersSN.value;
+      DateTime date = tripsSelectSignal.value!.date!;
+      int adults = quantitySignal.value;
+      int minors = quantityMenoresSignal.value;
+      storeTrip(branch_id, trip_id, 'method', 'status', quantity, widget.price,
+          total, seats, date, adults, minors);
+      showCustomSnackBar(
+        context: context,
+        title: 'Compra de pasaje realizada con éxito', // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.check_circle, // Opcional
+        backgroundColor: Colors.green, // Opcional
+        duration: Duration(seconds: 5), // Opcional
+      );
 
-    Navigator.pop(context);
-
-if(result["success"])
-{
-    // storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
-     int branch_id = 1;
-                int trip_id = tripsSelectSignal.value!.id!;
-             int quantity =  quantityMenoresSignal.value + quantitySignal.value;
-             double total = ((double.parse(widget.price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(widget.price)) * quantitySignal.watch(context));
-             List<int> seats = selectedSeatNumbersSN.value;
-           DateTime date =  tripsSelectSignal.value!.date!;
-           int adults = quantitySignal.value;
-           int minors = quantityMenoresSignal.value;
-    storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
-                 showCustomSnackBar(
+      GoRouter.of(context).go('/DashboardPage');
+    } else  if (result["success"] == false){
+     
+      final ms1 = result["errorCode"] ;
+      final ms2 = result["message"] ;
+      String msg ='$ms1 : $ms2 '; 
+      showCustomSnackBar(
   context: context,
-  title: 'Compra de pasaje realizada con éxito', // Obligatorio
-  titleColor: Colors.white, // Opcional
-  icon: Icons.check_circle, // Opcional
-  backgroundColor: Colors.green, // Opcional
-  duration: Duration(seconds: 3), // Opcional
+  title: msg,
+  icon: Icons.error,
+  backgroundColor: Colors.red,
+  showAcceptButton: true,
+   isPersistent: true,
+  
 );
 
-              GoRouter.of(context).go(
-        '/DashboardPage'
-      ); 
 
+    }
+    
+    else{
+      showCustomSnackBar(
+        context: context, title: 'Error en el Pago', // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.error, // Opcional
+        backgroundColor: Colors.red, // Opcional
+        showAcceptButton: true,
+        isPersistent: true,
+      );
+    }
+  
+} catch (e) {
+  
 }
-else{
-  showCustomSnackBar( context: context,   title: 'Error en el Pago', // Obligatorio
-  titleColor: Colors.white, // Opcional
-  icon: Icons.error, // Opcional
-  backgroundColor: Colors.red, // Opcional
-  duration: Duration(seconds: 3), // Opcional
-);
-
+finally{
+  //Navigator.pop(context);
+ 
 }
-
    
 
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      backgroundColor: Colors.white, // Fondo blanco
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0), // Bordes redondeados
-      ),
-      title: Row(
-        children: [
-          Icon(
-            result["success"] ? Icons.check_circle : Icons.error,
-            color: result["success"] ? Colors.green : Colors.red,
-            size: 30,
-          ),
-          SizedBox(width: 10), // Espacio entre el ícono y el texto
-          Text(
-            result["success"] ? "Pago Exitoso" : "Error en el Pago",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-        ],
-      ),
-      content: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Text(
-          result["message"],
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.black54,
-          ),
-        ),
-      ),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade600,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                "OK",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-
-
+    
   }
 
   @override
@@ -438,76 +427,106 @@ else{
                 children: [
                   Column(
                     children: [
-                      
-                      SizedBox(width: 5,),
+                      SizedBox(
+                        width: 5,
+                      ),
                       Row(
-                children: [
-                  Icon(MdiIcons.currencyUsd,size: 15, color: Colors.black),
-                  SizedBox(width: 5,),
-                  Row(
-                    children: [
-                      Text(
-                        'Precio: ',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      Text(
-                        widget.price.toString(),
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        children: [
+                          Icon(MdiIcons.currencyUsd,
+                              size: 15, color: Colors.black),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                'Precio: ',
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              Text(
+                                widget.price.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-                      
-                    ],
-                  ),
-                 
                   SizedBox(height: 10),
-                 QuantitySelector(
-                  title: 'Mayores de edad  ',
-                      initialQuantity: quantitySignal.value,
-                      onQuantityChanged: (newQuantity) {   
-                        if((quantitySignal.value + quantityMenoresSignal.value) <= tripsSelectSignal.value!.seats!)
-                        {
+                  QuantitySelector(
+                    title: 'Mayores de edad  ',
+                    initialQuantity: quantitySignal.value,//cantidad de mayores
+                    onQuantityChanged: (newQuantity) {
 
-                        }                     
-quantitySignal.value = newQuantity;
- // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-    if ((newQuantity + quantityMenoresSignal.value) < selectedSeatNumbersSN.value.length) {
-      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value.sublist(0, (newQuantity + quantityMenoresSignal.value));
-    }
-                        // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
-                      },
-                    ),
-                     SizedBox(height: 10,),
-                     QuantitySelector(
-                  title: 'Menores 50% Valor',
-                      initialQuantity: quantityMenoresSignal.value,
-                      onQuantityChanged: (newQuantity) {                        
-quantityMenoresSignal.value = newQuantity;
- // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-    if ((newQuantity +quantitySignal.value)  < selectedSeatNumbersSN.value.length) {
-      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value.sublist(0, (newQuantity +quantitySignal.value));
-    }
-                        // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
-                      },
-                    ),
-                     SizedBox(height: 10,),
+                      if((quantityMenoresSignal.value + quantitySignal.value) >= availableSeatsSignal.value)
+                      {
+                        print('No puede seleccionar mas asientos');
+                        
+
+                      }
+                      else{
+                        if ((quantitySignal.value +
+                              quantityMenoresSignal.value) <=
+                          tripsSelectSignal.value!.seats!) {}
+                      quantitySignal.value = newQuantity;
+                      // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
+                      if ((newQuantity + quantityMenoresSignal.value) <
+                          selectedSeatNumbersSN.value.length) {
+                        selectedSeatNumbersSN.value =
+                            selectedSeatNumbersSN.value.sublist(
+                                0, (newQuantity + quantityMenoresSignal.value));
+                      }
+                      // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
+
+                      }
+                
+
+                      
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  QuantitySelector(
+                    title: 'Menores 50% Valor',
+                    initialQuantity: quantityMenoresSignal.value,
+                    onQuantityChanged: (newQuantity) {
+                      quantityMenoresSignal.value = newQuantity;
+                      // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
+                      if ((newQuantity + quantitySignal.value) <
+                          selectedSeatNumbersSN.value.length) {
+                        selectedSeatNumbersSN.value = selectedSeatNumbersSN
+                            .value
+                            .sublist(0, (newQuantity + quantitySignal.value));
+                      }
+                      // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   CustomButton(
-            title: "Seleccionar asiento",
-            onTap: () {
-    //final seats = generateSeats(25, [5, 10]); // Generar asientos
-   // final seats = generateSeats(21, [5, 10]); // Generar asientos
-    final seats = generateSeats(29,  tripsSelectSignal.value!.reservedSeats!); // Generar asientos
-  //  final seats = generateSeats(33, [5, 10]); // Generar asientos
-    final int maxPassengers = quantitySignal.value + quantityMenoresSignal.value ;
-    showSeatSelectionModal(context, seats, maxPassengers);
-  },
-            color: Colors.blue,
-            width: 170,
-          ),
-                 SizedBox(height: 10,), 
-                 Row(
+                    title: "Seleccionar asiento",
+                    onTap: () {
+                      //final seats = generateSeats(25, [5, 10]); // Generar asientos
+                      // final seats = generateSeats(21, [5, 10]); // Generar asientos
+                      final seats = generateSeats(
+                          29,
+                          tripsSelectSignal
+                              .value!.reservedSeats!); // Generar asientos
+                      //  final seats = generateSeats(33, [5, 10]); // Generar asientos
+                      final int maxPassengers =
+                          quantitySignal.value + quantityMenoresSignal.value;
+                      showSeatSelectionModal(context, seats, maxPassengers);
+                    },
+                    color: Colors.blue,
+                    width: 170,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
                     children: [
                       Text(
                         'Asientos seleccionados: ',
@@ -519,104 +538,110 @@ quantityMenoresSignal.value = newQuantity;
                       ),
                     ],
                   ),
-                 SizedBox(height: 10),
-                  
+                  SizedBox(height: 10),
                 ],
               ),
-              
-              
-              
             ],
           ),
-        
           Container(
-                                          width: 1000,
-                                          height: 1,
-                                          color: Colors.grey[400],
-                                        ),
-                 
-      SizedBox(height: 15),
-       AdditionalDataWidget(
-  onDataChanged: (newDevice, newDescription, newDteType, newContact) {
-    device = newDevice;
-    description = newDescription;
-    dteType = newDteType;
-    contact = newContact;
-  },
-),SizedBox(height: 15),
-Container(
-                                          width: 1000,
-                                          height: 1,
-                                          color: Colors.grey[400],
-                                        ),
-
-      SizedBox(height: 15),
-
-      Row(
+            width: 1000,
+            height: 1,
+            color: Colors.grey[400],
+          ),
+          // SizedBox(height: 15),
+          // AdditionalDataWidget(
+          //   onDataChanged: (newDevice, newDescription, newDteType, newContact) {
+          //     device = newDevice;
+          //     description = newDescription;
+          //     dteType = newDteType;
+          //     contact = newContact;
+          //   },
+          // ),
+          // SizedBox(height: 15),
+          Container(
+            width: 1000,
+            height: 1,
+            color: Colors.grey[400],
+          ),
+          SizedBox(height: 15),
+          Row(
+            children: [
+              Icon(MdiIcons.receiptOutline, size: 15, color: Colors.black),
+              SizedBox(
+                width: 5,
+              ),
+              Row(
                 children: [
-                  Icon(MdiIcons.receiptOutline,size: 15, color: Colors.black),
-                  SizedBox(width: 5,),
-                  Row(
-                    children: [
-                      Text(
-                        'Total a Pagar: ',
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                      Text(//(double.parse(price) * quantitySignal.watch(context)) +
-                       (  ((double.parse(widget.price)/2) * quantityMenoresSignal.watch(context)) + ((double.parse(widget.price)) * quantitySignal.watch(context))).toStringAsFixed(2),
+                  Text(
+                    'Total a Pagar: ',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  Text(
+                    //(double.parse(price) * quantitySignal.watch(context)) +
+                    (((double.parse(widget.price) / 2) *
+                                quantityMenoresSignal.watch(context)) +
+                            ((double.parse(widget.price)) *
+                                quantitySignal.watch(context)))
+                        .toStringAsFixed(2),
 
-                        style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              SizedBox(height: 25),
-       
-       CustomButton(
+            ],
+          ),
+          SizedBox(height: 25),
+          CustomButton(
             title: "Comprar Ticket",
             onTap: () async {
-            await  verifyPurchaseTicket(context);           
-                      
+              await verifyPurchaseTicket(context);
             },
             color: Colors.blue,
             width: 250,
           ),
-       
-  
         ],
       ),
     );
   }
 
- Future<void> verifyPurchaseTicket(context) async {
-    if(selectedSeatNumbersSN.value.length <= 0)//no hay asientos seleccionados
-              {
-              
-                                          showCustomSnackBar(
-                                              context: context,
-  title: 'No hay asientos seleccionados', // Obligatorio
- 
-);
-              }
-              
-              else//td bien
-              {
-
-
-                
-               
-                 // storeTrips(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors);
-               await  _handlePayment(amount,description,dteType,contact,sourceName,sourceVersion);
-               
-              
-                                         }
-
-    
+  Future<void> verifyPurchaseTicket(context) async {
+    if (selectedSeatNumbersSN.value.length <= 0) //no hay asientos seleccionados
+    {
+      showCustomSnackBar(
+        context: context,
+        title: 'No hay asientos seleccionados', // Obligatorio
+        backgroundColor: Colors.red
+      );
+    } else //td bien
+    {
+      double total = ((double.parse(widget.price) / 2) *
+              quantityMenoresSignal.watch(context)) +
+          ((double.parse(widget.price)) * quantitySignal.watch(context));
+      
+      await _handlePayment(
+      total,
+      -1,//cashback,
+      48,//dteType,
+      [],//customFields,
+      0,//exemptAmount,
+      null,//externalReferenceId,
+      false,//flagAccountPayProvider,
+     null,// idProviderAccount,
+     0,// netAmount,
+     "",// sourceName,
+     "",// sourceVersion,
+     "",// taxIdnValidation,
+      -1,//installmentsQuantity,
+      0,//method,
+      false,//printVoucherOnApp,
+      -1//tip
+      );
+    }
   }
 }
 
-void showSeatSelectionModal(BuildContext context, List<Seat> seats, int maxSelectable) {
+void showSeatSelectionModal(
+    BuildContext context, List<Seat> seats, int maxSelectable) {
   final selectedSeatNumbers1 = ValueNotifier<List<int>>([]);
 
   showModalBottomSheet(
@@ -646,7 +671,8 @@ void showSeatSelectionModal(BuildContext context, List<Seat> seats, int maxSelec
               child: ValueListenableBuilder<List<int>>(
                 valueListenable: selectedSeatNumbers1,
                 builder: (context, selectedSeats, child) {
-                  return buildSeatSelection(seats, maxSelectable, selectedSeatNumbersSN);
+                  return buildSeatSelection(
+                      seats, maxSelectable, selectedSeatNumbersSN);
                 },
               ),
             ),
@@ -670,9 +696,9 @@ void showSeatSelectionModal(BuildContext context, List<Seat> seats, int maxSelec
                 CustomButton(
                   title: "Confirmar",
                   onTap: () {
-                    
-                   // selectedSeatNumbersSN.value = selectedSeatNumbers1.value;
-                    print("Asientos seleccionados: ${selectedSeatNumbersSN.value}");
+                    // selectedSeatNumbersSN.value = selectedSeatNumbers1.value;
+                    print(
+                        "Asientos seleccionados: ${selectedSeatNumbersSN.value}");
                     Navigator.pop(context);
                   },
                   color: Colors.blue,
@@ -686,9 +712,8 @@ void showSeatSelectionModal(BuildContext context, List<Seat> seats, int maxSelec
   );
 }
 
-
-Widget buildSeatSelection(
-    List<Seat> seats, int maxSelectable, Signal<List<int>> selectedSeatNumbersSN) {
+Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
+    Signal<List<int>> selectedSeatNumbersSN) {
   return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 5, // 5 columnas en total
@@ -711,23 +736,32 @@ Widget buildSeatSelection(
         mainAxisAlignment: MainAxisAlignment.center, // Centra el contenido
         children: [
           GestureDetector(
-            onTap: seat.isOccupied || (isSelected == false && selectedSeatNumbersSN.value.length >= maxSelectable)
+            onTap: seat.isOccupied ||
+                    (isSelected == false &&
+                        selectedSeatNumbersSN.value.length >= maxSelectable)
                 ? null // Si está ocupado o ya se ha alcanzado el máximo de selecciones, no se puede seleccionar
                 : () {
                     // Si el asiento está seleccionado, desmarcarlo
                     if (isSelected) {
-                      selectedSeatNumbersSN.value =
-                          selectedSeatNumbersSN.value.where((n) => n != seat.number).toList();
-                    } 
-                    // Si el asiento no está seleccionado, marcarlo
-                    else if (selectedSeatNumbersSN.value.length < maxSelectable) {
-                      selectedSeatNumbersSN.value = [...selectedSeatNumbersSN.value, seat.number];
+                      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value
+                          .where((n) => n != seat.number)
+                          .toList();
                     }
-                    (context as Element).markNeedsBuild(); // Forzar actualización visual
+                    // Si el asiento no está seleccionado, marcarlo
+                    else if (selectedSeatNumbersSN.value.length <
+                        maxSelectable) {
+                      selectedSeatNumbersSN.value = [
+                        ...selectedSeatNumbersSN.value,
+                        seat.number
+                      ];
+                    }
+                    (context as Element)
+                        .markNeedsBuild(); // Forzar actualización visual
                   },
             child: CustomSeatIcon(
               isOccupied: seat.isOccupied,
-              isSelected: isSelected, // Asegura que el icono refleje si el asiento está seleccionado
+              isSelected:
+                  isSelected, // Asegura que el icono refleje si el asiento está seleccionado
             ),
           ),
           Text(
@@ -760,7 +794,8 @@ class CustomSeatIcon extends StatelessWidget {
             color: isOccupied
                 ? Colors.red // Si está ocupado, color rojo
                 : isSelected
-                    ? Colors.blue // Si está seleccionado por el usuario, color azul
+                    ? Colors
+                        .blue // Si está seleccionado por el usuario, color azul
                     : Colors.green, // Si está disponible, color verde
           ),
           if (isOccupied || isSelected) // Si está ocupado o seleccionado
@@ -779,88 +814,7 @@ class CustomSeatIcon extends StatelessWidget {
 }
 
 
-
-// Widget buildSeatSelection(List<Seat> seats, int maxSelectable, ValueNotifier<List<int>> selectedSeatNumbers) {
-//   return GridView.builder(
-//     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//       crossAxisCount: 5, // 5 columnas en total (incluido espacio del pasillo)
-//       mainAxisSpacing: 15,
-//       crossAxisSpacing: 15,
-//     ),
-//     itemCount: seats.length + (seats.length ~/ 4), // Ajuste para los espacios de pasillo
-//     itemBuilder: (context, index) {
-//       // Calcular si estamos en la última fila (sin pasillo)
-//       final isFinalRow = index >= (seats.length + (seats.length ~/ 4)) - 5;
-
-//       // Índice real en la lista de asientos
-//       final rowIndex = index ~/ 5; // Fila actual
-//       final seatIndex = isFinalRow
-//           ? index - (seats.length ~/ 4) // Última fila sin pasillo
-//           : index - rowIndex; // Ajuste por pasillo
-
-//       if (!isFinalRow && (index % 5 == 2)) {
-//         // Espacio del pasillo (columna central)
-//         return SizedBox.shrink();
-//       }
-
-//       if (seatIndex >= seats.length) {
-//         return SizedBox.shrink(); // Evitar índices fuera de rango
-//       }
-
-//       final seat = seats[seatIndex];
-
-//       return GestureDetector(
-//         onTap: seat.isOccupied || (seat.isSelected == false && selectedSeatNumbers.value.length >= maxSelectable)
-//             ? null
-//             : () {
-//                 // Cambiar estado del asiento
-//                 seat.isSelected = !seat.isSelected;
-
-//                 if (seat.isSelected) {
-//                   selectedSeatNumbers.value = [...selectedSeatNumbers.value, seat.number];
-//                 } else {
-//                   selectedSeatNumbers.value = selectedSeatNumbers.value.where((n) => n != seat.number).toList();
-//                 }
-
-//                 (context as Element).markNeedsBuild(); // Forzar actualización visual
-//               },
-//         child: Container(
-//           alignment: Alignment.center,
-//           decoration: BoxDecoration(
-//             color: seat.isOccupied
-//                 ? Colors.grey // Ocupado
-//                 : seat.isSelected
-//                     ? Colors.green // Seleccionado
-//                     : Colors.blue, // Disponible
-//             borderRadius: BorderRadius.circular(8),
-//           ),
-//           child: Text(
-//             seat.number.toString(),
-//             style: TextStyle(color: Colors.white),
-//           ),
-//         ),
-//       );
-//     },
-//   );
-// }
-
-
-
-// List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
-//   return List.generate(
-//     totalSeats,
-//     (index) {
-//       return Seat(
-//       number: index + 1,
-//       isOccupied: occupiedSeats.contains(index + 1),
-//     );
-//     },
-//   );
-// }
-
-
-
-            List<Seat> generateSeatsCASICASI(int totalSeats, List<int> occupiedSeats) {
+List<Seat> generateSeatsCASICASI(int totalSeats, List<int> occupiedSeats) {
   List<Seat> seats = [];
 
   // Asientos hasta la penúltima fila (con pasillo en el medio)
@@ -874,14 +828,23 @@ class CustomSeatIcon extends StatelessWidget {
 
   // Última fila sin pasillo, con los asientos completos
   if (totalSeats >= 21) {
-    seats.add(Seat(number: totalSeats - 4, isOccupied: occupiedSeats.contains(totalSeats - 4)));
-    seats.add(Seat(number: totalSeats - 3, isOccupied: occupiedSeats.contains(totalSeats - 3)));
-    seats.add(Seat(number: totalSeats - 2, isOccupied: occupiedSeats.contains(totalSeats - 2)));
-    seats.add(Seat(number: totalSeats - 1, isOccupied: occupiedSeats.contains(totalSeats - 1)));
+    seats.add(Seat(
+        number: totalSeats - 4,
+        isOccupied: occupiedSeats.contains(totalSeats - 4)));
+    seats.add(Seat(
+        number: totalSeats - 3,
+        isOccupied: occupiedSeats.contains(totalSeats - 3)));
+    seats.add(Seat(
+        number: totalSeats - 2,
+        isOccupied: occupiedSeats.contains(totalSeats - 2)));
+    seats.add(Seat(
+        number: totalSeats - 1,
+        isOccupied: occupiedSeats.contains(totalSeats - 1)));
   }
 
   return seats;
 }
+
 List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
   List<Seat> seats = [];
 
@@ -896,15 +859,11 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
 
   // Última fila sin pasillo, con los asientos completos
   if (totalSeats > 20) {
-    for (int i = totalSeats - 5 + 1; i <= totalSeats; i++) {  // Ajuste aquí para empezar en 21
+    for (int i = totalSeats - 5 + 1; i <= totalSeats; i++) {
+      // Ajuste aquí para empezar en 21
       seats.add(Seat(number: i, isOccupied: occupiedSeats.contains(i)));
     }
   }
 
   return seats;
 }
-
-
-
-
-

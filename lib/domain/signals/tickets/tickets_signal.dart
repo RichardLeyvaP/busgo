@@ -6,6 +6,7 @@ import 'package:signals/signals.dart';
 
 // Signals para manejar el estado
 final Signal<int> quantitySignal = Signal<int>(0); // Inicia en 1
+final Signal<int> availableSeatsSignal = Signal<int>(0); // Inicia en 1
 final Signal<int> quantityMenoresSignal = Signal<int>(0); // Inicia en 1
 final Signal<List<int>> selectedSeatNumbersSN = Signal<List<int>>([]); // Inicia en 1
 final Signal<Trip?> tripsSelectSignal = Signal<Trip?>(null);

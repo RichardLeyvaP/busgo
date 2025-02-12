@@ -1,6 +1,7 @@
 //selccionador de cantidades
 
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/ui/component/showCustomSnackBar.dart';
 import 'package:flutter/material.dart';
 
 class QuantitySelector extends StatefulWidget {
@@ -38,10 +39,37 @@ class _QuantitySelectorState extends State<QuantitySelector> {
           onPressed: quantity > 0
               ? () {
                  // decreaseQuantity();
-                  setState(() {
+                  if(widget.title == 'Menores 50% Valor' )
+           {
+            quantityMenoresSignal.value --;
+            setState(() {
                     quantity--;
                   });
                   widget.onQuantityChanged(quantity); // Llamamos la función callback
+            
+           }
+           else 
+            if(widget.title == 'Mayores de edad  ' )
+              { 
+                quantitySignal.value --;
+                setState(() {
+                    quantity--;
+                  });
+                  widget.onQuantityChanged(quantity); // Llamamos la función callback
+            
+           }
+           else{
+
+             setState(() {
+                    quantity--;
+                  });
+                  widget.onQuantityChanged(quantity); // Llamamos la función callback
+
+           }
+
+
+
+                 
                 }
               : null,
         ),
@@ -50,10 +78,39 @@ class _QuantitySelectorState extends State<QuantitySelector> {
           icon: Icon(Icons.add_circle_outline),
           onPressed: () {
            // increaseQuantity();
+           if(widget.title == 'Menores 50% Valor' || widget.title == 'Mayores de edad  ')
+           {
+            if((quantityMenoresSignal.value + quantitySignal.value) >= availableSeatsSignal.value)
+                      {
+                        print('No puede seleccionar mas asientos');
+                         showCustomSnackBar(
+        context: context,
+        title: 'No hay asientos disponibles', // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.check_circle, // Opcional
+        backgroundColor: Colors.red, // Opcional
+        duration: Duration(seconds: 5), // Opcional
+      );
+
+                      }
+                      else
+                      {
+                        setState(() {
+              quantity++;
+            });
+            widget.onQuantityChanged(quantity); // Llamamos la función callback
+
+                      }
+
+           }
+           else{
             setState(() {
               quantity++;
             });
             widget.onQuantityChanged(quantity); // Llamamos la función callback
+           }
+            
+            
           },
         ),
       ],

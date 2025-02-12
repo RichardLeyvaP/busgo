@@ -159,6 +159,7 @@ class SalesPage extends StatelessWidget {
                                   itemCount: tripsSignal.watch(context)!.length,
                                   itemBuilder: (context, index) {
                                     final trip = tripsSignal.watch(context)![index];
+                                   availableSeatsSignal.value = trip.seats! - (trip.reservedSeats!.length);
                                     return ScheduleCard(
                                       timeIni: trip.schedule.toString(),
                                       timeFin: trip.arrival.toString(),
@@ -166,7 +167,7 @@ class SalesPage extends StatelessWidget {
                                       place: trip.name ?? "Desconocido",
                                       amount: trip.seats ?? 0,
                                       seats: trip.seats ?? 0,
-                                      seatsAvailable: trip.seats! - (trip.reservedSeats!.length),//-ojo-verificar si fuera null que no de error
+                                      seatsAvailable: availableSeatsSignal.value,//-ojo-verificar si fuera null que no de error
                                       idTrip: trip.id??0,
 
                                     );

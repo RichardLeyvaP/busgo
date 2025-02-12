@@ -1,7 +1,6 @@
 
     // Configuración de rutas con GoRouter
   import 'package:BusGo/MyApp/MyApp.dart';
-import 'package:BusGo/ui/PaymentScreen/paymentScreen.dart';
 import 'package:BusGo/ui/pages/FunPage.dart';
 import 'package:BusGo/ui/pages/HomePage/HomePage.dart';
 import 'package:BusGo/ui/pages/HomePage/ReportPage.dart';
@@ -13,6 +12,8 @@ import 'package:BusGo/ui/pages/NotificationsPage.dart';
 import 'package:BusGo/ui/pages/ProfilePage/ProfilePage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPageAll.dart';
+import 'package:BusGo/util/HaulmerPayment/paymentScreenIntegration.dart';
+import 'package:BusGo/util/HaulmerPayment/paymentScreenIntegration2.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -76,9 +77,15 @@ GoRoute(
 ),
 //rutas de pagos
       GoRoute(
-  path: '/PaymentScreen',
-  builder: (context, state) =>  PaymentScreen(),
+  path: '/PaymentScreenNative',
+  builder: (context, state) =>  PaymentScreenNative(),
 ),
+      GoRoute(
+  path: '/PaymentPage',//nuevo2
+  builder: (context, state) =>  PaymentPage(),
+),
+
+
 
       
       // GoRoute(
