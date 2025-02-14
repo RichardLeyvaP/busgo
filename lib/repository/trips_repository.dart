@@ -24,6 +24,7 @@ class TripsRepository {
 if (response['body'] is String) {//es que no hay viajes
 return null;
    }
+   print(response['body']);
         final taskResponse = Trips.fromJson(response['body']);
         // Retornamos el modelo deserializado
         print('dando click en la imagen-3:$taskResponse');

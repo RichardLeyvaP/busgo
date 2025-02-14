@@ -4,16 +4,15 @@
 import 'package:BusGo/ui/pages/FunPage.dart';
 import 'package:BusGo/ui/pages/HomePage/HomePage.dart';
 import 'package:BusGo/ui/pages/HomePage/ReportPage.dart';
-import 'package:BusGo/ui/pages/HomePage/SalesPage.dart';
-import 'package:BusGo/ui/pages/HomePage/TicketPage.dart';
+import 'package:BusGo/ui/pages/HomePage/Sales/SalesPage.dart';
+import 'package:BusGo/ui/pages/HomePage/Ticket/TicketPage.dart';
 import 'package:BusGo/ui/pages/ListPage.dart';
 import 'package:BusGo/ui/pages/Login/loginPage.dart';
 import 'package:BusGo/ui/pages/NotificationsPage.dart';
+import 'package:BusGo/ui/pages/PrinterPage/PrinterPage.dart';
 import 'package:BusGo/ui/pages/ProfilePage/ProfilePage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPageAll.dart';
-import 'package:BusGo/util/HaulmerPayment/paymentScreenIntegration.dart';
-import 'package:BusGo/util/HaulmerPayment/paymentScreenIntegration2.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -25,6 +24,10 @@ final GoRouter appRouter = GoRouter(
         
       ),
       
+      // GoRoute(
+      //   path: '/PrinterPage',
+      //   builder: (context, state) => PrinterPage(),
+      // ),
       GoRoute(
         path: '/HomePage',
         builder: (context, state) => HomePage(),
@@ -76,14 +79,6 @@ GoRoute(
   builder: (context, state) =>  ProfilePage(),
 ),
 //rutas de pagos
-      GoRoute(
-  path: '/PaymentScreenNative',
-  builder: (context, state) =>  PaymentScreenNative(),
-),
-      GoRoute(
-  path: '/PaymentPage',//nuevo2
-  builder: (context, state) =>  PaymentPage(),
-),
 
 
 

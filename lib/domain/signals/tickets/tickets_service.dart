@@ -1,6 +1,7 @@
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/models/trips/trips_model.dart';
 import 'package:BusGo/repository/trips_repository.dart';
+import 'package:BusGo/util/HaulmerPayment/haulmerPayment%20_http.dart';
 import 'package:BusGo/util/globalCallApi/apiService.dart'; // Ajustar según tu estructura
 
 final tripsRepository = TripsRepository(authService: ApiService()); // Crear repositorio si no lo tienes
@@ -23,6 +24,8 @@ Future<void> fetchTrips(int branchId) async {
     isLoadingTripsSignal.value = false; // Finalizamos el estado de carga
   }
 }
+
+
 Future<void> storeTrip(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors) async {
   isLoadingTripsSignal.value = true; // Indicamos que está cargando
   tripsErrorSignal.value = null; // Limpiamos posibles errores previos
@@ -56,3 +59,111 @@ void dataSelectedRoute(int idTrip) {
   }
   print('ruta seleccionada:${tripsSelectSignal.value}');
 }
+
+
+final paymentService = HaulmerPayment(apiKey: '',deviceId: '');
+  Future<void> handlePayment(
+      amount,
+      cashback,
+      dteType,
+      customFields,
+      exemptAmount,
+      externalReferenceId,
+      flagAccountPayProvider,
+      idProviderAccount,
+      netAmount,
+      sourceName,
+      sourceVersion,
+      taxIdnValidation,
+      installmentsQuantity,
+      method,
+      printVoucherOnApp,
+      tip) async {
+        
+   
+    
+try {
+   final result = await paymentService.sendPaymentIntentClick(
+      amount,
+      cashback,
+      dteType,
+      customFields,
+      exemptAmount,
+      externalReferenceId,
+      flagAccountPayProvider,
+      idProviderAccount,
+      netAmount,
+      sourceName,
+      sourceVersion,
+      taxIdnValidation,
+      installmentsQuantity,
+      method,
+      printVoucherOnApp,
+      tip);
+
+  
+    if (result["success"] == true) {
+      // storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
+      // int branch_id = 1;
+      // int trip_id = tripsSelectSignal.value!.id!;
+      // int quantity = quantityMenoresSignal.value + quantitySignal.value;
+      // double total = ((double.parse(widget.price) / 2) *
+      //         quantityMenoresSignal.watch(context)) +
+      //     ((double.parse(widget.price)) * quantitySignal.watch(context));
+      // List<int> seats = selectedSeatNumbersSN.value;
+      // DateTime date = tripsSelectSignal.value!.date!;
+      // int adults = quantitySignal.value;
+      // int minors = quantityMenoresSignal.value;
+      // storeTrip(branch_id, trip_id, 'method', 'status', quantity, widget.price,
+      //     total, seats, date, adults, minors);
+      // showCustomSnackBar(
+      //   context: context,
+      //   title: 'Compra de pasaje realizada con éxito', // Obligatorio
+      //   titleColor: Colors.white, // Opcional
+      //   icon: Icons.check_circle, // Opcional
+      //   backgroundColor: Colors.green, // Opcional
+      //   duration: Duration(seconds: 5), // Opcional
+      // );
+
+      // GoRouter.of(context).go('/DashboardPage');
+    } else  if (result["success"] == false){
+     
+//       final ms1 = result["errorCode"] ;
+//       final ms2 = result["message"] ;
+//       String msg ='$ms1 : $ms2 '; 
+//       showCustomSnackBar(
+//   context: context,
+//   title: msg,
+//   icon: Icons.error,
+//   backgroundColor: Colors.red,
+//   showAcceptButton: true,
+//    isPersistent: true,
+  
+// );
+
+
+    }
+    
+    else{
+      // showCustomSnackBar(
+      //   context: context, title: 'Error en el Pago', // Obligatorio
+      //   titleColor: Colors.white, // Opcional
+      //   icon: Icons.error, // Opcional
+      //   backgroundColor: Colors.red, // Opcional
+      //   showAcceptButton: true,
+      //   isPersistent: true,
+      // );
+    }
+  
+} catch (e) {
+  
+}
+finally{
+  //Navigator.pop(context);
+ 
+}
+   
+
+    
+  }
+
