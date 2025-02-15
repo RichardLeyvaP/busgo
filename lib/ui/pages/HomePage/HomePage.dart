@@ -40,7 +40,9 @@ class HomePage extends StatelessWidget {
                       icon: Icons.bar_chart,
                       title: 'Reportes',
                       description: 'Módulo de reportes y estadísticas',
-                      route: '/ReportPage',
+                      
+                      route: '/PrinterPage',
+                      //route: '/ReportPage',
                     ),
                   ],
                 ),

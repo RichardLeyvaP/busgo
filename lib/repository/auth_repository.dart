@@ -67,11 +67,17 @@ final state = response['statusCode'];
 
     if (body.containsKey('token')) {
 
-      final user = Login(
+      final user = Login(        
+        image: body['image'] as String,
+        name: body['name'] as String,
+        nameRole: body['nameRole'] as String,
+        roleId: body['roleId'] as int,
+        workerId: body['workerId'] as int,        
         id: body['id'] as int,
         userName: body['userName'] as String,
         email: body['email'] as String,
         token: body['token'] as String,
+        branch: Branch.fromJson(body['branch'] as Map<String, dynamic>), // ✅ Conversión correcta
       );
 
       authService.setToken(body['token']);

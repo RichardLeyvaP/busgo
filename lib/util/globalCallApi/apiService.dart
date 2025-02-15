@@ -155,7 +155,6 @@ class ApiService {
   // Método para iniciar sesión con usuario y contraseña
   Future<Map<String, dynamic>> loginWithCredentials(String username, String password) async {
     print('aqui estoy entrando... 1');
-    //final endpoint = '${Env.apiEndpoint}/login-apk';
     final endpoint = 'http://busgo.api.wezen.cl/api/login-apk';
     final body = {
       'email': username,
@@ -176,7 +175,6 @@ class ApiService {
     // Método para iniciar sesión con usuario y contraseña
   Future<Map<String, dynamic>> updatePasswordServ(int idUser, String currentPassword, String newPassword) async {
     print('aqui estoy entrando... 1');
-    //final endpoint = '${Env.apiEndpoint}/login-apk';
     final endpoint = 'http://busgo.api.wezen.cl/api/update-password';
     final body = {
       'id': idUser,
@@ -257,7 +255,6 @@ class ApiService {
 
   // Método para hacer logout
   Future<dynamic> logout( ) async {
-    //final endpoint = '${Env.apiEndpoint}/login-apk';
     final endpoint = 'http://busgo.api.wezen.cl/api/logout';
    
     print('aqui estoy entrando... 2');

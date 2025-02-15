@@ -5,6 +5,7 @@ import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/CustomButton.dart';
 import 'package:BusGo/ui/component/QuantitySelector.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar.dart';
+import 'package:BusGo/ui/component/showJsonDialog.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/TicketPage.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/widget/customIcons.dart';
 import 'package:flutter/material.dart';
@@ -239,6 +240,7 @@ class _PaymentCardState extends State<PaymentCard> {
                   ),
                 ],
               ),
+             
               
             ],
           ),
@@ -252,6 +254,9 @@ class _PaymentCardState extends State<PaymentCard> {
           //   color: Colors.blue,
           //   width: 250,
           // ),
+           Container(
+                height: 300,
+              )
         ],
       ),
     );
@@ -271,7 +276,7 @@ class _PaymentCardState extends State<PaymentCard> {
               quantityMenoresSignal.watch(context)) +
           ((double.parse(widget.price)) * quantitySignal.watch(context));
       
-      await handlePayment(
+     Map<String, dynamic> jsonResponse =  await handlePayment(
       total,
       -1,//cashback,
       48,//dteType,
@@ -289,6 +294,7 @@ class _PaymentCardState extends State<PaymentCard> {
       false,//printVoucherOnApp,
       -1//tip
       );
+      showJsonDialog(context, jsonResponse); // Muestra el diálogo con el JSON recibido
     }
   }
 }

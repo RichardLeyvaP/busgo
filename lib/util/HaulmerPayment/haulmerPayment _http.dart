@@ -106,48 +106,41 @@ class HaulmerPayment {
   final result = await platform.invokeMethod('startPayment', {'paymentData': dataSend});
   print("Tipo de respuesta: ${result.runtimeType}"); // Verifica si es String o Map
 
-if(result["success"] == true)
-{
-   return {
-    "success": true,
-    "paymentRequestId": result["paymentRequestId"],
-    "message": result["message"],
-  };
 
-}
-else
-{
-  return {
-    "success": false,
-    "errorCode": result["errorCode"],
-    "message": result["message"],
-  };
+  if (result != null) {
+  try {
+    final Map<String, dynamic> jsonResponse = jsonDecode(result);
+    if (jsonResponse.containsKey('transactionStatus')) {
 
+  Map<String, dynamic> jsonResponse = Map<String, dynamic>.from(result);
+  return jsonResponse;
+
+    }  else {
+   return {"error": "La respuesta del pago fue null"};
+    }
+  } catch (e) {
+    
+    print("Error al procesar la respuesta: $e");
+    return {"error": "La respuesta del pago entro en el catch:$e"};
+  }
+} else {
+  return {"error": "La respuesta del pago fue null"};
 }
+
+
 
 
  
 } on PlatformException catch (e) {
   print("Error en el método nativo: ${e.message}");
-  return {
-    "success": false,
-    "errorCode": "PLATFORM_EXCEPTION",
-    "message": "Error en la plataforma: ${e.message}",
-  };
+  return {"error": "Error en el método nativo: ${e.message}"};
+  
 } on MissingPluginException catch (e) {
   print("Método nativo no encontrado: ${e.message}");
-  return {
-    "success": false,
-    "errorCode": "MISSING_PLUGIN",
-    "message": "Método nativo no encontrado: ${e.message}",
-  };
+ return {"error": "Método nativo no encontrado: ${e.message}"};
 } catch (e) {
   print("Error inesperado: $e");
-  return {
-    "success": false,
-    "errorCode": "UNEXPECTED_ERROR",
-    "message": "Error en la solicitud: $e",
-  };
+   return {"error": "Error inesperado: $e"};
 } finally {
   print("Finalizando ejecución");
 }

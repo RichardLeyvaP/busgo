@@ -1,122 +1,194 @@
-// import 'dart:async';
-// import 'package:bluetooth_thermal_printer/bluetooth_thermal_printer.dart';
-// import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicket.dart';
+import 'package:flutter/material.dart'; 
+
+class PrintTicketPage extends StatelessWidget {
+   PrintTicketPage({super.key});
+
+final utilsPrinterTicket = UtilsPrinterTicket();
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Imprimir Reportes'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: utilsPrinterTicket.printTicketPasaje,
+              child: const Text('Imprimir Ticket de Pasaje'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: utilsPrinterTicket.printReporte1,
+              child: const Text('Imprimir Reporte 1'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: utilsPrinterTicket.printReporte2,
+              child: const Text('Imprimir Reporte 2'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: utilsPrinterTicket.printReporte3,
+              child: const Text('Imprimir Reporte 3'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//CODIGO FUNCIONANDO
 // import 'package:flutter/material.dart';
+// import 'package:sunmi_printer_plus/core/enums/enums.dart';
+// import 'package:sunmi_printer_plus/core/sunmi/sunmi_printer.dart';
+// import 'package:sunmi_printer_plus/core/styles/sunmi_text_style.dart';
+// import 'package:sunmi_printer_plus/core/types/sunmi_column.dart';
 
+// class PrintTicketPage extends StatelessWidget {
+//   const PrintTicketPage({super.key});
 
-// class PrinterPage extends StatefulWidget {
-//   @override
-//   _PrinterPageState createState() => _PrinterPageState();
-// }
+//   // Método para imprimir el ticket de venta
+//   Future<void> _printTicket() async {
+//     try {
+//       // Inicializa la impresora
+//       await SunmiPrinter.initPrinter();
+      
+//       await SunmiPrinter.startTransactionPrint(true);
 
-// class _PrinterPageState extends State<PrinterPage> {
-//   bool connected = false;
-//   List availableBluetoothDevices = [];
+//       // Imprime el encabezado del ticket
+//       await SunmiPrinter.printText(
+//         'Ticket de Venta',
+//         style: SunmiTextStyle(
+//           bold: true,
+//           align: SunmiPrintAlign.CENTER,
+//           fontSize: 24,
+//         ),
+//       );
 
-//   Future<void> getBluetooth() async {
-//    final List<dynamic> bluetooths = await BluetoothThermalPrinter.getBluetooths ?? [];
-// setState(() {
-//   availableBluetoothDevices = bluetooths;
-// });
+//       await SunmiPrinter.lineWrap(1); // Salto de línea
 
-//   }
+//       // Imprime la fecha y hora
+//       final now = DateTime.now();
+//       await SunmiPrinter.printText(
+//         'Fecha: ${now.day}/${now.month}/${now.year} ${now.hour}:${now.minute}',
+//         style: SunmiTextStyle(
+//           align: SunmiPrintAlign.CENTER,
+//         ),
+//       );
 
-//   Future<void> setConnect(String mac) async {
-//   try {
-//     // Intentamos conectar con la impresora Bluetooth usando la dirección MAC
-//     final String result = await BluetoothThermalPrinter.connect(mac)??"false";
-    
-//     // Comprobamos el resultado de la conexión
-//     if (result == "true") {
-//       setState(() {
-//         connected = true; // Cambiar el estado de la conexión a true si es exitosa
-//       });
-//       print("Conexión exitosa");
-//     } else {
-//       // Si la conexión no fue exitosa
-//       setState(() {
-//         connected = false;
-//       });
-//       print("Fallo en la conexión");
+//       await SunmiPrinter.line(); // Línea divisoria
+//       await SunmiPrinter.lineWrap(1); // Salto de línea
+
+//       // Imprime la tabla de productos
+//       await SunmiPrinter.printRow(cols: [
+//         SunmiColumn(text: 'Producto', width: 12),
+//         SunmiColumn(text: 'Cantidad', width: 6),
+//         SunmiColumn(text: 'Precio', width: 6),
+//         SunmiColumn(text: 'Total', width: 6),
+//       ]);
+
+//       // Ejemplo de productos
+//       final products = [
+//         {'name': 'Producto 1', 'quantity': '2x', 'price': '10.00', 'total': '20.00'},
+//         {'name': 'Producto 2', 'quantity': '1x', 'price': '15.00', 'total': '15.00'},
+//         {'name': 'Producto 3', 'quantity': '3x', 'price': '5.00', 'total': '15.00'},
+//       ];
+
+//       for (var product in products) {
+//         await SunmiPrinter.printRow(cols: [
+//           SunmiColumn(text: product['name']!, width: 12),
+//           SunmiColumn(text: product['quantity']!, width: 6),
+//           SunmiColumn(text: product['price']!, width: 6),
+//           SunmiColumn(text: product['total']!, width: 6),
+//         ]);
+//       }
+
+//       await SunmiPrinter.line(); // Línea divisoria
+//       await SunmiPrinter.lineWrap(1); // Salto de línea
+
+//       // Imprime el total
+//       await SunmiPrinter.printRow(cols: [
+//         SunmiColumn(text: 'TOTAL', width: 24, style: SunmiTextStyle(bold: true)),
+//         SunmiColumn(text: '50.00', width: 6, style: SunmiTextStyle(bold: true)),
+//       ]);
+
+//       await SunmiPrinter.lineWrap(2); // Salto de línea
+
+//       // Imprime un mensaje de agradecimiento
+//       await SunmiPrinter.printText(
+//         '¡Gracias por su compra!',
+//         style: SunmiTextStyle(
+//           align: SunmiPrintAlign.CENTER,
+//           bold: true,
+//         ),
+//       );
+
+//       await SunmiPrinter.lineWrap(3); // Salto de línea
+//       await SunmiPrinter.cutPaper(); // Cortar papel (si la impresora lo soporta)
+
+//       // Finaliza la transacción de impresión
+//       await SunmiPrinter.exitTransactionPrint(true);
+//     } catch (e) {
+//       print('Error al imprimir: $e');
 //     }
-//   } catch (e) {
-//     // Captura cualquier error que pueda ocurrir (por ejemplo, un error de Bluetooth)
-//     setState(() {
-//       connected = false;
-//     });
-//     print("Error al intentar conectar: $e");
-//   }
-// }
-
-
-// Future<void> printTicket() async {
-//   String isConnected = await BluetoothThermalPrinter.connectionStatus ?? "false"; // Valor por defecto si es nulo
-//   if (isConnected == "true") {
-//     List<int> bytes = await getTicket();
-//     final result = await BluetoothThermalPrinter.writeBytes(bytes);
-//     print("Print $result");
-//   } else {
-//     print("Printer not connected");
-//   }
-// }
-
-
-//   Future<List<int>> getTicket() async {
-//     List<int> bytes = [];
-//     CapabilityProfile profile = await CapabilityProfile.load();
-//     final generator = Generator(PaperSize.mm80, profile);
-
-//     bytes += generator.text("Demo Shop", styles: PosStyles(align: PosAlign.center));
-//     bytes += generator.text('Address: 18th Main Road, Bengaluru');
-//     bytes += generator.hr();
-//     bytes += generator.text('Item 1: Tea - 10');
-
-//     bytes += generator.cut();
-//     return bytes;
 //   }
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Bluetooth Thermal Printer Demo'),
-//         ),
-//         body: Container(
-//           padding: EdgeInsets.all(20),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text("Search Paired Bluetooth"),
-//               TextButton(
-//                 onPressed: this.getBluetooth,
-//                 child: Text("Search"),
-//               ),
-//               Container(
-//                 height: 200,
-//                 child: ListView.builder(
-//                   itemCount: availableBluetoothDevices.length,
-//                   itemBuilder: (context, index) {
-//                     return ListTile(
-//                       onTap: () {
-//                         String select = availableBluetoothDevices[index];
-//                         List list = select.split("#");
-//                         String mac = list[1];
-//                         this.setConnect(mac);
-//                       },
-//                       title: Text('${availableBluetoothDevices[index]}'),
-//                       subtitle: Text("Click to connect"),
-//                     );
-//                   },
-//                 ),
-//               ),
-//               SizedBox(height: 30),
-//               TextButton(
-//                 onPressed: connected ? this.printTicket : null,
-//                 child: Text("Print Ticket"),
-//               ),
-//             ],
-//           ),
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Imprimir Ticket de Venta'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             const Text(
+//               'Presiona el botón para imprimir un ticket de venta',
+//               style: TextStyle(fontSize: 18),
+//               textAlign: TextAlign.center,
+//             ),
+//             const SizedBox(height: 20),
+//             ElevatedButton(
+//               onPressed: _printTicket,
+//               child: const Text('Imprimir Ticket'),
+//             ),
+//           ],
 //         ),
 //       ),
 //     );

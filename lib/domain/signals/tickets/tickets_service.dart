@@ -1,6 +1,7 @@
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/models/trips/trips_model.dart';
 import 'package:BusGo/repository/trips_repository.dart';
+import 'package:BusGo/ui/component/showJsonDialog.dart';
 import 'package:BusGo/util/HaulmerPayment/haulmerPayment%20_http.dart';
 import 'package:BusGo/util/globalCallApi/apiService.dart'; // Ajustar según tu estructura
 
@@ -62,7 +63,9 @@ void dataSelectedRoute(int idTrip) {
 
 
 final paymentService = HaulmerPayment(apiKey: '',deviceId: '');
-  Future<void> handlePayment(
+
+
+  Future<Map<String, dynamic>> handlePayment(
       amount,
       cashback,
       dteType,
@@ -100,9 +103,10 @@ try {
       method,
       printVoucherOnApp,
       tip);
-
+ Map<String, dynamic> jsonResponse = Map<String, dynamic>.from(result);
+ return jsonResponse;
   
-    if (result["success"] == true) {
+    // if (result["success"] == true) {
       // storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
       // int branch_id = 1;
       // int trip_id = tripsSelectSignal.value!.id!;
@@ -126,37 +130,11 @@ try {
       // );
 
       // GoRouter.of(context).go('/DashboardPage');
-    } else  if (result["success"] == false){
-     
-//       final ms1 = result["errorCode"] ;
-//       final ms2 = result["message"] ;
-//       String msg ='$ms1 : $ms2 '; 
-//       showCustomSnackBar(
-//   context: context,
-//   title: msg,
-//   icon: Icons.error,
-//   backgroundColor: Colors.red,
-//   showAcceptButton: true,
-//    isPersistent: true,
-  
-// );
-
-
-    }
-    
-    else{
-      // showCustomSnackBar(
-      //   context: context, title: 'Error en el Pago', // Obligatorio
-      //   titleColor: Colors.white, // Opcional
-      //   icon: Icons.error, // Opcional
-      //   backgroundColor: Colors.red, // Opcional
-      //   showAcceptButton: true,
-      //   isPersistent: true,
-      // );
-    }
+    // } 
   
 } catch (e) {
-  
+  return {"error": "La respuesta del pago entro en el catch-handlePayment:$e"};
+ 
 }
 finally{
   //Navigator.pop(context);

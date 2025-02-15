@@ -2,6 +2,7 @@ import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar.dart';
+import 'package:BusGo/ui/component/showJsonDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
@@ -45,7 +46,7 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
               quantityMenoresSignal.watch(context)) +
           ((double.parse(price)) * quantitySignal.watch(context));
       
-      await handlePayment(
+     Map<String, dynamic> jsonResponse =   await handlePayment(
       total,
       -1,//cashback,
       48,//dteType,
@@ -63,6 +64,7 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
       false,//printVoucherOnApp,
       -1//tip
       );
+      showJsonDialog(context, jsonResponse);
     }
   }
 }

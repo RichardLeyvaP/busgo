@@ -661,8 +661,8 @@ SeatMap _$SeatMapFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SeatMap {
-  String? get label => throw _privateConstructorUsedError; // Hacerlo nullable
-  bool? get selected => throw _privateConstructorUsedError; // Hacerlo nullable
+  String? get label => throw _privateConstructorUsedError;
+  bool? get selected => throw _privateConstructorUsedError;
   bool? get disabled => throw _privateConstructorUsedError;
 
   /// Serializes this SeatMap to a JSON map.
@@ -772,10 +772,8 @@ class _$SeatMapImpl implements _SeatMap {
 
   @override
   final String? label;
-// Hacerlo nullable
   @override
   final bool? selected;
-// Hacerlo nullable
   @override
   final bool? disabled;
 
@@ -825,9 +823,9 @@ abstract class _SeatMap implements SeatMap {
   factory _SeatMap.fromJson(Map<String, dynamic> json) = _$SeatMapImpl.fromJson;
 
   @override
-  String? get label; // Hacerlo nullable
+  String? get label;
   @override
-  bool? get selected; // Hacerlo nullable
+  bool? get selected;
   @override
   bool? get disabled;
 

@@ -4,10 +4,6 @@ import 'dart:convert';
 part 'trips_model.freezed.dart';
 part 'trips_model.g.dart';
 
-// Funciones para convertir entre JSON y objetos
-Trips tripsFromJson(String str) => Trips.fromJson(json.decode(str));
-String tripsToJson(Trips data) => json.encode(data.toJson());
-
 @freezed
 class Trips with _$Trips {
   const factory Trips({
@@ -44,11 +40,10 @@ class Trip with _$Trip {
 @freezed
 class SeatMap with _$SeatMap {
   const factory SeatMap({
-    String? label,  // Hacerlo nullable
-    bool? selected,  // Hacerlo nullable
-    bool? disabled,  // Hacerlo nullable
+    String? label,
+    bool? selected,
+    bool? disabled,
   }) = _SeatMap;
 
   factory SeatMap.fromJson(Map<String, dynamic> json) => _$SeatMapFromJson(json);
 }
-

@@ -24,10 +24,10 @@ final GoRouter appRouter = GoRouter(
         
       ),
       
-      // GoRoute(
-      //   path: '/PrinterPage',
-      //   builder: (context, state) => PrinterPage(),
-      // ),
+      GoRoute(
+        path: '/PrinterPage',
+        builder: (context, state) => PrintTicketPage(),
+      ),
       GoRoute(
         path: '/HomePage',
         builder: (context, state) => HomePage(),

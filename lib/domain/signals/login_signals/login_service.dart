@@ -24,6 +24,12 @@ Future<void> login(String email, String password) async {
       isLoggedInLG.value = false;
     } else if (result is Login) {
       currentUserLG.value = result; // Guardamos el usuario
+      //aqui para guardar la branch
+      currentUserBranchLG.value = currentUserLG.value?.branch;
+      //aqui para guardar la company
+      currentUserBranchCompanyLG.value = currentUserLG.value?.branch.company;
+
+
       isLoggedInLG.value = true; // El usuario ha iniciado sesión correctamente
       loginMessageLG.value = "Login successful";
     }
