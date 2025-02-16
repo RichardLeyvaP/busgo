@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:BusGo/models/login/login_model.dart';
 import 'package:BusGo/repository/auth_repository.dart';
 import 'package:BusGo/util/globalCallApi/apiService.dart';
@@ -16,7 +14,7 @@ Future<void> login(String email, String password) async {
   isLoggedInLG.value = null; // Indicamos inicialmente que es null
 
   try {
-    final result = await authRepository.login(email, password);
+    final result = await authRepository.loginNew(email, password);
     isLoadingLG.value = false; // Detenemos el loading
 
     if (result is String) {
@@ -91,16 +89,16 @@ Future<void> updatePassword(int idUser,String currentPassword, String newPasswor
 
 // Método para hacer logout
 Future<void> logout() async {
-  isLoadingLG.value = true; // Indicamos que está cargando
+ // isLoadingLG.value = true; // Indicamos que está cargando
   isLoginErrorLG.value = false; // Indicamos inicialmente que no hay error
   isLoggedInLG.value = null; // Indicamos inicialmente que es null
 
   try {
-    final result = await authRepository.logout();
-print(result);
-print(result.runtimeType); // Esto imprime el tipo de datos de result
+//     final result = await authRepository.logout();
+// print(result);
+// print(result.runtimeType); // Esto imprime el tipo de datos de result
 
-    isLoadingLG.value = false; // Detenemos el loading
+   // isLoadingLG.value = false; // Detenemos el loading
   // Eliminar el token de SharedPreferences
    SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -111,12 +109,12 @@ print(result.runtimeType); // Esto imprime el tipo de datos de result
 
     print('Sesión cerrada y token eliminado');
     // Asumimos que 'result' es la respuesta del backend, procesada aquí:
-     final Map<String, dynamic> responseMap = result; // Verificamos si el map contiene la clave 'msg' o 'error' 
-     if (responseMap.containsKey('msg')) {
-       loginMessageLG.value = responseMap['msg']; } 
-       else if (responseMap.containsKey('error')) 
-       { loginMessageLG.value = responseMap['error']; } 
-       else { loginMessageLG.value = 'Respuesta inesperada del servidor'; }
+   //  final Map<String, dynamic> responseMap = result; // Verificamos si el map contiene la clave 'msg' o 'error' 
+    //  if (responseMap.containsKey('msg')) {
+    //    loginMessageLG.value = responseMap['msg']; } 
+    //    else if (responseMap.containsKey('error')) 
+    //    { loginMessageLG.value = responseMap['error']; } 
+    //    else { loginMessageLG.value = 'Respuesta inesperada del servidor'; }
     
       isLoggedInLG.value = false;
     }

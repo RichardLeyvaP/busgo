@@ -2,7 +2,7 @@ import 'package:BusGo/MyApp/GoRouterClass.dart';
 import 'package:BusGo/MyApp/ThemeDataClass.dart';
 import 'package:BusGo/ui/app_bar/AppBarWidget.dart';
 import 'package:BusGo/ui/pages/FunPage.dart';
-import 'package:BusGo/ui/pages/HomePage/HomePage.dart';
+import 'package:BusGo/ui/pages/HomePage/Home/HomePage.dart';
 import 'package:BusGo/ui/pages/NotificationsPage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPage.dart';
 import 'package:BusGo/ui/pages/ListPage.dart';

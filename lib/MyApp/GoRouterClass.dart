@@ -2,7 +2,7 @@
     // Configuración de rutas con GoRouter
   import 'package:BusGo/MyApp/MyApp.dart';
 import 'package:BusGo/ui/pages/FunPage.dart';
-import 'package:BusGo/ui/pages/HomePage/HomePage.dart';
+import 'package:BusGo/ui/pages/HomePage/Home/HomePage.dart';
 import 'package:BusGo/ui/pages/HomePage/ReportPage.dart';
 import 'package:BusGo/ui/pages/HomePage/Sales/SalesPage.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/TicketPage.dart';

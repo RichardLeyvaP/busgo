@@ -10,37 +10,56 @@ class AuthRepository {
 
   AuthRepository({required this.authService});
 
-  Future loginNew(String email, String password) async {
-    // Llama al servicio que maneja la API de autenticación para login
-    final url = Uri.parse('${Env.apiEndpoint}/login-apk');
-    try {
-      // Hacemos la petición HTTP POST con las credenciales de usuario
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-        }),
+
+
+Future loginNew(String email, String password) async {
+  final url = Uri.parse('${Env.apiEndpoint}/login-apk');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    final body = jsonDecode(response.body); // ✅ Decodifica correctamente el JSON
+    final state = response.statusCode;
+
+    print('si estoy devolviendo esto:1-$body');
+
+    if (body.containsKey('token')) {
+      final user = Login(
+        image: body['image'] as String,
+        name: body['name'] as String,
+        nameRole: body['nameRole'] as String,
+        roleId: body['roleId'] as int,
+        workerId: body['workerId'] as int,
+        id: body['id'] as int,
+        userName: body['userName'] as String,
+        email: body['email'] as String,
+        token: body['token'] as String,
+        branch: Branch.fromJson(body['branch'] as Map<String, dynamic>),
       );
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        // Si el login fue exitoso, parseamos la respuesta
-        if (responseData.containsKey('token')) {
-          return responseData['token'] as String; // Asegúrate de que es un String
-        }
-      } else {
-        // Si hubo un error en la respuesta de la API
-        return response.body.toString();
-      }
-    } catch (error) {
-      // Si hubo un error durante la petición
+      authService.setToken(body['token']);
+      return user;
+    } else if (body.containsKey('msg')) {
+      return body['msg'] as String;
+    } else {
+      print('aqui estoy entrando-error');
       throw Exception('Token no presente en la respuesta');
     }
+  } catch (error) {
+    throw Exception('Error en la petición: $error');
   }
+}
+
+  
   Future updatePasswordRepo(int idUser, String currentPassword, String newPassword) async {
     
     try {

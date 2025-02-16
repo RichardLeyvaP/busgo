@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TranslationManager {
@@ -322,3 +323,18 @@ bool isNegative(String num) {
     return false;  // Devuelve false si no se puede parsear el valor
   }
 }
+
+ IconData getMdiIcon(String iconName) {
+    switch (iconName) {
+      case "mdi-ticket":
+        return MdiIcons.ticket;
+      case "mdi-cash-multiple":
+        return MdiIcons.cashMultiple;
+      case "mdi-alert":
+        return MdiIcons.alert;
+      case "mdi-account-group":
+        return MdiIcons.accountGroup;
+      default:
+        return MdiIcons.help; // Icono por defecto
+    }
+  }

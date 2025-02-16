@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
+import 'package:BusGo/env.dart';
 import 'package:sunmi_printer_plus/core/enums/enums.dart';
 import 'package:sunmi_printer_plus/core/sunmi/sunmi_printer.dart';
 import 'package:sunmi_printer_plus/core/styles/sunmi_text_style.dart';
@@ -11,7 +12,6 @@ import 'package:http/http.dart' as http;
 
 
 class UtilsPrinterTicket {
-
 
 
 
@@ -71,8 +71,8 @@ Future<void> printImageFromFile(String imagePath) async {
       await SunmiPrinter.initPrinter();
       await SunmiPrinter.startTransactionPrint(true);
       
-   
-await printImageFromUrl('https://www.google.com/imgres?q=imagen%20gratis%20pequena%20de%20empresa%20de%20omnibus&imgurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fwp-content%2Fuploads%2F2020%2F05%2Fcrear-empresa-logistica-transporte.jpg&imgrefurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fcomo-crear-empresa-logistica-transporte%2F&docid=PO8bTgpt-IrURM&tbnid=Hzh3jATuyBOlSM&vet=12ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA..i&w=720&h=340&hcb=2&ved=2ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA');
+   String imageLogo = '${Env.apiEndpoint}/image/${currentUserBranchCompanyLG.value?.image}' ;   
+   await printImageFromUrl(imageLogo);
 
       await SunmiPrinter.lineWrap(1); 
 
@@ -116,8 +116,8 @@ await printImageFromUrl('https://www.google.com/imgres?q=imagen%20gratis%20peque
       await SunmiPrinter.startTransactionPrint(true);
       
       
-await printImageFromUrl('https://www.google.com/imgres?q=imagen%20gratis%20pequena%20de%20empresa%20de%20omnibus&imgurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fwp-content%2Fuploads%2F2020%2F05%2Fcrear-empresa-logistica-transporte.jpg&imgrefurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fcomo-crear-empresa-logistica-transporte%2F&docid=PO8bTgpt-IrURM&tbnid=Hzh3jATuyBOlSM&vet=12ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA..i&w=720&h=340&hcb=2&ved=2ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA');
-
+ String imageLogo = '${Env.apiEndpoint}/image/${currentUserBranchCompanyLG.value?.image}' ; 
+await printImageFromUrl(imageLogo);
 
       // Imprime el reporte
       await SunmiPrinter.printText(currentUserBranchCompanyLG.value?.name??'-- No tiene --', style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));await SunmiPrinter.printText('NOMBRE EMPRESA', style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
@@ -154,8 +154,8 @@ Future<void> printReporte2() async {
     await SunmiPrinter.startTransactionPrint(true);
 
      
-await printImageFromUrl('https://www.google.com/imgres?q=imagen%20gratis%20pequena%20de%20empresa%20de%20omnibus&imgurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fwp-content%2Fuploads%2F2020%2F05%2Fcrear-empresa-logistica-transporte.jpg&imgrefurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fcomo-crear-empresa-logistica-transporte%2F&docid=PO8bTgpt-IrURM&tbnid=Hzh3jATuyBOlSM&vet=12ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA..i&w=720&h=340&hcb=2&ved=2ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA');
-
+ String imageLogo = '${Env.apiEndpoint}/image/${currentUserBranchCompanyLG.value?.image}' ; 
+await printImageFromUrl(imageLogo);
 
     // Imprime el encabezado del reporte
     await SunmiPrinter.printText(
@@ -277,8 +277,8 @@ Future<void> printReporte3() async {
     await SunmiPrinter.startTransactionPrint(true);
 
       
-await printImageFromUrl('https://www.google.com/imgres?q=imagen%20gratis%20pequena%20de%20empresa%20de%20omnibus&imgurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fwp-content%2Fuploads%2F2020%2F05%2Fcrear-empresa-logistica-transporte.jpg&imgrefurl=https%3A%2F%2Fwww.fuso.com.pe%2Fblog%2Fcomo-crear-empresa-logistica-transporte%2F&docid=PO8bTgpt-IrURM&tbnid=Hzh3jATuyBOlSM&vet=12ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA..i&w=720&h=340&hcb=2&ved=2ahUKEwia4M-y0cOLAxWlp5UCHYr0G4UQM3oECGQQAA');
-
+ String imageLogo = '${Env.apiEndpoint}/image/${currentUserBranchCompanyLG.value?.image}' ; 
+await printImageFromUrl(imageLogo);
 
     // Imprime el encabezado del reporte
     await SunmiPrinter.printText(
