@@ -59,8 +59,8 @@ class _HomePageState extends State<HomePage> {
                       title: 'Reportes',
                       description: 'Módulo de reportes y estadísticas',
                       
-                      route: '/PrinterPage',
-                      //route: '/ReportPage',
+                      //route: '/PrinterPage',
+                      route: '/ReportsPage',
                     ),
                   ],
                 ),

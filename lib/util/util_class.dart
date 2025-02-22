@@ -325,16 +325,28 @@ bool isNegative(String num) {
 }
 
  IconData getMdiIcon(String iconName) {
-    switch (iconName) {
-      case "mdi-ticket":
-        return MdiIcons.ticket;
-      case "mdi-cash-multiple":
-        return MdiIcons.cashMultiple;
-      case "mdi-alert":
-        return MdiIcons.alert;
-      case "mdi-account-group":
-        return MdiIcons.accountGroup;
-      default:
-        return MdiIcons.help; // Icono por defecto
-    }
+  switch (iconName) {
+    case "mdi-ticket":
+      return MdiIcons.ticket;
+    case "mdi-cash-multiple":
+      return MdiIcons.cashMultiple;
+    case "mdi-alert":
+      return MdiIcons.alert;
+    case "mdi-account-group":
+      return MdiIcons.accountGroup;
+    case "mdi-package-variant-closed":
+      return MdiIcons.packageVariantClosed;
+    case "mdi-currency-usd":
+      return MdiIcons.currencyUsd;
+    case "mdi-restore":
+      return MdiIcons.restore;
+    case "mdi-account-plus":
+      return MdiIcons.accountPlus;
+    case "mdi-chair-rolling": // Nuevo icono agregado
+      return MdiIcons.chairRolling;
+    default:
+      return MdiIcons.help; // Icono por defecto
   }
+}
+
+

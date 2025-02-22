@@ -14,6 +14,8 @@ Future<void> getSales( branchId, type,month)  async {
 
     if (result is Sales) {
       resultSalesSL.value = result; // Actualizamos las señales con los datos
+
+print('resultSalesSL: ${resultSalesSL.value}');
     } else if (result is String) {
       isErrorSL.value = result; // Guardamos el mensaje de error si aplica
     }

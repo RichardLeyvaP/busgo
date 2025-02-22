@@ -1,41 +1,103 @@
+import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
+import 'package:BusGo/domain/signals/reports_signals/reports_services.dart';
+import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicket.dart';
-import 'package:flutter/material.dart'; 
+import 'package:BusGo/ui/pages/PrinterPage/widget/datePickerModal%20.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart'; 
 
-class PrintTicketPage extends StatelessWidget {
+class PrintTicketPage extends StatefulWidget {
    PrintTicketPage({super.key});
 
+  @override
+  State<PrintTicketPage> createState() => _PrintTicketPageState();
+}
+
+class _PrintTicketPageState extends State<PrintTicketPage> {
 final utilsPrinterTicket = UtilsPrinterTicket();
 
+// currentUserLG.value = result; // Guardamos el usuario
+  String type = 'Sucursal';
 
+                int id = 0;
 
+                  void _showDatePickerModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => DatePickerModal(
+        onDateSelected: (String date) async {
+          print("Fecha seleccionada: $date");
+          // Llamar a la función de impresión después de seleccionar la fecha
+          final endDate = null;
+        //  await getReports1( id, type,date,endDate);
+       //   utilsPrinterTicket.printReporte1();
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    
+                if (currentUserLG.value?.nameRole == 'Administrador') {
+                  type = 'Company';
+                  id = currentUserBranchCompanyLG.value!.id;
+                }
+                else{
+                  id = currentUserBranchLG.value!.id;
+                }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Imprimir Reportes'),
+        title: const Text('Imprimir Reportes-2'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              onPressed: utilsPrinterTicket.printTicketPasaje,
+              onPressed:() async {
+                
+                utilsPrinterTicket.printTicketPasaje();
+              },
+              
+               
               child: const Text('Imprimir Ticket de Pasaje'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: utilsPrinterTicket.printReporte1,
+              onPressed:() async {
+                
+//                 DatePickerModal(
+//   onDateSelected: (String date) async {
+//     print("Fecha seleccionada: $date");
+//     // await getReports1( id, type,date);
+//                  utilsPrinterTicket.printReporte1;
+//   },
+// );
+
+//_showDatePickerModal(context);
+ //await fetchTrips(1);
+        GoRouter.of(context).push('/ReportsPage');
+           
+               
+              },              
+              
               child: const Text('Imprimir Reporte 1'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: utilsPrinterTicket.printReporte2,
+              onPressed:() async {
+              //  await getReports1( id, type,date);
+                 utilsPrinterTicket.printReporte2;
+              },  
               child: const Text('Imprimir Reporte 2'),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: utilsPrinterTicket.printReporte3,
+                onPressed:() async {
+              //  await getReports1( id, type,date);
+                 utilsPrinterTicket.printReporte3;
+              },  
               child: const Text('Imprimir Reporte 3'),
             ),
           ],

@@ -1,7 +1,6 @@
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/models/trips/trips_model.dart';
 import 'package:BusGo/repository/trips_repository.dart';
-import 'package:BusGo/ui/component/showJsonDialog.dart';
 import 'package:BusGo/util/HaulmerPayment/haulmerPayment%20_http.dart';
 import 'package:BusGo/util/globalCallApi/apiService.dart'; // Ajustar según tu estructura
 

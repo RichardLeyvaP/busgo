@@ -10,6 +10,8 @@ import 'package:BusGo/ui/pages/ListPage.dart';
 import 'package:BusGo/ui/pages/Login/loginPage.dart';
 import 'package:BusGo/ui/pages/NotificationsPage.dart';
 import 'package:BusGo/ui/pages/PrinterPage/PrinterPage.dart';
+import 'package:BusGo/ui/pages/PrinterPage/reports/report1/report1Page.dart';
+import 'package:BusGo/ui/pages/PrinterPage/reports/reportsPage.dart';
 import 'package:BusGo/ui/pages/ProfilePage/ProfilePage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPage.dart';
 import 'package:BusGo/ui/pages/Statistics/StatisticsPageAll.dart';
@@ -78,6 +80,16 @@ GoRoute(
   path: '/ProfilePage',
   builder: (context, state) =>  ProfilePage(),
 ),
+      GoRoute(
+  path: '/ReportsPage',
+  builder: (context, state) =>  ReportsPage(),
+),
+      GoRoute(
+  path: '/Report1Page',
+  builder: (context, state) =>  Report1Page(),
+),
+
+
 //rutas de pagos
 
 
