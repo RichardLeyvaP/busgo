@@ -55,6 +55,7 @@ dependencies:
   cached_network_image: ^3.4.1
   sunmi_printer_plus: ^4.1.0
   table_calendar: ^3.0.8
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

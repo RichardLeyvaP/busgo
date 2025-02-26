@@ -1,10 +1,43 @@
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/models/ticket/tickets_model.dart';
 import 'package:BusGo/models/trips/trips_model.dart';
 import 'package:BusGo/repository/trips_repository.dart';
 import 'package:BusGo/util/HaulmerPayment/haulmerPayment%20_http.dart';
 import 'package:BusGo/util/globalCallApi/apiService.dart'; // Ajustar según tu estructura
 
 final tripsRepository = TripsRepository(authService: ApiService()); // Crear repositorio si no lo tienes
+
+Future<void> reprintTickets(int id) async {
+
+  try {
+    await tripsRepository.reprintTicketsRepository(id); // Llamada al backend solo para saber que se reimprimio
+
+  } catch (e) {
+    ticketsErrorSignal.value = "Error: ${e.toString()}"; // Error inesperado
+  } finally {
+    isLoadingTicketsSignal.value = false; // Finalizamos el estado de carga
+  }
+}
+Future<void> getTickets(int branchId,String date) async {
+  isLoadingTicketsSignal.value = true; // Indicamos que está cargando
+  ticketsErrorSignal.value = null; // Limpiamos posibles errores previos
+  ticketsSignal.value = null;
+
+  try {
+    final result = await tripsRepository.getTicketRepository(branchId,date); // Llamada al backend
+
+    if (result is Tickets) {
+      ticketsSignal.value = result.tickets; // Actualizamos las señales con los datos
+    } else if (result is String) {
+      ticketsErrorSignal.value = result; // Guardamos el mensaje de error si aplica
+    }
+  } catch (e) {
+    ticketsErrorSignal.value = "Error: ${e.toString()}"; // Error inesperado
+  } finally {
+    isLoadingTicketsSignal.value = false; // Finalizamos el estado de carga
+  }
+}
+
 
 Future<void> fetchTrips(int branchId) async {
   isLoadingTripsSignal.value = true; // Indicamos que está cargando

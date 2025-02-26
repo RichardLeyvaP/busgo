@@ -8,7 +8,7 @@ part 'report2_model.g.dart';
 class Report2 with _$Report2 {
   const factory Report2({
     String? nombre,
-    DateTime? fecha,
+    String? fecha,
     int? pasejesEmitidos,
     int? reimpresiones,
     List<TotalesPorMetodo>? totalesPorMetodo,

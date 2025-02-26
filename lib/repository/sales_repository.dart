@@ -29,8 +29,7 @@ class SalesRepository {
         // Verificamos si 'body' es un Map
         if (body is Map<String, dynamic>) {
           // Si 'body' es un Map, deserializamos la respuesta a nuestro modelo Trips
-          final tripsResponse = Sales.fromJson(body); // Aquí usamos Trips.fromJson en lugar de tripsFromJson
-          print('Datos de los Sales: $tripsResponse');
+          final tripsResponse = Sales.fromJson(body); // Aquí usamos Trips.fromJson en lugar de tripsFromJson          
           return tripsResponse;
         } else if (body is String) {
           // Si es una String, significa que no hay viajes, retornamos null

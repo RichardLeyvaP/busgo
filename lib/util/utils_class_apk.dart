@@ -20,7 +20,7 @@ class StyleGlobalApk {
   //
   //
   //colores
-  static Color colorPrimary = const Color(0xFF007878);
+  static Color colorPrimary =  Colors.blue;
   static Color colorIndicator = const Color.fromRGBO(255, 73, 73, 1.0);
   //nuevos
   static Color colorRedOpaque = const Color.fromARGB(255, 218, 113, 113);

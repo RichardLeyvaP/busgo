@@ -4,6 +4,7 @@ import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar.dart';
 import 'package:BusGo/ui/component/showJsonDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:signals/signals_flutter.dart';
 
 class UtilsTicket {
@@ -64,7 +65,85 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
       false,//printVoucherOnApp,
       -1//tip
       );
+
+
       showJsonDialog(context, jsonResponse);
+      handleResponse(jsonResponse,context);
+   
     }
   }
+
+  void handleResponse(Map<String, dynamic> jsonResponse,BuildContext contextT) {
+  if (jsonResponse.containsKey("errorCode")) {//DIO ERRORRRRRRRRRRRRRRR
+    // Manejo de error
+    int errorCode = jsonResponse["errorCode"];
+    String errorMessage = jsonResponse["errorMessage"] ?? "Error desconocido";
+    int errorCodeOnApp = jsonResponse["errorCodeOnApp"] ?? 0;
+    String errorMessageOnApp = jsonResponse["errorMessageOnApp"] ?? "Error en la app";
+ showCustomSnackBar(
+        context: contextT,
+        title: 'Error Code: $errorCode ,error menssage:$errorMessage', // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.check_circle, // Opcional
+        backgroundColor: Colors.red, // Opcional
+        isPersistent: true,
+        showAcceptButton: true
+      );
+    
+    // Aquí podrías mostrar un mensaje en la UI o manejar el error como prefieras
+    return;
+  }
+
+  if (jsonResponse.containsKey("transactionStatus")) {// SE EFECTUO CORRECTAMENTE EL PAGOOOOOOOOOOOO
+    // Respuesta exitosa
+    bool transactionStatus = jsonResponse["transactionStatus"] ?? false;
+    String sequenceNumber = jsonResponse["sequenceNumber"] ?? "";
+    bool printerVoucherCommerce = jsonResponse["printerVoucherCommerce"] ?? false;
+    dynamic transactionTip = jsonResponse["transactionTip"];
+    Map<String, dynamic>? extraData = jsonResponse["extraData"];
+    
+
+ showCustomSnackBar(
+        context: contextT,
+        title: "transactionStatus:$transactionStatus , sequenceNumber: $sequenceNumber , printerVoucherCommerce: $printerVoucherCommerce , transactionTip: $transactionTip , extraData: $extraData ", // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.check_circle, // Opcional
+        backgroundColor: Colors.red, // Opcional
+        isPersistent: true,
+        showAcceptButton: true
+      );
+
+    if (extraData != null) {
+      print("📦 Datos adicionales: $extraData");
+    }
+
+        
+    //  storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
+      int branch_id = 1;
+      int trip_id = tripsSelectSignal.value!.id!;
+      int quantity = quantityMenoresSignal.value + quantitySignal.value;
+      List<int> seats = selectedSeatNumbersSN.value;
+      DateTime date = tripsSelectSignal.value!.date!;
+      int adults = quantitySignal.value;
+      int minors = quantityMenoresSignal.value;
+     /* storeTrip(branch_id, trip_id, 'method', 'status', quantity, price,
+          total, seats, date, adults, minors);*/   
+
+     // GoRouter.of(contextT).go('/DashboardPage');
+    
+
+    // Aquí podrías continuar con el flujo de la aplicación
+  } else {
+    print("⚠️ Respuesta desconocida: $jsonResponse");
+     showCustomSnackBar(
+        context: contextT,
+        title: "⚠️ Respuesta desconocida: $jsonResponse", // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.check_circle, // Opcional
+        backgroundColor: Colors.red, // Opcional
+        isPersistent: true,
+        showAcceptButton: true
+      );
+  }
+}
 }

@@ -3,12 +3,16 @@ import 'dart:io';
 import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
 import 'package:BusGo/domain/signals/reports_signals/reports_signals.dart';
 import 'package:BusGo/env.dart';
+import 'package:BusGo/models/ticket/tickets_model.dart';
+import 'package:flutter/material.dart';
 import 'package:sunmi_printer_plus/core/enums/enums.dart';
 import 'package:sunmi_printer_plus/core/sunmi/sunmi_printer.dart';
 import 'package:sunmi_printer_plus/core/styles/sunmi_text_style.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:ui' as ui;
 
 class UtilsPrinterTicket {
 // Método para descargar la imagen desde URL y luego imprimirla
@@ -72,14 +76,16 @@ class UtilsPrinterTicket {
   // currentUserBranchCompanyLG.value = currentUserLG.value?.branch.company;
 
   // Método para imprimir el ticket de pasaje
-  Future<void> printTicketPasaje() async {
+  Future<void> printTicketPasaje(Ticket ticket) async {
     try {
       await SunmiPrinter.initPrinter();
       await SunmiPrinter.startTransactionPrint(true);
+ final qrImage = await _generateQRImage(ticket.qr!);
 
-      String imageLogo =
-          '${Env.apiEndpoint}/images/${currentUserBranchCompanyLG.value?.image}';
-      await printImageFromUrl(imageLogo);
+      // String imageLogo =
+      //     '${Env.apiEndpoint}/images/${currentUserBranchCompanyLG.value?.image}';
+      // await printImageFromUrl(imageLogo);
+      await SunmiPrinter.printImage(qrImage); // Imprimir la imagen del QR
       await SunmiPrinter.lineWrap(1);
 
       // Imprime la información del ticket
@@ -94,28 +100,28 @@ class UtilsPrinterTicket {
       await SunmiPrinter.printText(
           'Teléfono: ${currentUserBranchCompanyLG.value?.phone ?? '-- No tiene --'}',
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('Boleta Electrónica  N° 340999',
-          style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
+      // await SunmiPrinter.printText('Boleta Electrónica  N° 340999',
+      //     style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.printText(
-          'FECHA: ${resultReport1RP.value!.fecha} HORA: 12:25',
+          'FECHA: ${resultReport1RP.value!.fecha} HORA: ${ticket.schedule}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.printText('RECORRIDO:',
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('ORIGEN: TERMINAL DE BUSES',
+      await SunmiPrinter.printText('ORIGEN: ${ticket.tripOrigin}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DESTINO: AEROPUERTO EL TEPUAL',
+      await SunmiPrinter.printText('DESTINO: ${ticket.tripDestination}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Precio: \$6.500',
+      await SunmiPrinter.printText('Precio: \$${ticket.price}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Medio de pago: Débito',
+      await SunmiPrinter.printText('Medio de pago: ${ticket.method}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.lineWrap(1);
       //imprimir Qr
-      String imageQR = '${Env.apiEndpoint}/images/qrscodes/10Qr.png';
+      String imageQR = '${Env.apiEndpoint}/images/${ticket.barcode}';
       await printImageFromUrl(imageQR);
 
       await SunmiPrinter.lineWrap(2);
@@ -127,15 +133,15 @@ class UtilsPrinterTicket {
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText('N° 99999',
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('FECHA: 01/01/2024 HORA: 10:32',
+      await SunmiPrinter.printText('FECHA: ${ticket.date} HORA: ${ticket.schedule}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.printText('RECORRIDO:',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('ORIGEN: TERMINAL DE BUSES',
+      await SunmiPrinter.printText('ORIGEN: ${ticket.tripOrigin}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DESTINO: AEROPUERTO EL TEPUAL',
+      await SunmiPrinter.printText('DESTINO: ${ticket.tripDestination}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Precio: \$6.500',
+      await SunmiPrinter.printText('Precio: \$${ticket.price}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.lineWrap(2);
 
@@ -229,7 +235,7 @@ for (var totalesPorMetodo in totalesPorMetodos!) {
 
       // Imprime la fecha y sucursal
       await SunmiPrinter.printText(
-        'FECHA: 01/01/2024\nSucursal: Terminal de buses 1',
+        'FECHA: ${resultReport1RP.value?.fecha ?? '-Sin fecha-'}\nSucursal: ${currentUserBranchLG.value?.name ?? '-- No tiene --'}',
         style: SunmiTextStyle(
           align: SunmiPrintAlign.CENTER,
         ),
@@ -245,28 +251,28 @@ for (var totalesPorMetodo in totalesPorMetodos!) {
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.lineWrap(1); // Espaciado extra opcional
 
-      await SunmiPrinter.printText('Pasajes emitidos: 120',
+      await SunmiPrinter.printText('Pasajes emitidos: ${resultReport1RP.value?.pasajesEmitidos ?? 0}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Reimpresiones: 1',
+      await SunmiPrinter.printText('Reimpresiones: ${resultReport1RP.value?.reimpresiones ?? 0}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('EFECTIVO: 20',
+     await SunmiPrinter.lineWrap(1);
+      final totalesPorMetodos = resultReport1RP.value?.totalesPorMetodo;
+      for (var totalesPorMetodo in totalesPorMetodos!) {
+        await SunmiPrinter.printText('${totalesPorMetodo.metodo}: ${totalesPorMetodo.cantidad}',
+            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+        
+      }
+//una linea
+ await SunmiPrinter.lineWrap(1);
+ await SunmiPrinter.printText('TOTALES:',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DÉBITO: 70',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('CRÉDITO: 10',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-
-      // Imprime los totales
-      await SunmiPrinter.printText('TOTALES:',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('- EFECTIVO: \$45.500',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('- DÉBITO: \$78.000',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('- CRÉDITO: \$55.000',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+for (var totalesPorMetodo in totalesPorMetodos!) {
+        await SunmiPrinter.printText('${totalesPorMetodo.metodo}: ${totalesPorMetodo.total}',
+            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+        
+      }   
       await SunmiPrinter.lineWrap(1); // Espaciado extra opcional
-      await SunmiPrinter.printText('- TOTAL: \$178.500',
+      await SunmiPrinter.printText('TOTAL: \$${resultReport1RP.value?.totales}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
 
       await SunmiPrinter.line(); // Línea divisoria
@@ -281,74 +287,51 @@ for (var totalesPorMetodo in totalesPorMetodos!) {
         ),
       );
       await SunmiPrinter.lineWrap(1); // Salto de línea
+      final resultReport2 = resultReport2RP.value;
+if (resultReport2?.tramos != null) {
+  for (var tramo in resultReport2!.tramos!) {
+    int efectivo = 0;
+    int debito = 0;
+    int credito = 0;
 
-      // Imprime cada tramo
-      final tramos = [
-        {
-          'name': 'TERMINAL DE BUSES – AEROPUERTO',
-          'totalPasajes': 30,
-          'efectivo': 10,
-          'debito': 10,
-          'credito': 10,
-          'totalTramo': 100000,
-          'efectivoTramo': 30000,
-          'debitoTramo': 40000,
-          'creditoTramo': 30000
-        },
-        {
-          'name': 'TERMINAL DE BUSES – PUERTO VARAS',
-          'totalPasajes': 30,
-          'efectivo': 10,
-          'debito': 10,
-          'credito': 10,
-          'totalTramo': 100000,
-          'efectivoTramo': 30000,
-          'debitoTramo': 40000,
-          'creditoTramo': 30000
-        },
-        {
-          'name': 'TERMINAL DE BUSES – PARTICULAR',
-          'totalPasajes': 30,
-          'efectivo': 10,
-          'debito': 10,
-          'credito': 10,
-          'totalTramo': 100000,
-          'efectivoTramo': 30000,
-          'debitoTramo': 40000,
-          'creditoTramo': 30000
-        },
-      ];
-
-      for (var tramo in tramos) {
-        await SunmiPrinter.printText('${tramo['name']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-
-        await SunmiPrinter.printText('Total pasajes: ${tramo['totalPasajes']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-        await SunmiPrinter.printText('Efectivo: ${tramo['efectivo']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-        await SunmiPrinter.printText('Débito: ${tramo['debito']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-        await SunmiPrinter.printText('Crédito: ${tramo['credito']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-
-        await SunmiPrinter.lineWrap(1); // Espacio entre bloques
-
-        await SunmiPrinter.printText('Total Tramo: \$${tramo['totalTramo']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-        await SunmiPrinter.printText('Efectivo: \$${tramo['efectivoTramo']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-        await SunmiPrinter.printText('Débito: \$${tramo['debitoTramo']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-        await SunmiPrinter.printText('Crédito: \$${tramo['creditoTramo']}',
-            style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-
-        await SunmiPrinter.lineWrap(
-            2); // Salto de línea adicional para separación
+    if (tramo.totalesPorMetodo != null) {
+      for (var metodo in tramo.totalesPorMetodo!) {
+        if (metodo.metodo == "EFECTIVO") efectivo = metodo.total ?? 0;
+        if (metodo.metodo == "TARJETA") debito = metodo.total ?? 0;
+        if (metodo.metodo == "CREDITO") credito = metodo.total ?? 0;
       }
+    }
 
-      await SunmiPrinter
-          .cutPaper(); // Cortar papel (si la impresora lo soporta)
+    await SunmiPrinter.printText('${tramo.nombre ?? "-Sin nombre-"}',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+
+    await SunmiPrinter.printText('Total pasajes: ${tramo.totalPasajes ?? 0}',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+    await SunmiPrinter.printText('Efectivo: $efectivo',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+    await SunmiPrinter.printText('Débito: $debito',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+    await SunmiPrinter.printText('Crédito: $credito',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+
+    //await SunmiPrinter.lineWrap(1); // Espacio entre bloques
+
+    await SunmiPrinter.printText('Total Tramo: \$${tramo.totalTramo ?? 0}',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+    await SunmiPrinter.printText('Efectivo: \$$efectivo',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+    await SunmiPrinter.printText('Débito: \$$debito',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+    await SunmiPrinter.printText('Crédito: \$$credito',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
+
+    await SunmiPrinter.lineWrap(2); // Salto de línea adicional para separación
+  }
+
+  await SunmiPrinter.cutPaper(); // Cortar papel (si la impresora lo soporta)
+}
+
+   
       await SunmiPrinter.exitTransactionPrint(
           true); // Finaliza la transacción de impresión
     } catch (e) {
@@ -432,4 +415,24 @@ for (var totalesPorMetodo in totalesPorMetodos!) {
       print('Error al imprimir reporte 3: $e');
     }
   }
+
+
+ Future<Uint8List> _generateQRImage(String data) async {
+    final qrPainter = QrPainter(
+      data: data,
+      version: QrVersions.auto,
+      color: Colors.black,
+      emptyColor: Colors.white,
+    );
+
+    // Convertir el código QR en una imagen
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder);
+    qrPainter.paint(canvas, const Size(200, 200)); // Tamaño del QR
+    final picture = recorder.endRecording();
+    final image = await picture.toImage(200, 200); // Tamaño de la imagen
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    return byteData!.buffer.asUint8List(); // Convertir a Uint8List
+  }
+
 }

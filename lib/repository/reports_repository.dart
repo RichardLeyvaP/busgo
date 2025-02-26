@@ -99,7 +99,7 @@ class ReportsRepository {
     }
   } catch (e) {
     print('Error: $e');
-    throw Exception('getReports1Repository: $e');
+    throw Exception('getReports2Repository: $e');
   }
 }
 
@@ -146,7 +146,7 @@ class ReportsRepository {
     }
   } catch (e) {
     print('Error: $e');
-    throw Exception('getReports1Repository: $e');
+    throw Exception('getReports3Repository: $e');
   }
 }
 

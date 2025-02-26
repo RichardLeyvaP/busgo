@@ -9,9 +9,7 @@ part of 'report1_model.dart';
 _$Report1Impl _$$Report1ImplFromJson(Map<String, dynamic> json) =>
     _$Report1Impl(
       nombre: json['nombre'] as String?,
-      fecha: json['fecha'] == null
-          ? null
-          : DateTime.parse(json['fecha'] as String),
+      fecha: json['fecha'] as String?,
       pasajesEmitidos: (json['pasajesEmitidos'] as num?)?.toInt(),
       reimpresiones: (json['reimpresiones'] as num?)?.toInt(),
       totalesPorMetodo: (json['totalesPorMetodo'] as List<dynamic>?)
@@ -23,7 +21,7 @@ _$Report1Impl _$$Report1ImplFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$Report1ImplToJson(_$Report1Impl instance) =>
     <String, dynamic>{
       'nombre': instance.nombre,
-      'fecha': instance.fecha?.toIso8601String(),
+      'fecha': instance.fecha,
       'pasajesEmitidos': instance.pasajesEmitidos,
       'reimpresiones': instance.reimpresiones,
       'totalesPorMetodo': instance.totalesPorMetodo,

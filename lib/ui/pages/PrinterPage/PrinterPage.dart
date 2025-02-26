@@ -57,7 +57,7 @@ final utilsPrinterTicket = UtilsPrinterTicket();
             ElevatedButton(
               onPressed:() async {
                 
-                utilsPrinterTicket.printTicketPasaje();
+              //  utilsPrinterTicket.printTicketPasaje();
               },
               
                

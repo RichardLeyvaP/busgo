@@ -1,8 +1,11 @@
+import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/ui/pages/HomePage/Ticket/ShowTicketPage.dart';
 import 'package:BusGo/ui/pages/PrinterPage/reports/report1/report1Page.dart';
 import 'package:BusGo/ui/pages/PrinterPage/reports/report2/report2Page.dart';
 //import 'package:BusGo/ui/pages/PrinterPage/reports/report3/report3Page.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicket.dart';
 import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
@@ -32,10 +35,18 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
+        if(_tabController.index == 2)
+        {
+          floatingActionButtonSignal.value = false;
+        }
+        else{
+          floatingActionButtonSignal.value = true;
+        }
         _pageController.jumpToPage(_tabController.index);
+        
       }
     });
   }
@@ -56,13 +67,15 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
     // Lógica para imprimir en el Tab 1
     print("Método de impresión para Resumen de Viajes");
     print("Método de impresión para Resumen Diario-desabilitado");
+    _disableButton();
   await  utilsPrinterTicket.printReporte2();
   _enableButton();
     print("Método de impresión para Resumen Diario-abilitado");
   }
 
-  void _printReportForTab2(BuildContext context) {
+  Future<void> _printReportForTab2(BuildContext context) async {
     // Lógica para imprimir en el Tab 2
+  
     print("Método de impresión para Resumen Total");
   }
 
@@ -73,6 +86,7 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
     } else if (_tabController.index == 1) {
       _printReportForTab1(context);
     } else if (_tabController.index == 2) {
+      
       _printReportForTab2(context);
     }
   }
@@ -110,6 +124,7 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
                     tabs: [
                       _buildTab("Resumen Diario"),
                       _buildTab("Resumen de Viajes"),
+                      _buildTab("Tickets"),
                      // _buildTab("Resumen Total"),
                     ],
                   ),
@@ -125,14 +140,18 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
         children: [
           Report1Page(),
           Report2Page(),
+          ShowTicketPage(),
          // Report3Page(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: 
+      floatingActionButtonSignal.watch(context) == true?
+      FloatingActionButton(
         backgroundColor: Colors.orange,
          onPressed: _isButtonEnabled ? () => _handlePrint(context) : null, // El botón solo se activa si _isButtonEnabled es true
         child: const Icon(Icons.print),
-      ),
+      ):
+      null
     );
   }
 

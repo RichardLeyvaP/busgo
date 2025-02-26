@@ -21,7 +21,7 @@ Report1 _$Report1FromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Report1 {
   String? get nombre => throw _privateConstructorUsedError;
-  DateTime? get fecha => throw _privateConstructorUsedError;
+  String? get fecha => throw _privateConstructorUsedError;
   int? get pasajesEmitidos => throw _privateConstructorUsedError;
   int? get reimpresiones => throw _privateConstructorUsedError;
   List<TotalesPorMetodo>? get totalesPorMetodo =>
@@ -44,7 +44,7 @@ abstract class $Report1CopyWith<$Res> {
   @useResult
   $Res call(
       {String? nombre,
-      DateTime? fecha,
+      String? fecha,
       int? pasajesEmitidos,
       int? reimpresiones,
       List<TotalesPorMetodo>? totalesPorMetodo,
@@ -81,7 +81,7 @@ class _$Report1CopyWithImpl<$Res, $Val extends Report1>
       fecha: freezed == fecha
           ? _value.fecha
           : fecha // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as String?,
       pasajesEmitidos: freezed == pasajesEmitidos
           ? _value.pasajesEmitidos
           : pasajesEmitidos // ignore: cast_nullable_to_non_nullable
@@ -111,7 +111,7 @@ abstract class _$$Report1ImplCopyWith<$Res> implements $Report1CopyWith<$Res> {
   @useResult
   $Res call(
       {String? nombre,
-      DateTime? fecha,
+      String? fecha,
       int? pasajesEmitidos,
       int? reimpresiones,
       List<TotalesPorMetodo>? totalesPorMetodo,
@@ -146,7 +146,7 @@ class __$$Report1ImplCopyWithImpl<$Res>
       fecha: freezed == fecha
           ? _value.fecha
           : fecha // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as String?,
       pasajesEmitidos: freezed == pasajesEmitidos
           ? _value.pasajesEmitidos
           : pasajesEmitidos // ignore: cast_nullable_to_non_nullable
@@ -185,7 +185,7 @@ class _$Report1Impl implements _Report1 {
   @override
   final String? nombre;
   @override
-  final DateTime? fecha;
+  final String? fecha;
   @override
   final int? pasajesEmitidos;
   @override
@@ -255,7 +255,7 @@ class _$Report1Impl implements _Report1 {
 abstract class _Report1 implements Report1 {
   const factory _Report1(
       {final String? nombre,
-      final DateTime? fecha,
+      final String? fecha,
       final int? pasajesEmitidos,
       final int? reimpresiones,
       final List<TotalesPorMetodo>? totalesPorMetodo,
@@ -266,7 +266,7 @@ abstract class _Report1 implements Report1 {
   @override
   String? get nombre;
   @override
-  DateTime? get fecha;
+  String? get fecha;
   @override
   int? get pasajesEmitidos;
   @override

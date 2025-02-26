@@ -5,6 +5,8 @@ import 'package:signals/signals.dart';
 final Signal<bool?> isLoggedInLG = Signal<bool?>(null);
 final Signal<String> loginMessageLG = Signal<String>(""); // Mensaje de error o éxito
 final Signal<String> passwordMessageLG = Signal<String>(""); // Mensaje de error o éxito
+final Signal<String> typeCmpanyBranchLG = Signal<String>(""); // Mensaje de error o éxito
+final Signal<int?> idCmpanyBranchLG = Signal<int?>(null); // Mensaje de error o éxito
 final Signal<Login?> currentUserLG = Signal<Login?>(null); // Usuario actual
 final Signal<Branch?> currentUserBranchLG = Signal<Branch?>(null); // Usuario actual
 final Signal<Company?> currentUserBranchCompanyLG = Signal<Company?>(null); // Usuario actual
