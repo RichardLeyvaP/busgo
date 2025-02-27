@@ -114,26 +114,30 @@ class TripsRepository {
   }
 }
 
- Future<dynamic> storeTripRepository(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors) async {
+ Future<dynamic> storeTripRepository(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors,transactionStatus,
+        sequenceNumber,
+        extraData,
+        transactionTip,
+        transactionCashback) async {
     final endpoint = '${Env.apiEndpoint}/ticket';
     final body = {
   'branch_id': branch_id,
   'trip_id': trip_id,
    'method': 'Efectivo',
-  // 'method': method,
   'status': 1,
-  // 'status': status,
   'quantity': quantity,
   'price': price,
-  'total': total,
   'seats': seats,
-  'date': date.toString(),
+  'date': date.toString(), 
   'adults': adults,
   'minors': minors,
+  'total': total,
   //agregar datos de pago
-  // 'amount': amount,
-  //       'description': description,
-  //       'transactionId': transactionId,
+  "transactionStatus": transactionStatus,
+        "sequenceNumber": sequenceNumber,
+        "extraData": extraData,
+        "transactionTip": transactionTip,
+        "transactionCashback": transactionCashback,
 };
 print('mostrar que es lo que va por el body:$body');
 

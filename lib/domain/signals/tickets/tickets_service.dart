@@ -59,12 +59,20 @@ Future<void> fetchTrips(int branchId) async {
 }
 
 
-Future<void> storeTrip(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors) async {
+Future<void> storeTrip(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors,transactionStatus,
+        sequenceNumber,
+        extraData,
+        transactionTip,
+        transactionCashback) async {
   isLoadingTripsSignal.value = true; // Indicamos que está cargando
   tripsErrorSignal.value = null; // Limpiamos posibles errores previos
 
   try {
-    final result = await tripsRepository.storeTripRepository(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors); // Llamada al backend
+    final result = await tripsRepository.storeTripRepository(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors,transactionStatus,
+        sequenceNumber,
+        extraData,
+        transactionTip,
+        transactionCashback); // Llamada al backend
 
      if (result is String) {
       tripsErrorSignal.value = result; // Guardamos el mensaje de error si aplica

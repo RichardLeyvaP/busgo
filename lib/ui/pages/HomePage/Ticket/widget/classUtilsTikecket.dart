@@ -68,12 +68,13 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
 
 
       showJsonDialog(context, jsonResponse);
-      handleResponse(jsonResponse,context);
+      handleResponse(jsonResponse,context,total,price);
+      //SI TD ESTA BIEN 
    
     }
   }
 
-  void handleResponse(Map<String, dynamic> jsonResponse,BuildContext contextT) {
+  void handleResponse(Map<String, dynamic> jsonResponse,BuildContext contextT,double total,price) {
   if (jsonResponse.containsKey("errorCode")) {//DIO ERRORRRRRRRRRRRRRRR
     // Manejo de error
     int errorCode = jsonResponse["errorCode"];
@@ -112,6 +113,7 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
         isPersistent: true,
         showAcceptButton: true
       );
+      
 
     if (extraData != null) {
       print("📦 Datos adicionales: $extraData");
@@ -126,8 +128,13 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
       DateTime date = tripsSelectSignal.value!.date!;
       int adults = quantitySignal.value;
       int minors = quantityMenoresSignal.value;
-     /* storeTrip(branch_id, trip_id, 'method', 'status', quantity, price,
-          total, seats, date, adults, minors);*/   
+
+      //AQUI MANDA PARA LA DB A GUARDAR EL TICKET
+     storeTrip(branch_id,trip_id,'method','status',quantity,price,total,seats,date,adults,minors,transactionStatus,
+        sequenceNumber,
+        extraData,
+        transactionTip,
+        'transactionCashback')  ; 
 
      // GoRouter.of(contextT).go('/DashboardPage');
     

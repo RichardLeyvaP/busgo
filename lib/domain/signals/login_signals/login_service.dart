@@ -30,7 +30,7 @@ Future<void> login(String email, String password) async {
         typeCmpanyBranchLG.value = 'Company';
         idCmpanyBranchLG.value = currentUserBranchCompanyLG.value!.id;
       } else {
-        typeCmpanyBranchLG.value = 'Branch';
+        typeCmpanyBranchLG.value = 'Sucursal';
         idCmpanyBranchLG.value = currentUserBranchLG.value!.id;
       }
 

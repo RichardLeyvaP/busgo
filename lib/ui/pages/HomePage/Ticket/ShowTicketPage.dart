@@ -1,9 +1,9 @@
+import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
 import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicket.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:signals/signals_flutter.dart';
 
 class ShowTicketPage extends StatefulWidget {
   @override
@@ -104,6 +104,16 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min, // Ajusta el tamaño al contenido
                           children: [
+                             Text(
+                        currentUserBranchCompanyLG.value?.name ??
+                            '-- No tiene --',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                          "Sucursal: ${currentUserBranchLG.value?.name ?? '-- No tiene --'}"),
+                      SizedBox(height: 10),
                             _buildInfoRow('ID: ', ticketsSignal.value![index].id.toString()),
                             _buildInfoRow('Método de pago: ', ticketsSignal.value![index].method.toString()),
                             _buildInfoRow('Cantidad: ', ticketsSignal.value![index].quantity.toString()),
