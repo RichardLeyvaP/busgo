@@ -1,5 +1,5 @@
 
-import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

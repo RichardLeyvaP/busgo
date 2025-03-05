@@ -1,4 +1,4 @@
-import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/ticket/tickets_model.dart';
 import 'package:BusGo/models/trips/trips_model.dart';
 import 'package:BusGo/repository/trips_repository.dart';
@@ -59,7 +59,38 @@ Future<void> fetchTrips(int branchId) async {
 }
 
 
-Future<void> storeTrip(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors,transactionStatus,
+Future<bool> storeTripLocal(id,branch_id,trip_id,method,quantity,price,total,seats,date,adults,minors
+        ) async {
+  isLoadingTripsSignal.value = true; // Indicamos que está cargando
+  tripsErrorSignal.value = null; // Limpiamos posibles errores previos
+
+  try {
+    final result = await tripsRepository.storeTripRepositoryLocal(id,branch_id,trip_id,method,quantity,price,total,seats,date,adults,minors); // Llamada al backend
+
+     if (result is int) {
+      
+       if(result == 200 || result == 201) {
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+     else if (result is String) {
+      tripsErrorSignal.value = result; // Guardamos el mensaje de error si aplica
+      
+    }
+    return true;
+    //aqui rectificar el estatust qsi es 200 que siga con el proceso de pago y devuelva true
+    //sin no que devuelva false
+  } catch (e) {
+    tripsErrorSignal.value = "Error: ${e.toString()}"; // Error inesperado
+    return false;
+  } finally {
+    isLoadingTripsSignal.value = false; // Finalizamos el estado de carga
+  }
+}
+Future<bool> storeTrip(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors,transactionStatus,
         sequenceNumber,
         extraData,
         transactionTip,
@@ -77,8 +108,10 @@ Future<void> storeTrip(branch_id,trip_id,method,status,quantity,price,total,seat
      if (result is String) {
       tripsErrorSignal.value = result; // Guardamos el mensaje de error si aplica
     }
+    return true;
   } catch (e) {
     tripsErrorSignal.value = "Error: ${e.toString()}"; // Error inesperado
+    return false;
   } finally {
     isLoadingTripsSignal.value = false; // Finalizamos el estado de carga
   }

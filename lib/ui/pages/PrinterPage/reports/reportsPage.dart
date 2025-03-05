@@ -1,4 +1,4 @@
-import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/ShowTicketPage.dart';
 import 'package:BusGo/ui/pages/PrinterPage/reports/report1/report1Page.dart';
 import 'package:BusGo/ui/pages/PrinterPage/reports/report2/report2Page.dart';

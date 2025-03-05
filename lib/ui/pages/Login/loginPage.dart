@@ -1,7 +1,7 @@
 // ignore_for_file: file_names, depend_on_referenced_packages
 
-import 'package:BusGo/util/util_class.dart';
-import 'package:BusGo/util/utils_class_apk.dart';
+import 'package:BusGo/util/util_class_translation.dart';
+import 'package:BusGo/util/utils_class_style.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:go_router/go_router.dart';

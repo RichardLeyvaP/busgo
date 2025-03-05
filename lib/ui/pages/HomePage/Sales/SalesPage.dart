@@ -1,4 +1,4 @@
-import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/ui/pages/HomePage/Sales/widget/AppBarWidget.dart';
 import 'package:BusGo/ui/pages/HomePage/Sales/widget/ScheduleCardWidget.dart';
 import 'package:flutter/material.dart';

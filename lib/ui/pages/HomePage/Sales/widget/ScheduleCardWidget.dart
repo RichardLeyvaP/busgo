@@ -1,6 +1,6 @@
-import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/env.dart';
-import 'package:BusGo/ui/component/CustomButton.dart';
+import 'package:BusGo/ui/component/CustomButton_component.dart';
 import 'package:BusGo/ui/pages/HomePage/Sales/widget/TripDetailsCardWidged.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

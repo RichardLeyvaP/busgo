@@ -1,6 +1,6 @@
 import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
 import 'package:BusGo/domain/signals/reports_signals/reports_services.dart';
-import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicket.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/datePickerModal%20.dart';
 import 'package:flutter/material.dart';

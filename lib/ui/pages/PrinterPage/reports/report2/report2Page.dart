@@ -190,88 +190,90 @@ class _Report2PageState extends State<Report2Page> {
                       ),
                     ),
                   ),
-              SingleChildScrollView(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    width: 300,
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${resultReport2?.nombre??'-Sin Nombre-'}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        SizedBox(height: 5),
-                        Text("FECHA: ${resultReport2?.fecha??'-Sin fecha-'}"),
-                        SizedBox(height: 10),
-                        Text("RESUMEN:", style: TextStyle(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 5),
-                        Text("EMISIÓN DE PASAJES", style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text("Pasajes emitidos: ${resultReport2?.pasejesEmitidos??'0'}"),
-                        Text("Reimpresiones: ${resultReport2?.reimpresiones??'0'}"),
-                        SizedBox(height: 5),
-                        if (totalesPorMetodos != null) ...[
-                          for (var totalesPorMetodo in totalesPorMetodos) ...[
-                            Text(
-                              "${totalesPorMetodo.metodo}: ${totalesPorMetodo.cantidad ?? 0}",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      width: 300,
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("${resultReport2?.nombre??'-Sin Nombre-'}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 5),
+                          Text("FECHA: ${resultReport2?.fecha??'-Sin fecha-'}"),
+                          SizedBox(height: 10),
+                          Text("RESUMEN:", style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(height: 5),
+                          Text("EMISIÓN DE PASAJES", style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text("Pasajes emitidos: ${resultReport2?.pasejesEmitidos??'0'}"),
+                          Text("Reimpresiones: ${resultReport2?.reimpresiones??'0'}"),
+                          SizedBox(height: 5),
+                          if (totalesPorMetodos != null) ...[
+                            for (var totalesPorMetodo in totalesPorMetodos) ...[
+                              Text(
+                                "${totalesPorMetodo.metodo}: ${totalesPorMetodo.cantidad ?? 0}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ],
-                        ],
-                        SizedBox(height: 10),
-                        if (totalesPorMetodos != null) ...[
-                          Text("TOTALES:", style: TextStyle(fontWeight: FontWeight.bold)),
-                          for (var totalesPorMetodo in totalesPorMetodos) ...[
-                            Text(
-                              "${totalesPorMetodo.metodo}: \$${totalesPorMetodo.total ?? 0}",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                          SizedBox(height: 10),
+                          if (totalesPorMetodos != null) ...[
+                            Text("TOTALES:", style: TextStyle(fontWeight: FontWeight.bold)),
+                            for (var totalesPorMetodo in totalesPorMetodos) ...[
+                              Text(
+                                "${totalesPorMetodo.metodo}: \$${totalesPorMetodo.total ?? 0}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ],
+                          Text(
+                            "TOTAL: \$${resultReport2?.totales ?? 0}",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10),
+                          Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("TRAMOS:", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 5),
+                                      if (resultReport2?.tramos != null)
+                    ...resultReport2!.tramos!.map<Widget>((tramo) {
+                      int efectivo = 0;
+                      int debito = 0;
+                      int credito = 0;
+                                  
+                      if (tramo.totalesPorMetodo != null) {
+                      var  tramototalesPorMetodo = tramo.totalesPorMetodo;
+                                  for (var metodo in tramototalesPorMetodo!) {
+                                    if (metodo.metodo == "EFECTIVO") efectivo = metodo.total ?? 0;
+                                    if (metodo.metodo == "TARJETA") debito = metodo.total ?? 0;
+                                    if (metodo.metodo == "CREDITO") credito = metodo.total ?? 0;
+                                  }
+                      }
+                                  
+                      return _buildTramo(
+                                  tramo.nombre ?? "-Sin nombre-",
+                                  tramo.totalPasajes ?? 0,
+                                  efectivo,
+                                  debito,
+                                  credito,
+                                  tramo.totalTramo ?? 0,
+                                  efectivo,
+                                  debito,
+                                  credito,
+                      );
+                    }).toList(),
+                                    ],
+                                  )
+                                  ,
                         ],
-                        Text(
-                          "TOTAL: \$${resultReport2?.totales ?? 0}",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 10),
-                        Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("TRAMOS:", style: TextStyle(fontWeight: FontWeight.bold)),
-                                    SizedBox(height: 5),
-                                    if (resultReport2?.tramos != null)
-                  ...resultReport2!.tramos!.map<Widget>((tramo) {
-                    int efectivo = 0;
-                    int debito = 0;
-                    int credito = 0;
-                                
-                    if (tramo.totalesPorMetodo != null) {
-                    var  tramototalesPorMetodo = tramo.totalesPorMetodo;
-                                for (var metodo in tramototalesPorMetodo!) {
-                                  if (metodo.metodo == "EFECTIVO") efectivo = metodo.total ?? 0;
-                                  if (metodo.metodo == "TARJETA") debito = metodo.total ?? 0;
-                                  if (metodo.metodo == "CREDITO") credito = metodo.total ?? 0;
-                                }
-                    }
-                                
-                    return _buildTramo(
-                                tramo.nombre ?? "-Sin nombre-",
-                                tramo.totalPasajes ?? 0,
-                                efectivo,
-                                debito,
-                                credito,
-                                tramo.totalTramo ?? 0,
-                                efectivo,
-                                debito,
-                                credito,
-                    );
-                  }).toList(),
-                                  ],
-                                )
-                                ,
-                      ],
+                      ),
                     ),
                   ),
                 ),

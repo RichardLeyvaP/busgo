@@ -1,5 +1,5 @@
   // Configuración del tema
-  import 'package:BusGo/util/utils_class_apk.dart';
+  import 'package:BusGo/util/utils_class_style.dart';
 import 'package:flutter/material.dart';
 
 ThemeData themeDataInitial() {

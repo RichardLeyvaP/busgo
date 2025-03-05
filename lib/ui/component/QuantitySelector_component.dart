@@ -1,7 +1,7 @@
 //selccionador de cantidades
 
-import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
-import 'package:BusGo/ui/component/showCustomSnackBar.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
+import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
 import 'package:flutter/material.dart';
 
 class QuantitySelector extends StatefulWidget {

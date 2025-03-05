@@ -1,11 +1,18 @@
-import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
-import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/data/services/local_database_service.dart';
+import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
-import 'package:BusGo/ui/component/showCustomSnackBar.dart';
-import 'package:BusGo/ui/component/showJsonDialog.dart';
+import 'package:BusGo/models/ticket/ticket_dabase_local/ticket_dabase_local_model.dart';
+import 'package:BusGo/ui/component/internetConnectionModal_component.dart';
+import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
+import 'package:BusGo/ui/component/showJsonDialog_component.dart';
+import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicketLocal.dart';
+import 'package:BusGo/util/util_class_sharedPreferences.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:intl/intl.dart';
 
 class UtilsTicket {
 
@@ -67,12 +74,90 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
       );
 
 
-      showJsonDialog(context, jsonResponse);
+     // showJsonDialog(context, jsonResponse);
       handleResponse(jsonResponse,context,total,price);
       //SI TD ESTA BIEN 
    
     }
   }
+  
+ final DatabaseHelper dbHelper = DatabaseHelper();  // Instancia de la base de datos
+ SharedPreferencesStorage sharedPreferencesStorage = SharedPreferencesStorage(); // Instancia de la base de datos
+
+ modalResponseConecction(BuildContext contextT) async {
+     
+ InternetConnectionModal.show(
+  contextT,
+  onPayWithCash: () async {
+    // Lógica para pagar con efectivo
+      print('TIENE CONEXION - NO, GUARDAR EN DB-LOCAL');
+       // Si no hay conexión, guardamos el ticket en la base de datos local
+ double total = ((double.parse(tripsSelectSignal.value!.price!) / 2) *
+              quantityMenoresSignal.watch(contextT)) +
+          ((double.parse(tripsSelectSignal.value!.price!)) * quantitySignal.watch(contextT));
+int branch_id = currentUserBranchLG.value!.id;
+      int trip_id = tripsSelectSignal.value!.id!;
+      int quantity = quantityMenoresSignal.value + quantitySignal.value;
+      List<int> seats = selectedSeatNumbersSN.value;
+      DateTime date = tripsSelectSignal.value!.date!;
+      int adults = quantitySignal.value;
+      int minors = quantityMenoresSignal.value;
+
+
+//esta entrando a esteeeeeeee
+       Ticket newTicket = Ticket(
+  id:  DateTime.now().millisecondsSinceEpoch,
+  branchId: branch_id,
+  tripId: trip_id,
+  method: 'Efectivo',  
+  quantity: quantity,
+  price:double.parse(tripsSelectSignal.value!.price!) ,
+  seats: seats,
+  date: DateFormat('yyyy-MM-dd').format(date),
+  adults: adults,
+  minors: minors,
+  total: total,
+  //estos estan ahi pero no se envian
+  //************************* */
+  status: 1,
+  transactionStatus: 'pending',
+  sequenceNumber: 'abc123',
+  extraData: 'no extra data',
+  transactionTip: 10.0,
+  transactionCashback: 5.0,
+   //************************* */
+);
+
+
+    final resultTicket =  await dbHelper.insertTicket(newTicket);
+    if(resultTicket != null)
+    { 
+      //Aumento la variable que me controla la cantidad de tickets guardados en la db-local
+      sharedPreferencesStorage.incrementCounter();      
+       showCustomSnackBar(
+        context: contextT,
+        title: 'Compra de Ticket guardada correctamente db-Local', // Obligatorio
+        backgroundColor: Colors.green
+      );
+      //Mandar a Imprimir
+      UtilsPrinterTicketLocal utilsPrinterTicketLocal = UtilsPrinterTicketLocal();
+      String scheduleActual = DateFormat('HH:mm').format(DateTime.now());
+      await utilsPrinterTicketLocal.printTicketPasajeLocal(newTicket,scheduleActual,tripsSelectSignal.value!.origin.toString(),tripsSelectSignal.value!.destination.toString());
+    }
+    else{
+      showCustomSnackBar(
+        context: contextT,
+        title: 'Error al guardar el Ticket', // Obligatorio
+        backgroundColor: Colors.red
+      );
+    }
+  },
+  onCancel: () {
+    // Lógica cuando se cancela
+  },
+);
+
+ }
 
   void handleResponse(Map<String, dynamic> jsonResponse,BuildContext contextT,double total,price) {
   if (jsonResponse.containsKey("errorCode")) {//DIO ERRORRRRRRRRRRRRRRR
@@ -90,6 +175,25 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
         isPersistent: true,
         showAcceptButton: true
       );
+       modalResponseConecction(contextT);
+    
+    // Aquí podrías mostrar un mensaje en la UI o manejar el error como prefieras
+    return;
+  }
+   if (jsonResponse.containsKey("error")) {//DIO ERRORRRRRRRRRRRRRRR
+    // Manejo de error
+  
+    
+ showCustomSnackBar(
+        context: contextT,
+        title: 'Error : error menssage : ${jsonResponse["error"]}', // Obligatorio
+        titleColor: Colors.white, // Opcional
+        icon: Icons.check_circle, // Opcional
+        backgroundColor: Colors.red, // Opcional
+        isPersistent: true,
+        showAcceptButton: true
+      );
+      modalResponseConecction(contextT);
     
     // Aquí podrías mostrar un mensaje en la UI o manejar el error como prefieras
     return;
@@ -121,7 +225,7 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
 
         
     //  storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
-      int branch_id = 1;
+      int branch_id = currentUserBranchLG.value!.id;
       int trip_id = tripsSelectSignal.value!.id!;
       int quantity = quantityMenoresSignal.value + quantitySignal.value;
       List<int> seats = selectedSeatNumbersSN.value;
@@ -151,6 +255,7 @@ List<Seat> generateSeats(int totalSeats, List<int> occupiedSeats) {
         isPersistent: true,
         showAcceptButton: true
       );
+      modalResponseConecction(contextT);
   }
 }
 }

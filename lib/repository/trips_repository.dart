@@ -114,6 +114,53 @@ class TripsRepository {
   }
 }
 
+ Future<dynamic> storeTripRepositoryLocal(id,branch_id,trip_id,method,quantity,price,total,seats,date,adults,minors) async {
+    final endpoint = '${Env.apiEndpoint}/ticket';
+    final body = {
+  'id': id,//este id es con el que se esta haciendo el qr
+  'branch_id': branch_id,
+  'trip_id': trip_id,
+   'method': 'Efectivo',
+  'quantity': quantity,
+  'price': price,
+  'seats': seats,
+  'date': date.toString(), 
+  'adults': adults,
+  'minors': minors,
+  'total': total,
+  //agregar datos de pago
+};
+print('mostrar que es lo que va por el body:$body');
+
+
+    try {
+      // Llama al servicio y obtiene la respuesta procesada
+      final response = await authService.post(endpoint, body: body);
+if (response['statusCode'] == 400 ) {//es que no hay viajes
+return 400;
+   } 
+      // Verificamos si response es un JSON válido
+      if (response is Map<String, dynamic>) {
+        // Deserializamos la respuesta a nuestro modelo TaskResponse
+if (response['body'] is String) {
+return response['body'];
+   }      
+   
+      } else if (response is String) {
+        print('dando click en la imagen-4:$response');
+        return response;
+      } else {
+        print('dando click en la imagen-5:$response');
+        throw Exception('Respuesta inesperada del servidor.Revise su conexión');
+      }
+    } catch (e) {
+      print('dando click en la imagen-4:$e');
+      // Manejo de errores
+      throw Exception('getTasks(date): $e');
+    }
+  }
+
+
  Future<dynamic> storeTripRepository(branch_id,trip_id,method,status,quantity,price,total,seats,date,adults,minors,transactionStatus,
         sequenceNumber,
         extraData,

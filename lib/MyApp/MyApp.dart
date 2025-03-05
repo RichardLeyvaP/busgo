@@ -1,5 +1,5 @@
-import 'package:BusGo/MyApp/GoRouterClass.dart';
-import 'package:BusGo/MyApp/ThemeDataClass.dart';
+import 'package:BusGo/myApp/GoRouterClass.dart';
+import 'package:BusGo/myApp/ThemeDataClass.dart';
 import 'package:BusGo/ui/app_bar/AppBarWidget.dart';
 import 'package:BusGo/ui/pages/FunPage.dart';
 import 'package:BusGo/ui/pages/HomePage/Home/HomePage.dart';

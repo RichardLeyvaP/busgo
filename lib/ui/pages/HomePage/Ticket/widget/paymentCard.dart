@@ -1,11 +1,13 @@
 
-import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
-import 'package:BusGo/domain/signals/tickets/tickets_signal.dart';
+import 'package:BusGo/data/services/local_database_service.dart';
+import 'package:BusGo/data/services/ticketSyncService.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
-import 'package:BusGo/ui/component/CustomButton.dart';
-import 'package:BusGo/ui/component/QuantitySelector.dart';
-import 'package:BusGo/ui/component/showCustomSnackBar.dart';
-import 'package:BusGo/ui/component/showJsonDialog.dart';
+import 'package:BusGo/ui/component/CustomButton_component.dart';
+import 'package:BusGo/ui/component/QuantitySelector_component.dart';
+import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
+import 'package:BusGo/ui/component/showJsonDialog_component.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/TicketPage.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/widget/customIcons.dart';
 import 'package:flutter/material.dart';
@@ -178,6 +180,7 @@ class _PaymentCardState extends State<PaymentCard> {
                   SizedBox(
                     height: 10,
                   ),
+                 
                   Row(
                     children: [
                       Text(
