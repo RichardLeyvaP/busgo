@@ -33,7 +33,7 @@ class StatisticsPageAll extends StatelessWidget {
             SizedBox(height: 16),
             StatCard(
               label: 'Ganancias',
-              value: '\$8,900',
+              value: '\$8.900',
               icon: Icons.attach_money,
               color: Colors.orange,
             ),
@@ -50,7 +50,11 @@ class StatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  StatCard({required this.label, required this.value, required this.icon, required this.color});
+  StatCard(
+      {required this.label,
+      required this.value,
+      required this.icon,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
