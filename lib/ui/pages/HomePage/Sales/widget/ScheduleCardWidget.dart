@@ -1,4 +1,6 @@
 import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
+import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
+import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/env.dart';
 import 'package:BusGo/ui/component/CustomButton_component.dart';
 import 'package:BusGo/ui/pages/HomePage/Sales/widget/TripDetailsCardWidged.dart';
@@ -22,10 +24,10 @@ class ScheduleCard extends StatefulWidget {
   final int idTrip;
   final int seatsAvailable;
   final List<int> reservedSeats;
-  
 
-  ScheduleCard(
-      {required this.timeIni,
+  const ScheduleCard(
+      {super.key,
+      required this.timeIni,
       required this.price,
       required this.timeFin,
       required this.place,
@@ -34,7 +36,12 @@ class ScheduleCard extends StatefulWidget {
       required this.seatsAvailable,
       required this.idTrip,
       required this.originImage,
-      required this.destinationImage, required this.name, required this.plate, required this.reservedSeats, required this.origin, required this.destination});
+      required this.destinationImage,
+      required this.name,
+      required this.plate,
+      required this.reservedSeats,
+      required this.origin,
+      required this.destination});
 
   @override
   _ScheduleCardState createState() => _ScheduleCardState();
@@ -45,166 +52,150 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade300,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    String travelTime = _calculateTravelTime(widget.timeIni, widget.timeFin);
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.99,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Icon(Icons.access_time, size: 15, color: Colors.black),
-                      SizedBox(width: 5),
-                      Text(
-                        widget.timeIni,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 5),
-                        child: Icon(MdiIcons.rayStartArrow, size: 24, color: Colors.black),
-                      ),
-                      Text(
-                        widget.timeFin,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  _infoText("Salida en:", "2 min"),
+                  const VerticalDivider(
+                    width: 10,
                   ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(MdiIcons.bus, size: 15, color: Colors.black),
-                      SizedBox(width: 5),
-                      Text(
-                        'Bus: ${widget.place}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  _infoText("Tiempo de Viaje:", travelTime),
+                  const VerticalDivider(
+                    width: 10,
                   ),
-                  SizedBox(height: 5),
-                  Row(
-                    children: [
-                      Icon(MdiIcons.seatReclineExtra, size: 15, color: Colors.black),
-                      SizedBox(width: 5),
-                      Text(
-                        'Capacidad: ${widget.seats}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  _infoText("Capacidad:", '${widget.seats}'),
+                  const VerticalDivider(
+                    width: 10,
                   ),
+                  _infoText("Disponibles:", '${widget.seatsAvailable}'),
                 ],
               ),
-              Column(
+              const SizedBox(height: 12),
+              Row(
                 children: [
-                  widget.seatsAvailable == 0
-                      ? CustomButton(
-                          title: "Saliendo",
-                          onTap: () {},
-                          color: Colors.red,
-                        )
-                      : CustomButton(
-                          title: "Seleccionar",
-                                          onTap: () {
-                  if(widget.seatsAvailable != 0)
-                  {
-                    dataSelectedRoute(widget.idTrip);
-                  GoRouter.of(context).push('/TicketPage');
-                  }
-                  else{
-                     ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                  content: Text('No hay disponibilidad para este viaje')),
-                                            );
-                  }
-                 
-                  // Aquí puedes implementar la lógica deseada
-                },
-                          color: Colors.blue,
-                        ),
-                  SizedBox(height: 5),
-                  Row(
+                  Column(
                     children: [
-                      Icon(
-                        MdiIcons.carSeat,
-                        size: 15,
-                        color: widget.seatsAvailable == 0 ? Colors.red : Colors.green,
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        'Disponible: ${widget.seatsAvailable}',
-                        style: TextStyle(
-                          color: widget.seatsAvailable == 0 ? Colors.red : Colors.green,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      _routeInfo(
+                          "Aeropuerto El Tepual",
+                          "Salida: ${widget.timeIni}",
+                          Icons.radio_button_checked),
+                      _routeInfo("Terminal Puerto Montt",
+                          "Llegada: ${widget.timeFin}", Icons.location_on,
+                          isDestination: true),
                     ],
                   ),
+                  const VerticalDivider(
+                    width: 25,
+                  ),
+                  Column(
+                    children: [
+                      _infoPrice("Precio:", '\$'),
+                      SizedBox(
+                        width: 120,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              minimumSize: const Size(50, 36),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                          onPressed: () {
+                            if (widget.seatsAvailable != 0) {
+                              dataSelectedRoute(
+                                  widget.idTrip); // Guardar datos del viaje
+                              GoRouter.of(context).push(
+                                  '/TicketPage'); // Navegar a la página de asientos
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'No hay disponibilidad para este viaje'),
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text("Seleccionar",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12)),
+                        ),
+                      )
+                    ],
+                  )
                 ],
-              ),
+              )
             ],
           ),
-          InkWell(
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded; // Cambiar el estado para expandir o contraer
-              });
-            },
-            child: !isExpanded? Column(
-              children: [
-                Text('Más detalles', style: TextStyle(fontSize: 8, color: Colors.black87)),
-                Icon(MdiIcons.chevronDown, size: 20, color: Colors.black),
-              ],
-            ):
-            Column(
-              children: [
-                Text('Menos detalles', style: TextStyle(fontSize: 8, color: Colors.black87)),
-                Icon(MdiIcons.chevronUp, size: 20, color: Colors.black),
-              ],
-            ),
-          ),
-          // Aquí es donde se agrega el contenido adicional que se muestra al expandir
-          if (isExpanded) ...[
-           
-            TripDetailsCard(
-  name: widget.name,
-  origin: widget.origin,
-  destination: widget.destination,
-  arrival: "14:30",
-  seats: 4,
-  price: widget.price,
-  plate: widget.plate,
-  originImage: '${Env.apiEndpoint}/images/${widget.originImage}',
-  destinationImage: '${Env.apiEndpoint}/images/${widget.destinationImage}',
-  reservedSeats: widget.reservedSeats,
-)
-
-          ]
-        ],
+        ),
       ),
     );
   }
 }
 
+Widget _infoText(String title, String value) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(title, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
+      Text(value,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+    ],
+  );
+}
 
+Widget _infoPrice(String title, String value) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(title,
+          style: const TextStyle(
+              fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold)),
+      Text(value,
+          style: const TextStyle(
+              fontSize: 14, fontWeight: FontWeight.bold, color: Colors.orange)),
+    ],
+  );
+}
 
+Widget _routeInfo(String title, String subtitle, IconData icon,
+    {bool isDestination = false}) {
+  return Row(
+    children: [
+      Icon(icon, size: 15, color: isDestination ? Colors.orange : Colors.blue),
+      const SizedBox(width: 6),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          Text(subtitle,
+              style: TextStyle(color: Colors.grey[700], fontSize: 10)),
+        ],
+      ),
+    ],
+  );
+}
 
+String _calculateTravelTime(String start, String end) {
+  // Convertir los strings en objetos DateTime
+  DateTime startTime = DateTime.parse("2024-01-01 $start:00");
+  DateTime endTime = DateTime.parse("2024-01-01 $end:00");
 
+  // Diferencia en minutos
+  int minutes = endTime.difference(startTime).inMinutes;
 
+  return "$minutes min";
+}
 
 
 // import 'package:BusGo/domain/signals/tickets/tickets_service.dart';
