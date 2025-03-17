@@ -13,11 +13,13 @@ class SalesPage extends StatelessWidget {
         child: Column(
           children: [
             // Header con imagen y título
-            AppBarSalesWidget(),
+            const AppBarSalesWidget(),
             // Card para detalles "From" y "To"
-            Expanded(  // Añadimos Expanded para que ocupe el espacio restante
-              child: Container(//container de afuera
-                decoration: BoxDecoration(
+            Expanded(
+              // Añadimos Expanded para que ocupe el espacio restante
+              child: Container(
+                //container de afuera
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -25,17 +27,18 @@ class SalesPage extends StatelessWidget {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(5.0),
                       child: Column(
                         children: [
-                         // SizedBox(height: 10),
-                         // ContainerSourceDestinationWidget(),
-                          SizedBox(height: 20),
-                          tripsSignal.watch(context) == null || tripsSignal.watch(context)!.isEmpty
-                              ? Center(
+                          // SizedBox(height: 10),
+                          // ContainerSourceDestinationWidget(),
+                          const SizedBox(height: 20),
+                          tripsSignal.watch(context) == null ||
+                                  tripsSignal.watch(context)!.isEmpty
+                              ? const Center(
                                   child: Text(
                                     "No hay recorridos disponibles",
                                     style: TextStyle(
@@ -47,28 +50,34 @@ class SalesPage extends StatelessWidget {
                                 )
                               : ListView.builder(
                                   shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
+                                  physics: const BouncingScrollPhysics(),
                                   itemCount: tripsSignal.watch(context)!.length,
                                   itemBuilder: (context, index) {
-                                    final trip = tripsSignal.watch(context)![index];
-                                   availableSeatsSignal.value = trip.seats! - (trip.reservedSeats!.length);
+                                    final trip =
+                                        tripsSignal.watch(context)![index];
+                                    availableSeatsSignal.value = trip.seats! -
+                                        (trip.reservedSeats!.length);
                                     return ScheduleCard(
-                                      name: trip.name??'' ,
-                                      origin: trip.origin??"Desconocido" ,
-                                      destination: trip.destination??"Desconocido" ,
-                                      plate: trip.plate??'' ,
-                                      originImage: trip.originImage??'' ,
-                                      destinationImage: trip.destinationImage??'' ,
+                                      name: trip.name ?? '',
+                                      origin: trip.origin ?? "Desconocido",
+                                      destination:
+                                          trip.destination ?? "Desconocido",
+                                      plate: trip.plate ?? '',
+                                      originImage: trip.originImage ?? '',
+                                      destinationImage:
+                                          trip.destinationImage ?? '',
                                       timeIni: trip.schedule.toString(),
                                       timeFin: trip.arrival.toString(),
-                                      price: trip.price== null?trip.price.toString(): "0.0",
+                                      price: trip.price == null
+                                          ? trip.price.toString()
+                                          : "0.0",
                                       place: trip.name ?? "Desconocido",
                                       amount: trip.seats ?? 0,
                                       seats: trip.seats ?? 0,
-                                      seatsAvailable: availableSeatsSignal.value,//-ojo-verificar si fuera null que no de error
-                                      idTrip: trip.id??0,
-                                      reservedSeats: trip.reservedSeats??[],
-
+                                      seatsAvailable: availableSeatsSignal
+                                          .value, //-ojo-verificar si fuera null que no de error
+                                      idTrip: trip.id ?? 0,
+                                      reservedSeats: trip.reservedSeats ?? [],
                                     );
                                   },
                                 ),

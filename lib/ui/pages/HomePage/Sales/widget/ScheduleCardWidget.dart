@@ -53,87 +53,85 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   Widget build(BuildContext context) {
     String travelTime = _calculateTravelTime(widget.timeIni, widget.timeFin);
+    String timeToGo = _calculateTimeToGo(widget.timeIni);
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.99,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 3,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _infoText("Salida en:", "2 min"),
-                  const VerticalDivider(
-                    width: 10,
-                  ),
-                  _infoText("Tiempo de Viaje:", travelTime),
-                  const VerticalDivider(
-                    width: 10,
-                  ),
-                  _infoText("Capacidad:", '${widget.seats}'),
-                  const VerticalDivider(
-                    width: 10,
-                  ),
-                  _infoText("Disponibles:", '${widget.seatsAvailable}'),
-                ],
+      child: InkWell(
+        onTap: () {
+          if (widget.seatsAvailable != 0) {
+            dataSelectedRoute(widget.idTrip); // Guardar datos del viaje
+            GoRouter.of(context)
+                .push('/TicketPage'); // Navegar a la página de asientos
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('No hay disponibilidad para este viaje'),
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Column(
-                    children: [
-                      _routeInfo(
-                          "Aeropuerto El Tepual",
+            );
+          }
+        },
+        borderRadius: BorderRadius.circular(12), // Para efecto visual
+        child: Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: const BorderSide(color: Colors.grey, width: 0.5)),
+          elevation: 3,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _infoText("Salida en:", timeToGo, "min"),
+                    const VerticalDivider(
+                      width: 5,
+                    ),
+                    _infoText("Tiempo de Viaje:", travelTime, "min"),
+                    const VerticalDivider(
+                      width: 5,
+                    ),
+                    _infoText("Capacidad:", '${widget.seats}'),
+                    const VerticalDivider(
+                      width: 5,
+                    ),
+                    _infoText("Disponibles:", '${widget.seatsAvailable}'),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _routeInfo(
+                          getRegionFromAddress(
+                              widget.origin), // Extraemos la región
                           "Salida: ${widget.timeIni}",
-                          Icons.radio_button_checked),
-                      _routeInfo("Terminal Puerto Montt",
-                          "Llegada: ${widget.timeFin}", Icons.location_on,
-                          isDestination: true),
-                    ],
-                  ),
-                  const VerticalDivider(
-                    width: 25,
-                  ),
-                  Column(
-                    children: [
-                      _infoPrice("Precio:", '\$'),
-                      SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              minimumSize: const Size(50, 36),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8))),
-                          onPressed: () {
-                            if (widget.seatsAvailable != 0) {
-                              dataSelectedRoute(
-                                  widget.idTrip); // Guardar datos del viaje
-                              GoRouter.of(context).push(
-                                  '/TicketPage'); // Navegar a la página de asientos
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'No hay disponibilidad para este viaje'),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text("Seleccionar",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12)),
+                          Icons.radio_button_checked,
                         ),
-                      )
-                    ],
-                  )
-                ],
-              )
-            ],
+                        _routeInfo(
+                          getRegionFromAddress(
+                              widget.destination), // Extraemos la región
+                          "Llegada: ${widget.timeFin}",
+                          Icons.location_on,
+                          isDestination: true,
+                        ),
+                      ],
+                    ),
+                    const VerticalDivider(
+                      width: 35,
+                    ),
+                    Column(
+                      children: [
+                        _infoPrice('\$10000.00'),
+                      ],
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -141,49 +139,81 @@ class _ScheduleCardState extends State<ScheduleCard> {
   }
 }
 
-Widget _infoText(String title, String value) {
+Widget _infoText(String title, String value, [String? subtitle]) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
-      Text(value,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+      Text(title, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      Row(
+        children: [
+          Text(value,
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Roboto')),
+          if (subtitle != null)
+            Text(subtitle,
+                style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+        ],
+      )
     ],
   );
 }
 
-Widget _infoPrice(String title, String value) {
+Widget _infoPrice(String value) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title,
-          style: const TextStyle(
-              fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold)),
       Text(value,
           style: const TextStyle(
-              fontSize: 14, fontWeight: FontWeight.bold, color: Colors.orange)),
+              fontSize: 18, fontWeight: FontWeight.w900, color: Colors.orange)),
     ],
   );
 }
 
-Widget _routeInfo(String title, String subtitle, IconData icon,
-    {bool isDestination = false}) {
+Widget _routeInfo(
+  String title,
+  String subtitle,
+  IconData icon, {
+  bool isDestination = false,
+}) {
   return Row(
     children: [
-      Icon(icon, size: 15, color: isDestination ? Colors.orange : Colors.blue),
-      const SizedBox(width: 6),
+      Icon(icon, size: 18, color: isDestination ? Colors.orange : Colors.blue),
+      const SizedBox(width: 8),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style:
-                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-          Text(subtitle,
-              style: TextStyle(color: Colors.grey[700], fontSize: 10)),
+          Text(
+            limitTextLength(title, 23),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+          // Aquí aplicamos el truncado y el TextOverflow.ellipsis
+          Text(
+            subtitle, // Limita a 20 caracteres
+            style: TextStyle(color: Colors.grey[700], fontSize: 12),
+            maxLines: 1, // Limita el texto a una sola línea
+            overflow:
+                TextOverflow.ellipsis, // Agrega "..." si el texto se desborda
+          ),
         ],
       ),
     ],
   );
+}
+
+String limitTextLength(String text, int maxLength) {
+  if (text.length > maxLength) {
+    return '${text.substring(0, maxLength)}...'; // Recorta y agrega "..."
+  }
+  return text;
+}
+
+String getRegionFromAddress(String address) {
+  // Dividimos la dirección por las comas y tomamos la última parte
+  List<String> parts = address.split(',');
+  // Retornamos la última parte, que sería la región
+  return parts.isNotEmpty ? parts.last.trim() : '';
 }
 
 String _calculateTravelTime(String start, String end) {
@@ -194,7 +224,32 @@ String _calculateTravelTime(String start, String end) {
   // Diferencia en minutos
   int minutes = endTime.difference(startTime).inMinutes;
 
-  return "$minutes min";
+  return "$minutes";
+}
+
+String _calculateTimeToGo(String start) {
+  // Obtener la fecha y hora actual
+  DateTime now = DateTime.now();
+
+  // Crear un DateTime con la hora de salida de hoy
+  DateTime startTime = DateTime.parse(
+      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} $start:00");
+
+  // Si la hora de salida ya pasó hoy, calcular la salida del día siguiente
+  if (startTime.isBefore(now)) {
+    startTime = startTime.add(const Duration(days: 1));
+  }
+
+  // Calcular la diferencia en minutos
+  int minutes = startTime.difference(now).inMinutes;
+
+  // Si faltan más de 2 horas, mostrar 🚫
+  if (minutes > 120) {
+    return "🚫";
+  }
+
+  // Devolver el tiempo en minutos
+  return "$minutes";
 }
 
 
