@@ -53,7 +53,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   Widget build(BuildContext context) {
     String travelTime = _calculateTravelTime(widget.timeIni, widget.timeFin);
-    String timeToGo = _calculateTimeToGo(widget.timeIni);
+    List<String> timeToGo = _calculateTimeToGo(widget.timeIni);
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.99,
       child: InkWell(
@@ -77,14 +77,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
               side: const BorderSide(color: Colors.grey, width: 0.5)),
           elevation: 3,
           child: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.fromLTRB(15, 10, 12, 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _infoText("Salida en:", timeToGo, "min"),
+                    _infoText("Salida en:", timeToGo[0], timeToGo[1]),
                     const VerticalDivider(
                       width: 5,
                     ),
@@ -111,6 +111,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           "Salida: ${widget.timeIni}",
                           Icons.radio_button_checked,
                         ),
+                        const SizedBox(height: 16),
                         _routeInfo(
                           getRegionFromAddress(
                               widget.destination), // Extraemos la región
@@ -121,11 +122,29 @@ class _ScheduleCardState extends State<ScheduleCard> {
                       ],
                     ),
                     const VerticalDivider(
-                      width: 35,
+                      width: 6,
                     ),
                     Column(
                       children: [
-                        _infoPrice('\$10000.00'),
+                        CustomButton(
+                          title: "\$10000.00",
+                          onTap: () {
+                            if (widget.seatsAvailable != 0) {
+                              dataSelectedRoute(
+                                  widget.idTrip); // Guardar datos del viaje
+                              GoRouter.of(context).push(
+                                  '/TicketPage'); // Navegar a la página de asientos
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'No hay disponibilidad para este viaje'),
+                                ),
+                              );
+                            }
+                          },
+                          color: Colors.green,
+                        ),
                       ],
                     )
                   ],
@@ -143,7 +162,9 @@ Widget _infoText(String title, String value, [String? subtitle]) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      Text(title,
+          style:
+              TextStyle(fontSize: 14, color: Colors.grey[600], fontFamily: '')),
       Row(
         children: [
           Text(value,
@@ -151,9 +172,15 @@ Widget _infoText(String title, String value, [String? subtitle]) {
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Roboto')),
+          const VerticalDivider(
+            width: 0.5,
+          ),
           if (subtitle != null)
-            Text(subtitle,
-                style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+            Text(" $subtitle",
+                style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold)),
         ],
       )
     ],
@@ -178,6 +205,7 @@ Widget _routeInfo(
   bool isDestination = false,
 }) {
   return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Icon(icon, size: 18, color: isDestination ? Colors.orange : Colors.blue),
       const SizedBox(width: 8),
@@ -227,29 +255,23 @@ String _calculateTravelTime(String start, String end) {
   return "$minutes";
 }
 
-String _calculateTimeToGo(String start) {
-  // Obtener la fecha y hora actual
+List<String> _calculateTimeToGo(String start) {
   DateTime now = DateTime.now();
-
-  // Crear un DateTime con la hora de salida de hoy
   DateTime startTime = DateTime.parse(
       "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} $start:00");
 
-  // Si la hora de salida ya pasó hoy, calcular la salida del día siguiente
   if (startTime.isBefore(now)) {
     startTime = startTime.add(const Duration(days: 1));
   }
 
-  // Calcular la diferencia en minutos
   int minutes = startTime.difference(now).inMinutes;
+  int hours = startTime.difference(now).inHours;
 
-  // Si faltan más de 2 horas, mostrar 🚫
-  if (minutes > 120) {
-    return "🚫";
+  if (minutes > 60) {
+    return [hours.toString(), "h"]; // Retorna [valor, unidad]
+  } else {
+    return [minutes.toString(), "min"]; // Retorna [valor, unidad]
   }
-
-  // Devolver el tiempo en minutos
-  return "$minutes";
 }
 
 

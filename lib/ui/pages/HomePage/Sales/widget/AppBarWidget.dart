@@ -79,7 +79,7 @@ class AppBarSalesWidget extends StatelessWidget {
                           ),
                           Divider(
                             // Aquí agregas la línea divisoria
-                            color: Colors.grey, // Color de la línea
+                            color: Colors.grey, // Color de la líneaadmin
                             thickness: 1, // Grosor de la línea
                             height: 2, // Espacio encima y debajo de la línea
                           ),
