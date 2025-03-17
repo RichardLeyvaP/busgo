@@ -41,18 +41,76 @@ class AppBarSalesWidget extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Column(
-                  children: [
-                    Icon(MdiIcons.busMultiple, color: Colors.white, size: 60),
-                    const SizedBox(
-                      height: 6,
-                    ),
-                    const Text(
-                      'Viajes',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ],
-                ),
+                Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(color: Colors.grey, width: 0.5)),
+                    elevation: 3,
+                    // ignore: prefer_const_constructors
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.radio_button_checked,
+                                  size: 18, color: Colors.blue),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Origen',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  Text(
+                                    "Region Metropolitana",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Divider(
+                            // Aquí agregas la línea divisoria
+                            color: Colors.grey, // Color de la línea
+                            thickness: 1, // Grosor de la línea
+                            height: 2, // Espacio encima y debajo de la línea
+                          ),
+                          Row(
+                            children: [
+                              Icon(Icons.location_on,
+                                  size: 18, color: Colors.orange),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Destino',
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  Text(
+                                    " Region de Magallanes",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )),
               ],
             ),
             const Text('      '),
