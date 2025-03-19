@@ -126,9 +126,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     ),
                     Column(
                       children: [
-                        CustomButton(
-                          title: "\$10000.00",
-                          onTap: () {
+                        ElevatedButton(
+                          onPressed: () {
                             if (widget.seatsAvailable != 0) {
                               dataSelectedRoute(
                                   widget.idTrip); // Guardar datos del viaje
@@ -143,7 +142,13 @@ class _ScheduleCardState extends State<ScheduleCard> {
                               );
                             }
                           },
-                          color: Colors.green,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: const Text("\$ 10000.00",
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ],
                     )
@@ -162,9 +167,7 @@ Widget _infoText(String title, String value, [String? subtitle]) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title,
-          style:
-              TextStyle(fontSize: 14, color: Colors.grey[600], fontFamily: '')),
+      Text(title, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
       Row(
         children: [
           Text(value,
@@ -187,16 +190,16 @@ Widget _infoText(String title, String value, [String? subtitle]) {
   );
 }
 
-Widget _infoPrice(String value) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(value,
-          style: const TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w900, color: Colors.orange)),
-    ],
-  );
-}
+// Widget _infoPrice(String value) {
+//   return Column(
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     children: [
+//       Text(value,
+//           style: const TextStyle(
+//               fontSize: 18, fontWeight: FontWeight.w900, color: Colors.orange)),
+//     ],
+//   );
+// }
 
 Widget _routeInfo(
   String title,

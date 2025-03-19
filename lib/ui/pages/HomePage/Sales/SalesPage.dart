@@ -33,6 +33,11 @@ class SalesPage extends StatelessWidget {
                       padding: const EdgeInsets.all(5.0),
                       child: Column(
                         children: [
+                          const Text(
+                            'Viajes',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 14),
+                          ),
                           // SizedBox(height: 10),
                           // ContainerSourceDestinationWidget(),
                           const SizedBox(height: 20),
