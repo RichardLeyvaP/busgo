@@ -11,14 +11,14 @@ class AppBarSalesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: 215,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.blue[400],
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -27,18 +27,21 @@ class AppBarSalesWidget extends StatelessWidget {
                 GoRouter.of(context).pop();
               },
               child: const Padding(
-                padding: EdgeInsets.only(left: 8.0),
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                 child: Icon(Icons.arrow_back, color: Colors.white),
               ),
             ),
-            const Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                OrigenDestinoCard(
-                  origen: "Aereopuerto el Tepual",
-                  destino: "Terminal Puerto Montt",
-                ),
-              ],
+            const Padding(
+              padding: EdgeInsets.fromLTRB(7, 37, 0, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  OrigenDestinoCard(
+                    origen: "Aereopuerto el Tepual",
+                    destino: "Terminal Puerto Montt",
+                  ),
+                ],
+              ),
             ),
             const Text('      '),
           ],

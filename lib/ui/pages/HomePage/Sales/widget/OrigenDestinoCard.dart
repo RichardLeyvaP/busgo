@@ -14,21 +14,21 @@ class OrigenDestinoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       // Ajusta el ancho y alto a tus necesidades
-      width: 315,
-      height: 130,
+      width: 355,
+      height: 121,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
         elevation: 2,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 15, 15, 15),
+          padding: const EdgeInsets.fromLTRB(10, 13, 15, 19),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Columna con los círculos y la línea punteada
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 1, 0, 25),
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 17),
                 child: Column(
                   children: [
                     // Círculo de Origen (azul)
@@ -60,7 +60,7 @@ class OrigenDestinoCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 13),
               // Columna con la información de Origen y Destino
               Expanded(
                 child: Column(
@@ -73,7 +73,7 @@ class OrigenDestinoCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 10),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 1),
                     // Texto de Origen con máx. 3 líneas
                     Text(
                       origen,
@@ -81,7 +81,7 @@ class OrigenDestinoCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.black54),
                     ),
                     // const SizedBox(height: 3),
@@ -99,7 +99,7 @@ class OrigenDestinoCard extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 10),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 1),
                     // Texto de Destino con máx. 3 líneas
                     Text(
                       destino,
@@ -107,7 +107,7 @@ class OrigenDestinoCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.black),
                     ),
                   ],
