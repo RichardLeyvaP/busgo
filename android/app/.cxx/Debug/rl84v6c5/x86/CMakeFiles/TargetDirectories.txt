@@ -1,0 +1,2 @@
+C:/Users/Lester/Documents/WorkKlint/busgo/android/app/.cxx/Debug/rl84v6c5/x86/CMakeFiles/edit_cache.dir
+C:/Users/Lester/Documents/WorkKlint/busgo/android/app/.cxx/Debug/rl84v6c5/x86/CMakeFiles/rebuild_cache.dir
