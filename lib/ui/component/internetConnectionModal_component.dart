@@ -14,7 +14,7 @@ class InternetConnectionModal {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
-          title: Row(
+          title: const Row(
             children: [
               Icon(Icons.wifi_off, color: Colors.red, size: 28),
               SizedBox(width: 10),
@@ -27,7 +27,7 @@ class InternetConnectionModal {
               ),
             ],
           ),
-          content: Column(
+          content: const Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,9 +52,9 @@ class InternetConnectionModal {
               },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.red,
-                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              child: Text('Intentar más tarde'),
+              child: const Text('Intentar más tarde'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -64,13 +64,13 @@ class InternetConnectionModal {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
-                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
-              child: Text('Pagar con Efectivo'),
+              child: const Text('Pagar con Efectivo'),
             ),
           ],
         );

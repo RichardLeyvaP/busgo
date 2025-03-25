@@ -55,7 +55,7 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
         future: _reportDataFuture1,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -84,7 +84,7 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Expanded( // Envuelve el ListView en un Expanded
                 child: 
                 (ticketsSignal.value != null)?
@@ -95,8 +95,8 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
                     itemCount: ticketsSignal.value?.length??0, // Número de elementos a mostrar
                     itemBuilder: (context, index) {
                       return Container(
-                        margin: EdgeInsets.symmetric(vertical: 8.0), // Márgenes entre los contenedores
-                        padding: EdgeInsets.all(16),
+                        margin: const EdgeInsets.symmetric(vertical: 8.0), // Márgenes entre los contenedores
+                        padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           border: Border.all(),
                         ),
@@ -107,13 +107,13 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
                              Text(
                         currentUserBranchCompanyLG.value?.name ??
                             '-- No tiene --',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                           "Sucursal: ${currentUserBranchLG.value?.name ?? '-- No tiene --'}"),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                             _buildInfoRow('ID: ', ticketsSignal.value![index].id.toString()),
                             _buildInfoRow('Método de pago: ', ticketsSignal.value![index].method.toString()),
                             _buildInfoRow('Cantidad: ', ticketsSignal.value![index].quantity.toString()),
@@ -135,7 +135,7 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
     disabledBackgroundColor: Colors.grey, // Color de fondo cuando está deshabilitado
     disabledForegroundColor: Colors.white, // Color del texto cuando está deshabilitado
   ),
-  child: Center(child: Text('Ya fue reimpreso')),
+  child: const Center(child: Text('Ya fue reimpreso')),
 ):
                               ElevatedButton(
                               onPressed: () {
@@ -143,7 +143,7 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
                                 _reprintTickets(ticketsSignal.value![index].id!);
                                 utilsPrinterTicket.printTicketPasaje(ticketsSignal.value![index]);
                               },
-                              child: Center(child: Text('Reimprimir')),)
+                              child: const Center(child: Text('Reimprimir')),)
                           ],
                         ),
                       );

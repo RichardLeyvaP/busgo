@@ -107,14 +107,14 @@ class UtilsPrinterTicketLocal {
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.printText(
-          'FECHA: ${resultReport1RP.value!.fecha} HORA: ${schedule}',
+          'FECHA: ${resultReport1RP.value!.fecha} HORA: $schedule',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.lineWrap(1);
       await SunmiPrinter.printText('RECORRIDO:',
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('ORIGEN: ${tripOrigin}',
+      await SunmiPrinter.printText('ORIGEN: $tripOrigin',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DESTINO: ${tripDestination}',
+      await SunmiPrinter.printText('DESTINO: $tripDestination',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.printText('Precio: \$${ticket.price}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
@@ -135,13 +135,13 @@ class UtilsPrinterTicketLocal {
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
       await SunmiPrinter.printText('N° 99999',
           style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('FECHA: ${ticket.date} HORA: ${schedule}',
+      await SunmiPrinter.printText('FECHA: ${ticket.date} HORA: $schedule',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.printText('RECORRIDO:',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('ORIGEN: ${tripOrigin}',
+      await SunmiPrinter.printText('ORIGEN: $tripOrigin',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DESTINO: ${tripDestination}',
+      await SunmiPrinter.printText('DESTINO: $tripDestination',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
       await SunmiPrinter.printText('Precio: \$${ticket.price}',
           style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));

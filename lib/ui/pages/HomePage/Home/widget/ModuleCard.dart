@@ -27,7 +27,7 @@ class ModuleCard extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.45,
         height: 170,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(12.0),
@@ -36,18 +36,18 @@ class ModuleCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(icon, size: 40, color: Colors.white),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               description,
-              style: TextStyle(fontSize: 14, color: Colors.white70),
+              style: const TextStyle(fontSize: 14, color: Colors.white70),
             ),
           ],
         ),

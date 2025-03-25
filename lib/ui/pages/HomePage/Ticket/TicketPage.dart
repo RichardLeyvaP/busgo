@@ -139,8 +139,8 @@ int branch_id = currentUserBranchLG.value!.id;
   label: Row(
     children: [
       Icon(MdiIcons.ticket, color: Colors.white),
-      SizedBox(width: 8),
-      Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
+      const SizedBox(width: 8),
+      const Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
     ],
   ),
 ),
@@ -159,7 +159,7 @@ int branch_id = currentUserBranchLG.value!.id;
                 color: Colors.blue[400],
               ),
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -168,12 +168,12 @@ int branch_id = currentUserBranchLG.value!.id;
                       onTap: () {
                         GoRouter.of(context).pop();
                       },
-                      child: Padding(
+                      child: const Padding(
                         padding: EdgeInsets.only(left: 8.0),
                         child: Icon(Icons.arrow_back, color: Colors.white),
                       ),
                     ),
-                    Text(
+                    const Text(
                       "Ticket",
                       style: TextStyle(
                         color: Colors.white,
@@ -181,7 +181,7 @@ int branch_id = currentUserBranchLG.value!.id;
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 40), // Espaciador para equilibrar
+                    const SizedBox(width: 40), // Espaciador para equilibrar
                   ],
                 ),
               ),
@@ -194,8 +194,8 @@ int branch_id = currentUserBranchLG.value!.id;
                   children: [
                     // Contenedor blanco de detalles
                     Container(
-                      margin: EdgeInsets.only(top: 160), // Empuja hacia abajo
-                      decoration: BoxDecoration(
+                      margin: const EdgeInsets.only(top: 160), // Empuja hacia abajo
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
@@ -206,15 +206,15 @@ int branch_id = currentUserBranchLG.value!.id;
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
-                            SizedBox(height: 100), // Espacio para el Card superior
-                            Text(
+                            const SizedBox(height: 100), // Espacio para el Card superior
+                            const Text(
                               "Pago de Pasaje",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             PaymentCard(
                               timeIni: tripsSelectSignal.value!.schedule.toString(),
                               timeFin: '10:30xxx',
@@ -244,18 +244,18 @@ int branch_id = currentUserBranchLG.value!.id;
                                 children: [
                                   Column(
                                     children: [
-                                      Icon(Icons.location_on, color: Colors.blue),
-                                      SizedBox(height: 5),
+                                      const Icon(Icons.location_on, color: Colors.blue),
+                                      const SizedBox(height: 5),
                                       Container(
                                         width: 1,
                                         height: 40,
                                         color: Colors.grey[400],
                                       ),
-                                      SizedBox(height: 5),
-                                      Icon(Icons.location_on, color: Color(0xFF55698F)),
+                                      const SizedBox(height: 5),
+                                      const Icon(Icons.location_on, color: Color(0xFF55698F)),
                                     ],
                                   ),
-                                  SizedBox(width: 20),
+                                  const SizedBox(width: 20),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -263,29 +263,29 @@ int branch_id = currentUserBranchLG.value!.id;
                                         Text("ORIGEN", style: TextStyle(color: Colors.grey[600])),
                                         Text(
                                           tripsSelectSignal.value!.origin.toString(),
-                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
                                         ),
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         Divider(color: Colors.grey[400]),
-                                        SizedBox(height: 4),
+                                        const SizedBox(height: 4),
                                         Text("DESTINO", style: TextStyle(color: Colors.grey[600])),
                                         Text(
                                           tripsSelectSignal.value!.destination.toString(),
-                                          style: TextStyle(fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Row(
                                 children: [
-                                  Icon(Icons.access_time, size: 15, color: Colors.black),
-                                  SizedBox(width: 5),
+                                  const Icon(Icons.access_time, size: 15, color: Colors.black),
+                                  const SizedBox(width: 5),
                                   Text(
                                     tripsSelectSignal.value!.schedule.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -293,31 +293,31 @@ int branch_id = currentUserBranchLG.value!.id;
                                   ),
                                   Text(
                                     tripsSelectSignal.value!.arrival.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
                                   Icon(MdiIcons.bus, size: 15, color: Colors.black),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text('Bus: ', style: TextStyle(color: Colors.grey[600])),
                                   Text(
                                     tripsSelectSignal.value!.plate.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
                                   Icon(MdiIcons.seatReclineExtra, size: 15, color: Colors.black),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text('Capacidad: ', style: TextStyle(color: Colors.grey[600])),
                                   Text(
                                     tripsSelectSignal.value!.seats.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),

@@ -52,13 +52,13 @@ class _Report2PageState extends State<Report2Page> {
           // ⬅ Usa StatefulBuilder para actualizar el modal
           return Container(
             height: 500,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Seleccionar rango de fechas",
+                const Text("Seleccionar rango de fechas",
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: TableCalendar(
                     firstDay: DateTime(2000),
@@ -67,8 +67,8 @@ class _Report2PageState extends State<Report2Page> {
                     selectedDayPredicate: (day) {
                       if (startDate != null && endDate != null) {
                         return day.isAfter(
-                                startDate!.subtract(Duration(days: 1))) &&
-                            day.isBefore(endDate!.add(Duration(days: 1)));
+                                startDate!.subtract(const Duration(days: 1))) &&
+                            day.isBefore(endDate!.add(const Duration(days: 1)));
                       }
                       return day == startDate;
                     },
@@ -88,9 +88,9 @@ class _Report2PageState extends State<Report2Page> {
                     },
                     calendarStyle: CalendarStyle(
                       rangeHighlightColor: Colors.orange.withOpacity(0.3),
-                      todayDecoration: BoxDecoration(
+                      todayDecoration: const BoxDecoration(
                           color: Colors.blue, shape: BoxShape.circle),
-                      selectedDecoration: BoxDecoration(
+                      selectedDecoration: const BoxDecoration(
                           color: Colors.orange, shape: BoxShape.circle),
                     ),
                   ),
@@ -102,7 +102,7 @@ class _Report2PageState extends State<Report2Page> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("Cancelar"),
+                      child: const Text("Cancelar"),
                     ),
                     ElevatedButton(
                       onPressed: () async {
@@ -131,7 +131,7 @@ class _Report2PageState extends State<Report2Page> {
                           //actualizar ui
                         });
                       },
-                      child: Text("Aceptar"),
+                      child: const Text("Aceptar"),
                     ),
                   ],
                 ),
@@ -152,7 +152,7 @@ class _Report2PageState extends State<Report2Page> {
         future: _reportDataFuture2,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // Muestra el indicador de carga
+            return const Center(child: CircularProgressIndicator()); // Muestra el indicador de carga
           }
 
           if (snapshot.hasError) {
@@ -173,11 +173,11 @@ class _Report2PageState extends State<Report2Page> {
                         
                         onPressed: _selectDateRange2,
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 8), // Ajusta el padding si es necesario
                         ),
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize
                               .min, // Hace que el Row ocupe solo el tamaño necesario
                           children: [
@@ -196,7 +196,7 @@ class _Report2PageState extends State<Report2Page> {
                     alignment: Alignment.topCenter,
                     child: Container(
                       width: 300,
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         border: Border.all(),
                       ),
@@ -204,44 +204,44 @@ class _Report2PageState extends State<Report2Page> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${resultReport2?.nombre??'-Sin Nombre-'}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 5),
+                          Text(resultReport2?.nombre??'-Sin Nombre-', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 5),
                           Text("FECHA: ${resultReport2?.fecha??'-Sin fecha-'}"),
-                          SizedBox(height: 10),
-                          Text("RESUMEN:", style: TextStyle(fontWeight: FontWeight.bold)),
-                          SizedBox(height: 5),
-                          Text("EMISIÓN DE PASAJES", style: TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 10),
+                          const Text("RESUMEN:", style: TextStyle(fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 5),
+                          const Text("EMISIÓN DE PASAJES", style: TextStyle(fontWeight: FontWeight.bold)),
                           Text("Pasajes emitidos: ${resultReport2?.pasejesEmitidos??'0'}"),
                           Text("Reimpresiones: ${resultReport2?.reimpresiones??'0'}"),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           if (totalesPorMetodos != null) ...[
                             for (var totalesPorMetodo in totalesPorMetodos) ...[
                               Text(
                                 "${totalesPorMetodo.metodo}: ${totalesPorMetodo.cantidad ?? 0}",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ],
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           if (totalesPorMetodos != null) ...[
-                            Text("TOTALES:", style: TextStyle(fontWeight: FontWeight.bold)),
+                            const Text("TOTALES:", style: TextStyle(fontWeight: FontWeight.bold)),
                             for (var totalesPorMetodo in totalesPorMetodos) ...[
                               Text(
                                 "${totalesPorMetodo.metodo}: \$${totalesPorMetodo.total ?? 0}",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ],
                           Text(
                             "TOTAL: \$${resultReport2?.totales ?? 0}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("TRAMOS:", style: TextStyle(fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 5),
+                                      const Text("TRAMOS:", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      const SizedBox(height: 5),
                                       if (resultReport2?.tramos != null)
                     ...resultReport2!.tramos!.map<Widget>((tramo) {
                       int efectivo = 0;
@@ -286,7 +286,7 @@ class _Report2PageState extends State<Report2Page> {
         onPressed: () {
           // Llamar al método de impresión aquí
         },
-        child: Icon(Icons.print),
+        child: const Icon(Icons.print),
       ),
     );
   }
@@ -305,18 +305,18 @@ class _Report2PageState extends State<Report2Page> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
-        SizedBox(height: 4,),
+        Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 4,),
         Text('Total pasajes: $totalPasajes'),
         Text('Efectivo: $efectivo'),
         Text('Débito: $debito'),
         Text('Crédito: $credito'),
-        SizedBox(height: 5),
-        Text('Total Tramo: \$${totalTramo}'),
-        Text('Efectivo: \$${efectivoTramo}'),
-        Text('Débito: \$${debitoTramo}'),
-        Text('Crédito: \$${creditoTramo}'),
-        SizedBox(height: 10),
+        const SizedBox(height: 5),
+        Text('Total Tramo: \$$totalTramo'),
+        Text('Efectivo: \$$efectivoTramo'),
+        Text('Débito: \$$debitoTramo'),
+        Text('Crédito: \$$creditoTramo'),
+        const SizedBox(height: 10),
       ],
     );
   }

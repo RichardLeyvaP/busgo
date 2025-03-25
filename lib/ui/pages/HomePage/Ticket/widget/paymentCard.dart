@@ -288,6 +288,7 @@ class _PaymentCardState extends State<PaymentCard> {
   }
 }
 
+//TODO: resololucion
 void showSeatSelectionModal(
     BuildContext context, List<Seat> seats, int maxSelectable) {
   final selectedSeatNumbers1 = ValueNotifier<List<int>>([]);
@@ -315,7 +316,7 @@ void showSeatSelectionModal(
             ),
             const SizedBox(height: 16),
             const Text(
-              'La posición de los asientos que se muestran en el plano es solamente de referenda, por tanto puede variar',
+              'La posición de los asientos que se muestran en el plano es solamente de referencia, por tanto puede variar',
               style: TextStyle(fontSize: 12),
             ),
             SizedBox(

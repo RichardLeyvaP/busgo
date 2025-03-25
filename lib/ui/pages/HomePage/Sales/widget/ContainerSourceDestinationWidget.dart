@@ -16,7 +16,7 @@ class ContainerSourceDestinationWidget extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.shade400,
             blurRadius: 10,
-            offset: Offset(0, 5),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -27,18 +27,18 @@ class ContainerSourceDestinationWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Icon(Icons.location_on, color: Colors.blue),
-                  SizedBox(height: 5),
+                  const Icon(Icons.location_on, color: Colors.blue),
+                  const SizedBox(height: 5),
                   Container(
                     width: 1,
                     height: 40,
                     color: Colors.grey[400],
                   ),
-                  SizedBox(height: 5),
-                  Icon(Icons.location_on, color: const Color.fromARGB(255, 85, 105, 143)),
+                  const SizedBox(height: 5),
+                  const Icon(Icons.location_on, color: Color.fromARGB(255, 85, 105, 143)),
                 ],
               ),
-              SizedBox(width: 20),
+              const SizedBox(width: 20),
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,22 +47,22 @@ class ContainerSourceDestinationWidget extends StatelessWidget {
                     "ORIGEN",
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  Text(
+                  const Text(
                     "Aeropuerto el Tepual",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Container(
                     width: 200,
                     height: 1,
                     color: Colors.grey[400],
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Text(
                     "DESTINO",
                     style: TextStyle(color: Colors.grey[600]),
                   ),
-                  Text(
+                  const Text(
                     "Terminal de buses Puerto Montt",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -70,7 +70,7 @@ class ContainerSourceDestinationWidget extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
         ],
       ),
     );

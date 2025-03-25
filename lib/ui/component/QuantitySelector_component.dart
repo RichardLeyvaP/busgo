@@ -33,9 +33,9 @@ class _QuantitySelectorState extends State<QuantitySelector> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Text('${widget.title}: ', style: TextStyle(fontSize: 14)),
+        Text('${widget.title}: ', style: const TextStyle(fontSize: 14)),
         IconButton(
-          icon: Icon(Icons.remove_circle_outline),
+          icon: const Icon(Icons.remove_circle_outline),
           onPressed: quantity > 0
               ? () {
                  // decreaseQuantity();
@@ -73,9 +73,9 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                 }
               : null,
         ),
-        Text('$quantity', style: TextStyle(fontSize: 16)),
+        Text('$quantity', style: const TextStyle(fontSize: 16)),
         IconButton(
-          icon: Icon(Icons.add_circle_outline),
+          icon: const Icon(Icons.add_circle_outline),
           onPressed: () {
            // increaseQuantity();
            if(widget.title == 'Menores 50% Valor' || widget.title == 'Mayores de edad  ')
@@ -89,7 +89,7 @@ class _QuantitySelectorState extends State<QuantitySelector> {
         titleColor: Colors.white, // Opcional
         icon: Icons.check_circle, // Opcional
         backgroundColor: Colors.red, // Opcional
-        duration: Duration(seconds: 5), // Opcional
+        duration: const Duration(seconds: 5), // Opcional
       );
 
                       }

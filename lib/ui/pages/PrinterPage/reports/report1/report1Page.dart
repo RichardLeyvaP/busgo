@@ -52,13 +52,13 @@ class _Report1PageState extends State<Report1Page> {
           // ⬅ Usa StatefulBuilder para actualizar el modal
           return Container(
             height: 500,
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text("Seleccionar rango de fechas",
+                const Text("Seleccionar rango de fechas",
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: TableCalendar(
                     firstDay: DateTime(2000),
@@ -67,8 +67,8 @@ class _Report1PageState extends State<Report1Page> {
                     selectedDayPredicate: (day) {
                       if (startDate != null && endDate != null) {
                         return day.isAfter(
-                                startDate!.subtract(Duration(days: 1))) &&
-                            day.isBefore(endDate!.add(Duration(days: 1)));
+                                startDate!.subtract(const Duration(days: 1))) &&
+                            day.isBefore(endDate!.add(const Duration(days: 1)));
                       }
                       return day == startDate;
                     },
@@ -88,9 +88,9 @@ class _Report1PageState extends State<Report1Page> {
                     },
                     calendarStyle: CalendarStyle(
                       rangeHighlightColor: Colors.orange.withOpacity(0.3),
-                      todayDecoration: BoxDecoration(
+                      todayDecoration: const BoxDecoration(
                           color: Colors.blue, shape: BoxShape.circle),
-                      selectedDecoration: BoxDecoration(
+                      selectedDecoration: const BoxDecoration(
                           color: Colors.orange, shape: BoxShape.circle),
                     ),
                   ),
@@ -102,7 +102,7 @@ class _Report1PageState extends State<Report1Page> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("Cancelar"),
+                      child: const Text("Cancelar"),
                     ),
                     ElevatedButton(
                       onPressed: () async {
@@ -131,7 +131,7 @@ class _Report1PageState extends State<Report1Page> {
                           //actualizar ui
                         });
                       },
-                      child: Text("Aceptar"),
+                      child: const Text("Aceptar"),
                     ),
                   ],
                 ),
@@ -152,7 +152,7 @@ class _Report1PageState extends State<Report1Page> {
         future: _reportDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -183,11 +183,11 @@ class _Report1PageState extends State<Report1Page> {
                       
                       onPressed: _selectDateRange,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8), // Ajusta el padding si es necesario
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize
                             .min, // Hace que el Row ocupe solo el tamaño necesario
                         children: [
@@ -202,7 +202,7 @@ class _Report1PageState extends State<Report1Page> {
                 ),
                 Container(
                   width: 300,
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     border: Border.all(),
                   ),
@@ -212,19 +212,19 @@ class _Report1PageState extends State<Report1Page> {
                       Text(
                         currentUserBranchCompanyLG.value?.name ??
                             '-- No tiene --',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                           "FECHA: ${resultReport1RP.value?.fecha ?? fechaIni}"),
                       Text(
                           "Sucursal: ${currentUserBranchLG.value?.name ?? '-- No tiene --'}"),
-                      SizedBox(height: 10),
-                      Text("RESUMEN:",
+                      const SizedBox(height: 10),
+                      const Text("RESUMEN:",
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      SizedBox(height: 5),
-                      Text("EMISIÓN DE PASAJES",
+                      const SizedBox(height: 5),
+                      const Text("EMISIÓN DE PASAJES",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
                           "Pasajes emitidos: ${resultReport1RP.value?.pasajesEmitidos ?? 0}"),
@@ -234,29 +234,29 @@ class _Report1PageState extends State<Report1Page> {
                         for (var totalesPorMetodo in totalesPorMetodos) ...[
                           Text(
                             "${totalesPorMetodo.metodo}: ${totalesPorMetodo.cantidad ?? 0}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ],
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       if (totalesPorMetodos != null) ...[
-                        Text("TOTALES:",
+                        const Text("TOTALES:",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         for (var totalesPorMetodo in totalesPorMetodos) ...[
                           Text(
                             "${totalesPorMetodo.metodo}: \$${totalesPorMetodo.total ?? 0}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ],
                       Text(
                         "TOTAL: \$${resultReport1RP.value?.totales ?? 0}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                
               ],
             ),

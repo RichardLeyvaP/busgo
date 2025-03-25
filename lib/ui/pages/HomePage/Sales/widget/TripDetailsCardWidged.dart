@@ -30,7 +30,7 @@ class TripDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -38,7 +38,7 @@ class TripDetailsCard extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 6,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -48,12 +48,12 @@ class TripDetailsCard extends StatelessWidget {
           // Nombre del conductor
           Text(
             name ?? "Conductor desconocido",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
 
           // Imágenes de origen y destino
           Row(
@@ -67,13 +67,13 @@ class TripDetailsCard extends StatelessWidget {
                       Text(
                         origin ?? "Origen desconocido",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
-                      Icon(Icons.arrow_downward, color: Colors.grey),
+                      const Icon(Icons.arrow_downward, color: Colors.grey),
                       Text(
                         destination ?? "Destino desconocido",
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
                     ],
                   ),
@@ -82,7 +82,7 @@ class TripDetailsCard extends StatelessWidget {
               _buildImage(destinationImage),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
 
           // Detalles adicionales
           _buildInfoRow("Placa:", plate),
@@ -107,13 +107,13 @@ class TripDetailsCard extends StatelessWidget {
         width: 50,
         height: 50,
         color: Colors.grey[300], // Color de fondo mientras carga
-        child: Center(child: CircularProgressIndicator()),
+        child: const Center(child: CircularProgressIndicator()),
       ),
       errorWidget: (context, url, error) => Container(
         width: 50,
         height: 50,
         color: Colors.grey, // Color de fondo en caso de error
-        child: Icon(Icons.error, size: 30, color: Colors.white),
+        child: const Icon(Icons.error, size: 30, color: Colors.white),
       ),
     ),
   );
@@ -127,9 +127,9 @@ class TripDetailsCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Text(value ?? "No disponible"),
         ],
       ),

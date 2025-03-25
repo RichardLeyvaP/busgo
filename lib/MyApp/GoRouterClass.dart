@@ -36,7 +36,7 @@ final GoRouter appRouter = GoRouter(
       ),
       GoRoute(
         path: '/LoginFormPage',
-        builder: (context, state) => LoginFormPage(),
+        builder: (context, state) => const LoginFormPage(),
       ),
       GoRoute(
         path: '/ListPage',
@@ -82,11 +82,11 @@ GoRoute(
 ),
       GoRoute(
   path: '/ReportsPage',
-  builder: (context, state) =>  ReportsPage(),
+  builder: (context, state) =>  const ReportsPage(),
 ),
       GoRoute(
   path: '/Report1Page',
-  builder: (context, state) =>  Report1Page(),
+  builder: (context, state) =>  const Report1Page(),
 ),
 
 
