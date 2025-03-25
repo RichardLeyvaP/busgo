@@ -49,6 +49,7 @@ class _PaymentCardState extends State<PaymentCard> {
       ),
       child: Column(
         children: [
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -310,11 +311,38 @@ void showSeatSelectionModal(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        selectedSeatNumbers1.value = [];
+                        selectedSeatNumbersSN.value = [];
+                        for (var seat in seats) {
+                          seat.isSelected = false;
+                        }
+                        (context as Element).markNeedsBuild();
+                        Navigator.pop(context);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Icon(Icons.arrow_back, color: Colors.black),
+                      ),
+                    ),
+
+                    const SizedBox(width: 40), // Espaciador para equilibrar
+                  ],
+                ),
+              ),
+
             Text(
               "Selecciona tus asientos (máximo $maxSelectable)",
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             const Text(
               'La posición de los asientos que se muestran en el plano es solamente de referencia, por tanto puede variar',
               style: TextStyle(fontSize: 12),
@@ -371,9 +399,8 @@ Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
   return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 5, // 5 columnas en total
-      mainAxisSpacing: 10,
-      crossAxisSpacing: 10,
-      childAspectRatio: 1, // Hace los asientos más cuadrados
+      // mainAxisSpacing: 5,
+      crossAxisSpacing: 15,
     ),
     itemCount: seats.length,
     itemBuilder: (context, index) {

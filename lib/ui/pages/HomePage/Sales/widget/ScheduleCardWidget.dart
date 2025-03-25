@@ -1,12 +1,8 @@
 import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
-import 'package:BusGo/domain/signals/login_signals/login_signal.dart';
-import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
-import 'package:BusGo/env.dart';
-import 'package:BusGo/ui/component/CustomButton_component.dart';
-import 'package:BusGo/ui/pages/HomePage/Sales/widget/TripDetailsCardWidged.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 
 class ScheduleCard extends StatefulWidget {
   final String name;
@@ -77,7 +73,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               side: const BorderSide(color: Colors.grey, width: 0.5)),
           elevation: 3,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(15, 10, 12, 15),
+            padding: const EdgeInsets.fromLTRB(17, 10, 14, 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -101,6 +97,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 ),
                 const SizedBox(height: 12),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,9 +118,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         ),
                       ],
                     ),
-                    const VerticalDivider(
-                      width: 6,
-                    ),
+
                     Column(
                       children: [
                         ElevatedButton(

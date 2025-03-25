@@ -12,108 +12,111 @@ class OrigenDestinoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      // Ajusta el ancho y alto a tus necesidades
-      width: 355,
-      height: 121,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        elevation: 2,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 13, 15, 19),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Columna con los círculos y la línea punteada
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 17),
-                child: Column(
-                  children: [
-                    // Círculo de Origen (azul)
-                    Container(
-                      width: 14,
-                      height: 14,
-                      decoration: const BoxDecoration(
-                        color: Colors.blue,
-                        shape: BoxShape.circle,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0,0,7,0),
+      child: SizedBox(
+        // Ajusta el ancho y alto a tus necesidades
+        width: MediaQuery.of(context).size.height * 0.55,
+        height: 121,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          elevation: 2,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 13, 15, 19),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Columna con los círculos y la línea punteada
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 17),
+                  child: Column(
+                    children: [
+                      // Círculo de Origen (azul)
+                      Container(
+                        width: 14,
+                        height: 14,
+                        decoration: const BoxDecoration(
+                          color: Colors.blue,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                    // Línea punteada
-                    Expanded(
-                      child: CustomPaint(
-                        size: const Size(0, 1),
-                        painter: DottedLinePainter(),
-                        child: const SizedBox(width: 1),
+                      // Línea punteada
+                      Expanded(
+                        child: CustomPaint(
+                          size: const Size(0, 1),
+                          painter: DottedLinePainter(),
+                          child: const SizedBox(width: 1),
+                        ),
                       ),
-                    ),
-                    // Círculo de Destino (naranja)
-                    Container(
-                      width: 14,
-                      height: 14,
-                      decoration: const BoxDecoration(
-                        color: Colors.orange,
-                        shape: BoxShape.circle,
+                      // Círculo de Destino (naranja)
+                      Container(
+                        width: 14,
+                        height: 14,
+                        decoration: const BoxDecoration(
+                          color: Colors.orange,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(width: 13),
-              // Columna con la información de Origen y Destino
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Origen',
-                      style: TextStyle(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10),
-                    ),
-                    const SizedBox(height: 1),
-                    // Texto de Origen con máx. 3 líneas
-                    Text(
-                      origen,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: Colors.black54),
-                    ),
-                    // const SizedBox(height: 3),
-                    const Divider(
-                      color: Colors.black38,
-                      thickness: 1,
-                      endIndent: 30,
-                      indent: 1,
-                    ),
-                    // const SizedBox(height: 3),
-                    Text(
-                      'Destino',
-                      style: TextStyle(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10),
-                    ),
-                    const SizedBox(height: 1),
-                    // Texto de Destino con máx. 3 líneas
-                    Text(
-                      destino,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: Colors.black),
-                    ),
-                  ],
+                const SizedBox(width: 13),
+                // Columna con la información de Origen y Destino
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Origen',
+                        style: TextStyle(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10),
+                      ),
+                      const SizedBox(height: 1),
+                      // Texto de Origen con máx. 3 líneas
+                      Text(
+                        origen,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.black54),
+                      ),
+                      // const SizedBox(height: 3),
+                      const Divider(
+                        color: Colors.black38,
+                        thickness: 1,
+                        endIndent: 30,
+                        indent: 1,
+                      ),
+                      // const SizedBox(height: 3),
+                      Text(
+                        'Destino',
+                        style: TextStyle(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10),
+                      ),
+                      const SizedBox(height: 1),
+                      // Texto de Destino con máx. 3 líneas
+                      Text(
+                        destino,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.black),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

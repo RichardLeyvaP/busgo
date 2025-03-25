@@ -22,131 +22,116 @@ class TicketPage extends StatefulWidget {
 
 final utilsTicket = UtilsTicket();
 final NetworkService _networkService = NetworkService();
- final DatabaseHelper dbHelper = DatabaseHelper();  // Instancia de la base de datos
- SharedPreferencesStorage sharedPreferencesStorage = SharedPreferencesStorage(); // Instancia de la base de datos
- UtilsPrinterTicketLocal utilsPrinterTicketLocal = UtilsPrinterTicketLocal();
+final DatabaseHelper dbHelper =
+    DatabaseHelper(); // Instancia de la base de datos
+SharedPreferencesStorage sharedPreferencesStorage =
+    SharedPreferencesStorage(); // Instancia de la base de datos
+UtilsPrinterTicketLocal utilsPrinterTicketLocal = UtilsPrinterTicketLocal();
 
-  // Método para verificar la conexión y actualizar el estado
-  Future<bool> _checkConnection() async {
-    bool isConnected = await _networkService.checkInternetConnection();
-    if(isConnected){
-return true;
-    }
-    else{
-      return false;
-    }
+// Método para verificar la conexión y actualizar el estado
+Future<bool> _checkConnection() async {
+  bool isConnected = await _networkService.checkInternetConnection();
+  if (isConnected) {
+    return true;
+  } else {
+    return false;
   }
+}
 
 class _TicketPageState extends State<TicketPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-  onPressed: () async {
-   
-    
-    bool checkConnection = await _checkConnection();
-    if(checkConnection){
-      print('TIENE CONEXION - SI, MANDAR A PAGAR');
- utilsTicket.verifyPurchaseTicketClass(context, tripsSelectSignal.value!.price.toString());
-    }
-    else{
+        onPressed: () async {
+          bool checkConnection = await _checkConnection();
+          if (checkConnection) {
+            print('TIENE CONEXION - SI, MANDAR A PAGAR');
+            utilsTicket.verifyPurchaseTicketClass(
+                context, tripsSelectSignal.value!.price.toString());
+          } else {
+            InternetConnectionModal.show(
+              context,
+              onPayWithCash: () async {
+                // Lógica para pagar con efectivo
+                print('TIENE CONEXION - NO, GUARDAR EN DB-LOCAL');
+                // Si no hay conexión, guardamos el ticket en la base de datos local
+                double total =
+                    ((double.parse(tripsSelectSignal.value!.price!) / 2) *
+                            quantityMenoresSignal.watch(context)) +
+                        ((double.parse(tripsSelectSignal.value!.price!)) *
+                            quantitySignal.watch(context));
+                int branch_id = currentUserBranchLG.value!.id;
+                int trip_id = tripsSelectSignal.value!.id!;
+                int quantity =
+                    quantityMenoresSignal.value + quantitySignal.value;
+                List<int> seats = selectedSeatNumbersSN.value;
+                DateTime date = tripsSelectSignal.value!.date!;
+                int adults = quantitySignal.value;
+                int minors = quantityMenoresSignal.value;
 
+                Ticket newTicket = Ticket(
+                  id: DateTime.now().millisecondsSinceEpoch,
+                  branchId: branch_id,
+                  tripId: trip_id,
+                  method: 'Efectivo',
+                  quantity: quantity,
+                  price: double.parse(tripsSelectSignal.value!.price!),
+                  seats: seats,
+                  date: DateFormat('yyyy-MM-dd').format(date),
+                  adults: adults,
+                  minors: minors,
+                  total: total,
+                  //estos estan ahi pero no se envian
+                  //************************* */
+                  status: 1,
+                  transactionStatus: 'pending',
+                  sequenceNumber: 'abc123',
+                  extraData: 'no extra data',
+                  transactionTip: 10.0,
+                  transactionCashback: 5.0,
+                  //************************* */
+                );
 
- InternetConnectionModal.show(
-  context,
-  onPayWithCash: () async {
-    // Lógica para pagar con efectivo
-      print('TIENE CONEXION - NO, GUARDAR EN DB-LOCAL');
-       // Si no hay conexión, guardamos el ticket en la base de datos local
-       double total = ((double.parse(tripsSelectSignal.value!.price!) / 2) *
-              quantityMenoresSignal.watch(context)) +
-          ((double.parse(tripsSelectSignal.value!.price!)) * quantitySignal.watch(context));
-int branch_id = currentUserBranchLG.value!.id;
-      int trip_id = tripsSelectSignal.value!.id!;
-      int quantity = quantityMenoresSignal.value + quantitySignal.value;
-      List<int> seats = selectedSeatNumbersSN.value;
-      DateTime date = tripsSelectSignal.value!.date!;
-      int adults = quantitySignal.value;
-      int minors = quantityMenoresSignal.value;
-
-     
-
-
-
-
-
-       Ticket newTicket = Ticket(
-  id:  DateTime.now().millisecondsSinceEpoch,
-  branchId: branch_id,
-  tripId: trip_id,
-  method: 'Efectivo',  
-  quantity: quantity,
-  price:double.parse(tripsSelectSignal.value!.price!) ,
-  seats: seats,
-  date: DateFormat('yyyy-MM-dd').format(date),
-  adults: adults,
-  minors: minors,
-  total: total,
-  //estos estan ahi pero no se envian
-  //************************* */
-  status: 1,
-  transactionStatus: 'pending',
-  sequenceNumber: 'abc123',
-  extraData: 'no extra data',
-  transactionTip: 10.0,
-  transactionCashback: 5.0,
-   //************************* */
-);
-
-
-    final resultTicket =  await dbHelper.insertTicket(newTicket);
-    if(resultTicket != null)
-    { 
-      //Aumento la variable que me controla la cantidad de tickets guardados en la db-local
-      sharedPreferencesStorage.incrementCounter();      
-       showCustomSnackBar(
-        context: context,
-        title: 'Compra de Ticket guardada correctamente db-Local', // Obligatorio
-        backgroundColor: Colors.green
-      );
-      //Mandar a Imprimir
-      String scheduleActual = DateFormat('HH:mm').format(DateTime.now());
-      await utilsPrinterTicketLocal.printTicketPasajeLocal(newTicket,scheduleActual,tripsSelectSignal.value!.origin.toString(),tripsSelectSignal.value!.destination.toString());
-    }
-    else{
-      showCustomSnackBar(
-        context: context,
-        title: 'Error al guardar el Ticket', // Obligatorio
-        backgroundColor: Colors.red
-      );
-    }
-  },
-  onCancel: () {
-    // Lógica cuando se cancela
-  },
-);
-
-
-
-
-    
-
-    }
-   
-  },
-  backgroundColor: Colors.blue,
-  label: Row(
-    children: [
-      Icon(MdiIcons.ticket, color: Colors.white),
-      const SizedBox(width: 8),
-      const Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
-    ],
-  ),
-),
-
-
-      
+                final resultTicket = await dbHelper.insertTicket(newTicket);
+                if (resultTicket != null) {
+                  //Aumento la variable que me controla la cantidad de tickets guardados en la db-local
+                  sharedPreferencesStorage.incrementCounter();
+                  showCustomSnackBar(
+                      context: context,
+                      title:
+                          'Compra de Ticket guardada correctamente db-Local', // Obligatorio
+                      backgroundColor: Colors.green);
+                  //Mandar a Imprimir
+                  String scheduleActual =
+                      DateFormat('HH:mm').format(DateTime.now());
+                  await utilsPrinterTicketLocal.printTicketPasajeLocal(
+                      newTicket,
+                      scheduleActual,
+                      tripsSelectSignal.value!.origin.toString(),
+                      tripsSelectSignal.value!.destination.toString());
+                } else {
+                  showCustomSnackBar(
+                      context: context,
+                      title: 'Error al guardar el Ticket', // Obligatorio
+                      backgroundColor: Colors.red);
+                }
+              },
+              onCancel: () {
+                // Lógica cuando se cancela
+              },
+            );
+          }
+        },
+        backgroundColor: Colors.blue,
+        label: Row(
+          children: [
+            Icon(MdiIcons.ticket, color: Colors.white),
+            const SizedBox(width: 8),
+            const Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
+          ],
+        ),
+      ),
       backgroundColor: Colors.blue[400],
       body: SafeArea(
         child: Column(
@@ -166,6 +151,9 @@ int branch_id = currentUserBranchLG.value!.id;
                   children: [
                     InkWell(
                       onTap: () {
+                        selectedSeatNumbersSN.value = [];
+
+                        (context as Element).markNeedsBuild();
                         GoRouter.of(context).pop();
                       },
                       child: const Padding(
@@ -194,7 +182,8 @@ int branch_id = currentUserBranchLG.value!.id;
                   children: [
                     // Contenedor blanco de detalles
                     Container(
-                      margin: const EdgeInsets.only(top: 160), // Empuja hacia abajo
+                      margin:
+                          const EdgeInsets.only(top: 160), // Empuja hacia abajo
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -206,7 +195,8 @@ int branch_id = currentUserBranchLG.value!.id;
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
-                            const SizedBox(height: 100), // Espacio para el Card superior
+                            const SizedBox(
+                                height: 100), // Espacio para el Card superior
                             const Text(
                               "Pago de Pasaje",
                               style: TextStyle(
@@ -216,7 +206,8 @@ int branch_id = currentUserBranchLG.value!.id;
                             ),
                             const SizedBox(height: 10),
                             PaymentCard(
-                              timeIni: tripsSelectSignal.value!.schedule.toString(),
+                              timeIni:
+                                  tripsSelectSignal.value!.schedule.toString(),
                               timeFin: '10:30xxx',
                               price: tripsSelectSignal.value!.price.toString(),
                             ),
@@ -244,7 +235,8 @@ int branch_id = currentUserBranchLG.value!.id;
                                 children: [
                                   Column(
                                     children: [
-                                      const Icon(Icons.location_on, color: Colors.blue),
+                                      const Icon(Icons.location_on,
+                                          color: Colors.blue),
                                       const SizedBox(height: 5),
                                       Container(
                                         width: 1,
@@ -252,26 +244,36 @@ int branch_id = currentUserBranchLG.value!.id;
                                         color: Colors.grey[400],
                                       ),
                                       const SizedBox(height: 5),
-                                      const Icon(Icons.location_on, color: Color(0xFF55698F)),
+                                      const Icon(Icons.location_on,
+                                          color: Color(0xFF55698F)),
                                     ],
                                   ),
                                   const SizedBox(width: 20),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text("ORIGEN", style: TextStyle(color: Colors.grey[600])),
+                                        Text("ORIGEN",
+                                            style: TextStyle(
+                                                color: Colors.grey[600])),
                                         Text(
-                                          tripsSelectSignal.value!.origin.toString(),
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                          tripsSelectSignal.value!.origin
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         const SizedBox(height: 4),
                                         Divider(color: Colors.grey[400]),
                                         const SizedBox(height: 4),
-                                        Text("DESTINO", style: TextStyle(color: Colors.grey[600])),
+                                        Text("DESTINO",
+                                            style: TextStyle(
+                                                color: Colors.grey[600])),
                                         Text(
-                                          tripsSelectSignal.value!.destination.toString(),
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                          tripsSelectSignal.value!.destination
+                                              .toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ],
                                     ),
@@ -281,43 +283,57 @@ int branch_id = currentUserBranchLG.value!.id;
                               const SizedBox(height: 10),
                               Row(
                                 children: [
-                                  const Icon(Icons.access_time, size: 15, color: Colors.black),
+                                  const Icon(Icons.access_time,
+                                      size: 15, color: Colors.black),
                                   const SizedBox(width: 5),
                                   Text(
-                                    tripsSelectSignal.value!.schedule.toString(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    tripsSelectSignal.value!.schedule
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                    child: Icon(MdiIcons.rayStartArrow, size: 24, color: Colors.black),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5),
+                                    child: Icon(MdiIcons.rayStartArrow,
+                                        size: 24, color: Colors.black),
                                   ),
                                   Text(
                                     tripsSelectSignal.value!.arrival.toString(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  Icon(MdiIcons.bus, size: 15, color: Colors.black),
+                                  Icon(MdiIcons.bus,
+                                      size: 15, color: Colors.black),
                                   const SizedBox(width: 5),
-                                  Text('Bus: ', style: TextStyle(color: Colors.grey[600])),
+                                  Text('Bus: ',
+                                      style:
+                                          TextStyle(color: Colors.grey[600])),
                                   Text(
                                     tripsSelectSignal.value!.plate.toString(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  Icon(MdiIcons.seatReclineExtra, size: 15, color: Colors.black),
+                                  Icon(MdiIcons.seatReclineExtra,
+                                      size: 15, color: Colors.black),
                                   const SizedBox(width: 5),
-                                  Text('Capacidad: ', style: TextStyle(color: Colors.grey[600])),
+                                  Text('Capacidad: ',
+                                      style:
+                                          TextStyle(color: Colors.grey[600])),
                                   Text(
                                     tripsSelectSignal.value!.seats.toString(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -333,7 +349,6 @@ int branch_id = currentUserBranchLG.value!.id;
           ],
         ),
       ),
-  
     );
   }
 }

@@ -10,5 +10,5 @@ Future<void> main() async {
   await initializeDateFormatting('es', null);
   await TranslationManager.loadDefaultTranslations('es'); // Asegúrate de pasar el idioma correcto.
 
-  runApp(const MyApp());
+  runApp(MyApp());
 }
