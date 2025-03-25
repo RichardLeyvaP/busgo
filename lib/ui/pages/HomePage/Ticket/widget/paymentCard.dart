@@ -1,5 +1,4 @@
-import 'package:BusGo/data/services/local_database_service.dart';
-import 'package:BusGo/data/services/ticketSyncService.dart';
+
 import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';

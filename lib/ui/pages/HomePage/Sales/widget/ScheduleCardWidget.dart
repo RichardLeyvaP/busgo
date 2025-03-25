@@ -2,7 +2,6 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 
 class ScheduleCard extends StatefulWidget {
   final String name;
