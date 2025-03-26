@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:BusGo/models/SeatModel.dart';
 
 class CustomSeatIcon extends StatelessWidget {
   final bool isOccupied;
