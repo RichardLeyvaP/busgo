@@ -17,7 +17,7 @@ class AppBarSalesWidget extends StatelessWidget {
         color: Colors.blue[400],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding:  EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,12 +27,12 @@ class AppBarSalesWidget extends StatelessWidget {
                 GoRouter.of(context).pop();
               },
               child: const Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                 child: Icon(Icons.arrow_back, color: Colors.white),
               ),
             ),
             const Padding(
-              padding: EdgeInsets.fromLTRB(7, 37, 0, 0),
+              padding: EdgeInsets.fromLTRB(7, 25, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
