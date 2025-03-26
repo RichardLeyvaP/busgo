@@ -16,8 +16,8 @@ class OrigenDestinoCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0,0,7,0),
       child: SizedBox(
         // Ajusta el ancho y alto a tus necesidades
-        width: MediaQuery.of(context).size.height * 0.55,
-        height: 121,
+        width: MediaQuery.of(context).size.width * 0.95,
+        height: MediaQuery.of(context).size.height*0.16,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
@@ -30,7 +30,7 @@ class OrigenDestinoCard extends StatelessWidget {
               children: [
                 // Columna con los círculos y la línea punteada
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 17),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
                   child: Column(
                     children: [
                       // Círculo de Origen (azul)
@@ -65,6 +65,7 @@ class OrigenDestinoCard extends StatelessWidget {
                 const SizedBox(width: 13),
                 // Columna con la información de Origen y Destino
                 Expanded(
+                  flex: 1,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
