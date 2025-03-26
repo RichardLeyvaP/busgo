@@ -22,7 +22,7 @@ class CustomSeatIcon extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 25),
+          const SizedBox(height: 20),
           Flexible(
             child: Icon(
               isSelected ? Icons.event_seat : Icons.event_seat_sharp,
@@ -39,7 +39,7 @@ class CustomSeatIcon extends StatelessWidget {
             child: Text(
               seatNumber.toString(),
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

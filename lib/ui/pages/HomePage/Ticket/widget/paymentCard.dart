@@ -163,7 +163,7 @@ class _PaymentCardState extends State<PaymentCard> {
                             0
                         ? Colors.blue
                         : const Color.fromARGB(255, 167, 171, 173),
-                    width: 170,
+                    width: MediaQuery.of(context).devicePixelRatio*121,
                   ),
                   const SizedBox(
                     height: 10,
@@ -372,7 +372,7 @@ void showSeatSelectionModal(
                     (context as Element).markNeedsBuild();
                   },
                   color: Colors.red,
-                  width: 160,
+                  width: 170,
                 ),
                 CustomButton(
                   title: "Confirmar",
