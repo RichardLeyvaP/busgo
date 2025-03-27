@@ -2,7 +2,6 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
 class ScheduleCard extends StatefulWidget {
   final String name;
   final String origin;
@@ -72,7 +71,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               side: const BorderSide(color: Colors.grey, width: 0.5)),
           elevation: 3,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(17, 10, 14, 15),
+            padding: const EdgeInsets.fromLTRB(17, 10, 15, 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -96,7 +95,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  spacing: MediaQuery.of(context).size.width * 0.20,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,7 +108,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           "Salida: ${widget.timeIni}",
                           Icons.radio_button_checked,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 12),
                         _routeInfo(
                           getRegionFromAddress(
                               widget.destination), // Extraemos la región
@@ -117,7 +118,6 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         ),
                       ],
                     ),
-
                     Column(
                       children: [
                         ElevatedButton(
@@ -147,7 +147,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                       ],
                     )
                   ],
-                )
+                ),
               ],
             ),
           ),
