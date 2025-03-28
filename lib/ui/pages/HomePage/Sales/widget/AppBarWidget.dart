@@ -23,6 +23,7 @@ class AppBarSalesWidget extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
+
                 GoRouter.of(context).pop();
               },
               child: const Padding(
