@@ -71,7 +71,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               side: const BorderSide(color: Colors.grey, width: 0.5)),
           elevation: 3,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(17, 10, 15, 15),
+            padding: const EdgeInsets.fromLTRB(17, 10, 12, 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -95,9 +95,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  spacing: MediaQuery.of(context).size.width * 0.20,
+                  // spacing: MediaQuery.of(context).size.width * 0.20,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,29 +120,32 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     ),
                     Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (widget.seatsAvailable != 0) {
-                              dataSelectedRoute(
-                                  widget.idTrip); // Guardar datos del viaje
-                              GoRouter.of(context).push(
-                                  '/TicketPage'); // Navegar a la página de asientos
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'No hay disponibilidad para este viaje'),
-                                ),
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 55, 0, 0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (widget.seatsAvailable != 0) {
+                                dataSelectedRoute(
+                                    widget.idTrip); // Guardar datos del viaje
+                                GoRouter.of(context).push(
+                                    '/TicketPage'); // Navegar a la página de asientos
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'No hay disponibilidad para este viaje'),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            child: Text("\$${widget.price}",
+                                style: const TextStyle(color: Colors.white)),
                           ),
-                          child: Text("\$${widget.price}",
-                              style: const TextStyle(color: Colors.white)),
                         ),
                       ],
                     )
