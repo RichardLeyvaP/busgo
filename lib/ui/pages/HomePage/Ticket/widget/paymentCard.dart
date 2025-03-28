@@ -1,4 +1,3 @@
-
 import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
@@ -48,7 +47,6 @@ class _PaymentCardState extends State<PaymentCard> {
       ),
       child: Column(
         children: [
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -163,7 +161,7 @@ class _PaymentCardState extends State<PaymentCard> {
                             0
                         ? Colors.blue
                         : const Color.fromARGB(255, 167, 171, 173),
-                    width: MediaQuery.of(context).devicePixelRatio*121,
+                    width: MediaQuery.of(context).devicePixelRatio * 121,
                   ),
                   const SizedBox(
                     height: 10,
@@ -311,32 +309,31 @@ void showSeatSelectionModal(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        selectedSeatNumbers1.value = [];
-                        selectedSeatNumbersSN.value = [];
-                        for (var seat in seats) {
-                          seat.isSelected = false;
-                        }
-                        (context as Element).markNeedsBuild();
-                        Navigator.pop(context);
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.only(left: 8.0),
-                        child: Icon(Icons.arrow_back, color: Colors.black),
-                      ),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      selectedSeatNumbers1.value = [];
+                      selectedSeatNumbersSN.value = [];
+                      for (var seat in seats) {
+                        seat.isSelected = false;
+                      }
+                      (context as Element).markNeedsBuild();
+                      Navigator.pop(context);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.only(left: 8.0),
+                      child: Icon(Icons.arrow_back, color: Colors.black),
                     ),
+                  ),
 
-                    const SizedBox(width: 40), // Espaciador para equilibrar
-                  ],
-                ),
+                  const SizedBox(width: 40), // Espaciador para equilibrar
+                ],
               ),
-
+            ),
             Text(
               "Selecciona tus asientos (máximo $maxSelectable)",
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
