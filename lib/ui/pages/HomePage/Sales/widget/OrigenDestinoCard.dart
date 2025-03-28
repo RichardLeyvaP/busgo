@@ -30,7 +30,7 @@ class OrigenDestinoCard extends StatelessWidget {
               children: [
                 // Columna con los círculos y la línea punteada
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
                   child: Column(
                     children: [
                       // Círculo de Origen (azul)
