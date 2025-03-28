@@ -44,105 +44,130 @@ class _Report1PageState extends State<Report1Page> {
     startDate ??= today;
     endDate ??= today;
 
-    await showModalBottomSheet(
+    await showDialog(
+      // <-- Cambia a showDialog
       context: context,
-      isScrollControlled: true,
       builder: (context) {
-        return StatefulBuilder(builder: (context, setModalState) {
-          // ⬅ Usa StatefulBuilder para actualizar el modal
-          return Container(
-            height: 500,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Stack(
               children: [
-                const Text("Seleccionar rango de fechas",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: TableCalendar(
-                    firstDay: DateTime(2000),
-                    lastDay: DateTime(2100),
-                    focusedDay: startDate ?? DateTime.now(),
-                    selectedDayPredicate: (day) {
-                      if (startDate != null && endDate != null) {
-                        return day.isAfter(
-                                startDate!.subtract(const Duration(days: 1))) &&
-                            day.isBefore(endDate!.add(const Duration(days: 1)));
-                      }
-                      return day == startDate;
-                    },
-                    onDaySelected: (selectedDay, _) {
-                      setModalState(() {
-                        // ⬅ Actualiza solo el modal
-                        if (startDate == null ||
-                            (startDate != null && endDate != null)) {
-                          startDate = selectedDay;
-                          endDate = null;
-                        } else {
-                          endDate = selectedDay.isAfter(startDate!)
-                              ? selectedDay
-                              : startDate;
-                        }
-                      });
-                    },
-                    calendarStyle: CalendarStyle(
-                      rangeHighlightColor: Colors.orange.withOpacity(0.3),
-                      todayDecoration: const BoxDecoration(
-                          color: Colors.blue, shape: BoxShape.circle),
-                      selectedDecoration: const BoxDecoration(
-                          color: Colors.orange, shape: BoxShape.circle),
+                // Fondo semitransparente
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(color: Colors.black54),
+                  ),
+                ),
+                // Card flotante
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Card(
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.height * 0.65,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text("Seleccionar rango de fechas",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18)),
+                            const SizedBox(height: 15),
+                            Expanded(
+                              child: TableCalendar(
+                                firstDay: DateTime(2000),
+                                lastDay: DateTime(2100),
+                                focusedDay: startDate ?? DateTime.now(),
+                                selectedDayPredicate: (day) {
+                                  if (startDate != null && endDate != null) {
+                                    return day.isAfter(startDate!.subtract(
+                                            const Duration(days: 1))) &&
+                                        day.isBefore(endDate!
+                                            .add(const Duration(days: 1)));
+                                  }
+                                  return day == startDate;
+                                },
+                                onDaySelected: (selectedDay, _) {
+                                  setModalState(() {
+                                    if (startDate == null ||
+                                        (startDate != null &&
+                                            endDate != null)) {
+                                      startDate = selectedDay;
+                                      endDate = null;
+                                    } else {
+                                      endDate = selectedDay.isAfter(startDate!)
+                                          ? selectedDay
+                                          : startDate;
+                                    }
+                                  });
+                                },
+                                calendarStyle: CalendarStyle(
+                                  rangeHighlightColor:
+                                      Colors.orange.withOpacity(0.3),
+                                  todayDecoration: const BoxDecoration(
+                                      color: Colors.blue,
+                                      shape: BoxShape.circle),
+                                  selectedDecoration: const BoxDecoration(
+                                      color: Colors.orange,
+                                      shape: BoxShape.circle),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Cancelar"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (startDate != null && endDate != null) {
+                                      setState(() {
+                                        _selectedDateRange = DateTimeRange(
+                                            start: startDate!, end: endDate!);
+                                      });
+                                      Navigator.pop(context);
+                                    } else {
+                                      setState(() {
+                                        endDate = startDate!;
+                                        _selectedDateRange = DateTimeRange(
+                                            start: startDate!, end: endDate!);
+                                      });
+                                      Navigator.pop(context);
+                                    }
+                                    await getReports1(
+                                        -999,
+                                        'ya esta por defecto en el método',
+                                        formatDate(startDate),
+                                        formatDate(endDate));
+                                    setState(() {});
+                                  },
+                                  child: const Text("Aceptar"),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Cancelar"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (startDate != null && endDate != null) {
-                          setState(() {
-                            // ⬅ Actualiza la UI principal
-                            _selectedDateRange =
-                                DateTimeRange(start: startDate!, end: endDate!);
-                          });
-                          Navigator.pop(context);
-                        } else {
-                          setState(() {
-                            // ⬅ Actualiza la UI principal
-                            endDate = startDate!;
-                            _selectedDateRange =
-                                DateTimeRange(start: startDate!, end: endDate!);
-                          });
-                          Navigator.pop(context);
-                        }
-                        await getReports1(
-                            -999,
-                            'ya esta por defecto en el metodo',
-                            formatDate(startDate),
-                            formatDate(endDate));
-                        setState(() {
-                          //actualizar ui
-                        });
-                      },
-                      child: const Text("Aceptar"),
-                    ),
-                  ],
-                ),
               ],
-            ),
-          );
-        });
+            );
+          },
+        );
       },
     );
-
-  
   }
 
   @override
@@ -176,11 +201,10 @@ class _Report1PageState extends State<Report1Page> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 8,bottom: 8),
+                    padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
                     child: ElevatedButton(
-                      
                       onPressed: _selectDateRange,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(
@@ -201,16 +225,17 @@ class _Report1PageState extends State<Report1Page> {
                   ),
                 ),
                 Container(
-                  width: 300,
-                  padding: const EdgeInsets.all(16),
+                  width: 350,
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    border: Border.all(),
+                    border: Border.all(width: .5),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        currentUserBranchCompanyLG.value?.name ??
+                        // currentUserBranchCompanyLG.value?.name ??
+                        currentUserBranchLG.value?.name ??
                             '-- No tiene --',
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
@@ -257,7 +282,6 @@ class _Report1PageState extends State<Report1Page> {
                   ),
                 ),
                 const SizedBox(height: 20),
-               
               ],
             ),
           );
