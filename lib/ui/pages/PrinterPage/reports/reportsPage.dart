@@ -14,11 +14,12 @@ class ReportsPage extends StatefulWidget {
   _ReportsPageState createState() => _ReportsPageState();
 }
 
-class _ReportsPageState extends State<ReportsPage> with SingleTickerProviderStateMixin {
+class _ReportsPageState extends State<ReportsPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final PageController _pageController = PageController();
-UtilsPrinterTicket utilsPrinterTicket = UtilsPrinterTicket();
-bool _isButtonEnabled = true; // El botón está habilitado por defecto
+  UtilsPrinterTicket utilsPrinterTicket = UtilsPrinterTicket();
+  bool _isButtonEnabled = true; // El botón está habilitado por defecto
 // Método para habilitar el botón
   void _enableButton() {
     setState(() {
@@ -32,21 +33,19 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
       _isButtonEnabled = false;
     });
   }
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
-        if(_tabController.index == 2)
-        {
+        if (_tabController.index == 2) {
           floatingActionButtonSignal.value = false;
-        }
-        else{
+        } else {
           floatingActionButtonSignal.value = true;
         }
         _pageController.jumpToPage(_tabController.index);
-        
       }
     });
   }
@@ -57,10 +56,9 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
     print("Método de impresión para Resumen Diario");
     _disableButton();
     print("Método de impresión para Resumen Diario-desabilitado");
-  await  utilsPrinterTicket.printReporte1();
-  _enableButton();
+    await utilsPrinterTicket.printReporte1();
+    _enableButton();
     print("Método de impresión para Resumen Diario-abilitado");
-
   }
 
   Future<void> _printReportForTab1(BuildContext context) async {
@@ -68,14 +66,14 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
     print("Método de impresión para Resumen de Viajes");
     print("Método de impresión para Resumen Diario-desabilitado");
     _disableButton();
-  await  utilsPrinterTicket.printReporte2();
-  _enableButton();
+    await utilsPrinterTicket.printReporte2();
+    _enableButton();
     print("Método de impresión para Resumen Diario-abilitado");
   }
 
   Future<void> _printReportForTab2(BuildContext context) async {
     // Lógica para imprimir en el Tab 2
-  
+
     print("Método de impresión para Resumen Total");
   }
 
@@ -86,7 +84,6 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
     } else if (_tabController.index == 1) {
       _printReportForTab1(context);
     } else if (_tabController.index == 2) {
-      
       _printReportForTab2(context);
     }
   }
@@ -94,65 +91,73 @@ bool _isButtonEnabled = true; // El botón está habilitado por defecto
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orange,
-        title: const Text(
-          "Reportes",
-          style: TextStyle(color: Colors.black),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 1),
-            child: Container(
-              color: Colors.orange,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    indicator: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(20),
+        appBar: AppBar(
+          backgroundColor: Colors.orange,
+          title:  const Padding(
+            padding: EdgeInsets.fromLTRB(107, 5, 0, 0),
+            child: Text(
+                "Reportes",
+                style: TextStyle(color: Colors.white),
+              ),
+          ),
+
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 1),
+              child: Container(
+                color: Colors.orange,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: TabBar(
+                      indicatorColor: Color(0xFF42A5F5),
+                      controller: _tabController,
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.start,
+                      indicator: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      labelColor: Colors.white,
+                      labelStyle: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.w200),
+                      unselectedLabelColor: Colors.white,
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 18),
+                      tabs: [
+                        _buildTab("Resumen Diario"),
+                        _buildTab("Resumen de Viajes"),
+                        _buildTab("Tickets"),
+                        // _buildTab("Resumen Total"),
+                      ],
                     ),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 6),
-                    tabs: [
-                      _buildTab("Resumen Diario"),
-                      _buildTab("Resumen de Viajes"),
-                      _buildTab("Tickets"),
-                     // _buildTab("Resumen Total"),
-                    ],
                   ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          Report1Page(),
-          Report2Page(),
-          ShowTicketPage(),
-         // Report3Page(),
-        ],
-      ),
-      floatingActionButton: 
-      floatingActionButtonSignal.watch(context) == true?
-      FloatingActionButton(
-        backgroundColor: Colors.orange,
-         onPressed: _isButtonEnabled ? () => _handlePrint(context) : null, // El botón solo se activa si _isButtonEnabled es true
-        child: const Icon(Icons.print),
-      ):
-      null
-    );
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            Report1Page(),
+            Report2Page(),
+            ShowTicketPage(),
+            // Report3Page(),
+          ],
+        ),
+        floatingActionButton: floatingActionButtonSignal.watch(context) == true
+            ? FloatingActionButton(
+                backgroundColor: Colors.orange,
+
+                onPressed: _isButtonEnabled
+                    ? () => _handlePrint(context)
+                    : null, // El botón solo se activa si _isButtonEnabled es true
+                child: const Icon(Icons.print),
+              )
+            : null);
   }
 
   Widget _buildTab(String title) {
