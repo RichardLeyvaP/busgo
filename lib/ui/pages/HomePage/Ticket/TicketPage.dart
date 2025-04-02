@@ -155,6 +155,7 @@ class _TicketPageState extends State<TicketPage> {
 
                         (context as Element).markNeedsBuild();
                         GoRouter.of(context).pop();
+
                       },
                       child: const Padding(
                         padding: EdgeInsets.only(left: 8.0),
