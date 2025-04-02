@@ -34,7 +34,8 @@ class CustomSeatIcon extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
+            //TODO: cambiar el padding
+            padding: const EdgeInsets.fromLTRB(6,0, 0, 0),
             child: Text(
               seatNumber.toString(),
               style: const TextStyle(
