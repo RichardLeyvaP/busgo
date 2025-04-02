@@ -2,6 +2,9 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../domain/signals/tickets_signals/tickets_signal.dart';
+import '../../../../../models/trips/trips_model.dart';
+
 class ScheduleCard extends StatefulWidget {
   final String name;
   final String origin;
@@ -46,6 +49,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   @override
   Widget build(BuildContext context) {
+    Trip? tripForCard;
+    try {
+      tripForCard = tripsSignal.value!.firstWhere((trip) => trip.id == widget.idTrip);
+    } catch (e) {
+      tripForCard = null;
+    }
+    final displayPrice = tripForCard?.price ?? widget.price;
+
     String travelTime = _calculateTravelTime(widget.timeIni, widget.timeFin);
     List<String> timeToGo = _calculateTimeToGo(widget.timeIni);
     return SizedBox(
@@ -143,7 +154,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
                             ),
-                            child: Text("\$${widget.price}",
+                            child: Text("\$$displayPrice",
                                 style: const TextStyle(color: Colors.white)),
                           ),
                         ),
@@ -186,17 +197,6 @@ Widget _infoText(String title, String value, [String? subtitle]) {
     ],
   );
 }
-
-// Widget _infoPrice(String value) {
-//   return Column(
-//     crossAxisAlignment: CrossAxisAlignment.start,
-//     children: [
-//       Text(value,
-//           style: const TextStyle(
-//               fontSize: 18, fontWeight: FontWeight.w900, color: Colors.orange)),
-//     ],
-//   );
-// }
 
 Widget _routeInfo(
   String title,
