@@ -152,7 +152,9 @@ class _TicketPageState extends State<TicketPage> {
                     InkWell(
                       onTap: () {
                         selectedSeatNumbersSN.value = [];
-
+                        selectedSeatNumbersSN.value = [];   // Asientos
+                        quantitySignal.value = 0;           // Cantidad adultos
+                        quantityMenoresSignal.value = 0;    // Cantidad menores
                         (context as Element).markNeedsBuild();
                         GoRouter.of(context).pop();
 

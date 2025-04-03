@@ -103,7 +103,6 @@ class _PaymentCardState extends State<PaymentCard> {
                               selectedSeatNumbersSN.value.sublist(0,
                                   (newQuantity + quantityMenoresSignal.value));
                         }
-                        // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                       }
                     },
                   ),
@@ -122,7 +121,6 @@ class _PaymentCardState extends State<PaymentCard> {
                             .value
                             .sublist(0, (newQuantity + quantitySignal.value));
                       }
-                      // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                     },
                   ),
                   const SizedBox(
@@ -188,16 +186,6 @@ class _PaymentCardState extends State<PaymentCard> {
             height: 1,
             color: Colors.grey[400],
           ),
-          // SizedBox(height: 15),
-          // AdditionalDataWidget(
-          //   onDataChanged: (newDevice, newDescription, newDteType, newContact) {
-          //     device = newDevice;
-          //     description = newDescription;
-          //     dteType = newDteType;
-          //     contact = newContact;
-          //   },
-          // ),
-          // SizedBox(height: 15),
           Container(
             width: 1000,
             height: 1,
@@ -231,16 +219,6 @@ class _PaymentCardState extends State<PaymentCard> {
               ),
             ],
           ),
-
-          // SizedBox(height: 25),
-          // CustomButton(
-          //   title: "Comprar Ticket ",
-          //   onTap: () async {
-          //     await verifyPurchaseTicket(context);
-          //   },
-          //   color: Colors.blue,
-          //   width: 250,
-          // ),
           Container(
             height: 300,
           )
@@ -442,10 +420,6 @@ Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
                   .number, // Asegura que el icono refleje si el asiento está seleccionado
             ),
           ),
-          // Text(
-          //   seat.number.toString(),
-          //   style: const TextStyle(fontSize: 14), // Número del asiento
-          // ),
         ],
       );
     },
