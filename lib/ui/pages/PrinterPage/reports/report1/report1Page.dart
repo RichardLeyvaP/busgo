@@ -81,9 +81,15 @@ class _Report1PageState extends State<Report1Page> {
                             const SizedBox(height: 15),
                             Expanded(
                               child: TableCalendar(
+                                locale: 'es_ES',
                                 firstDay: DateTime(2000),
                                 lastDay: DateTime(2100),
                                 focusedDay: startDate ?? DateTime.now(),
+                                availableCalendarFormats: const {
+                                  CalendarFormat.month: 'Mes',
+                                  CalendarFormat.twoWeeks: '2 semanas',
+                                  CalendarFormat.week: 'Semana',
+                                },
                                 selectedDayPredicate: (day) {
                                   if (startDate != null && endDate != null) {
                                     return day.isAfter(startDate!.subtract(

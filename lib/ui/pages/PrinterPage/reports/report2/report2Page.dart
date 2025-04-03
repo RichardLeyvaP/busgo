@@ -77,9 +77,15 @@ class _Report2PageState extends State<Report2Page> {
                           const SizedBox(height: 10),
                           Expanded(
                             child: TableCalendar(
+                              locale: 'es_ES',
                               firstDay: DateTime(2000),
                               lastDay: DateTime(2100),
                               focusedDay: startDate ?? DateTime.now(),
+                              availableCalendarFormats: const {
+                                CalendarFormat.month: 'Mes',
+                                CalendarFormat.twoWeeks: '2 semanas',
+                                CalendarFormat.week: 'Semana',
+                              },
                               selectedDayPredicate: (day) {
                                 if (startDate != null && endDate != null) {
                                   return day.isAfter(startDate!
