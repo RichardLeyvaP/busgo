@@ -69,16 +69,16 @@ class _Report1PageState extends State<Report1Page> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Container(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: MediaQuery.of(context).size.height * 0.65,
-                        padding: const EdgeInsets.all(16),
+                        width: MediaQuery.of(context).size.width * 0.95,
+                        height: MediaQuery.of(context).size.height * 0.95,
+                        padding: const EdgeInsets.fromLTRB(10,10,10,0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const Text("Seleccionar rango de fechas",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18)),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 5),
                             Expanded(
                               child: TableCalendar(
                                 locale: 'es_ES',
@@ -113,19 +113,19 @@ class _Report1PageState extends State<Report1Page> {
                                     }
                                   });
                                 },
-                                calendarStyle: CalendarStyle(
+                                calendarStyle: const CalendarStyle(
                                   rangeHighlightColor:
-                                      Colors.orange.withOpacity(0.3),
-                                  todayDecoration: const BoxDecoration(
+                                      Colors.orange,
+                                  todayDecoration: BoxDecoration(
                                       color: Colors.blue,
                                       shape: BoxShape.circle),
-                                  selectedDecoration: const BoxDecoration(
+                                  selectedDecoration: BoxDecoration(
                                       color: Colors.orange,
                                       shape: BoxShape.circle),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 5),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [

@@ -152,12 +152,11 @@ class _TicketPageState extends State<TicketPage> {
                     InkWell(
                       onTap: () {
                         selectedSeatNumbersSN.value = [];
-                        selectedSeatNumbersSN.value = [];   // Asientos
-                        quantitySignal.value = 0;           // Cantidad adultos
-                        quantityMenoresSignal.value = 0;    // Cantidad menores
+                        selectedSeatNumbersSN.value = []; // Asientos
+                        quantitySignal.value = 0; // Cantidad adultos
+                        quantityMenoresSignal.value = 0; // Cantidad menores
                         (context as Element).markNeedsBuild();
                         GoRouter.of(context).pop();
-
                       },
                       child: const Padding(
                         padding: EdgeInsets.only(left: 8.0),
@@ -172,7 +171,7 @@ class _TicketPageState extends State<TicketPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 40), // Espaciador para equilibrar
+                    const SizedBox(width: 50), // Espaciador para equilibrar
                   ],
                 ),
               ),
@@ -185,8 +184,8 @@ class _TicketPageState extends State<TicketPage> {
                   children: [
                     // Contenedor blanco de detalles
                     Container(
-                      margin:
-                          const EdgeInsets.only(top: 160), // Empuja hacia abajo
+                      margin: const EdgeInsets.fromLTRB(
+                          0, 30, 0, 0), // Empuja hacia abajo
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -195,26 +194,29 @@ class _TicketPageState extends State<TicketPage> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                                height: 100), // Espacio para el Card superior
-                            const Text(
-                              "Pago de Pasaje",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                        padding: const EdgeInsets.fromLTRB(10, 150, 10, 0),
+                        child: Card(
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                  height: 50), // Espacio para el Card superior
+                              const Text(
+                                "Pago de Pasaje",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            PaymentCard(
-                              timeIni:
-                                  tripsSelectSignal.value!.schedule.toString(),
-                              timeFin: '10:30xxx',
-                              price: tripsSelectSignal.value!.price.toString(),
-                            ),
-                          ],
+                              const SizedBox(height: 5),
+                              PaymentCard(
+                                timeIni: tripsSelectSignal.value!.schedule
+                                    .toString(),
+                                timeFin: '10:30xxx',
+                                price:
+                                    tripsSelectSignal.value!.price.toString(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

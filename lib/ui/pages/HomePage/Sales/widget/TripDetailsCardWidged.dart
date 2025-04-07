@@ -82,7 +82,7 @@ class TripDetailsCard extends StatelessWidget {
               _buildImage(destinationImage),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Detalles adicionales
           _buildInfoRow("Placa:", plate),

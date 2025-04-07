@@ -66,9 +66,9 @@ class _Report2PageState extends State<Report2Page> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                     child: Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: MediaQuery.of(context).size.height * 0.65,
-                      padding: const EdgeInsets.all(16),
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      height: MediaQuery.of(context).size.height * 0.95,
+                      padding: const EdgeInsets.fromLTRB(10,10,10,0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [

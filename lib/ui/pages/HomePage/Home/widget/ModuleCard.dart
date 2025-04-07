@@ -26,7 +26,7 @@ class ModuleCard extends StatelessWidget {
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.45,
-        height: 170,
+        height: 175,
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: color,

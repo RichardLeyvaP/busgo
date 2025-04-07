@@ -15,17 +15,17 @@ class CustomSeatIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 65,
-      height: 60,
+      width: 55,
+      height: 50,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 5),
           Flexible(
             child: Icon(
               isSelected ? Icons.event_seat : Icons.event_seat_sharp,
-              size: 70,
+              size: 60,
               color: isOccupied
                   ? Colors.black12
                   : isSelected
@@ -35,11 +35,11 @@ class CustomSeatIcon extends StatelessWidget {
           ),
           Padding(
             //TODO: cambiar el padding
-            padding: const EdgeInsets.fromLTRB(6,0, 0, 0),
+            padding: const EdgeInsets.fromLTRB(5,0, 0, 10),
             child: Text(
               seatNumber.toString(),
               style: const TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

@@ -47,11 +47,22 @@ class ScheduleCard extends StatefulWidget {
 class _ScheduleCardState extends State<ScheduleCard> {
   bool isExpanded = false;
 
+
+  int seats = availableSeatsSignal.value;
+
+
   @override
   Widget build(BuildContext context) {
+//se garantiza siempre un resultado positivo, no es la mejor forma. Hay que hacer que esto venga positivo del backend
+    if(availableSeatsSignal.value <0){
+      seats = availableSeatsSignal.value*-1;
+    }
+
+
     Trip? tripForCard;
     try {
-      tripForCard = tripsSignal.value!.firstWhere((trip) => trip.id == widget.idTrip);
+      tripForCard =
+          tripsSignal.value!.firstWhere((trip) => trip.id == widget.idTrip);
     } catch (e) {
       tripForCard = null;
     }
@@ -82,7 +93,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               side: const BorderSide(color: Colors.grey, width: 0.5)),
           elevation: 3,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(17, 10, 12, 10),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -101,10 +112,10 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     const VerticalDivider(
                       width: 5,
                     ),
-                    _infoText("Disponibles:", '${widget.seatsAvailable}'),
+                    _infoText("Disponibles:", '$seats'),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -119,7 +130,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           "Salida: ${widget.timeIni}",
                           Icons.radio_button_checked,
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 10),
                         _routeInfo(
                           getRegionFromAddress(
                               widget.destination), // Extraemos la región
@@ -175,12 +186,12 @@ Widget _infoText(String title, String value, [String? subtitle]) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(title, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+      Text(title, style: TextStyle(fontSize: 10, color: Colors.grey[600])),
       Row(
         children: [
           Text(value,
               style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Roboto')),
           const VerticalDivider(

@@ -94,7 +94,7 @@ class _ReportsPageState extends State<ReportsPage>
         appBar: AppBar(
           backgroundColor: Colors.orange,
           title:  const Padding(
-            padding: EdgeInsets.fromLTRB(107, 5, 0, 0),
+            padding: EdgeInsets.all(0),
             child: Text(
                 "Reportes",
                 style: TextStyle(color: Colors.white),
@@ -124,7 +124,7 @@ class _ReportsPageState extends State<ReportsPage>
                       labelStyle: const TextStyle(
                           fontSize: 14, fontWeight: FontWeight.w200),
                       unselectedLabelColor: Colors.white,
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 18),
+                      labelPadding: const EdgeInsets.symmetric(horizontal: 3),
                       tabs: [
                         _buildTab("Resumen Diario"),
                         _buildTab("Resumen de Viajes"),

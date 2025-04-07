@@ -28,11 +28,11 @@ class _PaymentCardState extends State<PaymentCard> {
   void initState() {
     super.initState();
   }
-
+//TODO Arreglar el fornt de esto
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -277,11 +277,11 @@ void showSeatSelectionModal(
     ),
     builder: (context) {
       return Padding(
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 16,
           right: 16,
-          top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+          top: 5,
+          bottom: 10,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -323,7 +323,7 @@ void showSeatSelectionModal(
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height *
-                  0.70, // Altura del grid de asientos
+                  0.65, // Altura del grid de asientos
               child: ValueListenableBuilder<List<int>>(
                 valueListenable: selectedSeatNumbers1,
                 builder: (context, selectedSeats, child) {
@@ -332,7 +332,7 @@ void showSeatSelectionModal(
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            // const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
