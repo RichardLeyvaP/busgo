@@ -38,6 +38,19 @@ Future<bool> _checkConnection() async {
   }
 }
 
+void cancelarCompraTicket(BuildContext context) {
+  // Limpia señales relacionadas
+  quantitySignal.value = 0;
+  quantityMenoresSignal.value = 0;
+  selectedSeatNumbersSN.value = [];
+  tripsSelectSignal.value = null;
+
+  // Si usás signals tipo Riverpod u otra forma, asegurate que esto los actualice visualmente
+
+  // Redirigir
+  GoRouter.of(context).go('/SalesPage');
+}
+
 class _TicketPageState extends State<TicketPage> {
   @override
   Widget build(BuildContext context) {
@@ -119,6 +132,7 @@ class _TicketPageState extends State<TicketPage> {
               },
               onCancel: () {
                 // Lógica cuando se cancela
+                cancelarCompraTicket(context);
               },
             );
           }
