@@ -1,3 +1,5 @@
+import 'package:BusGo/data/services/local_database_service.dart';
+import 'package:BusGo/data/services/ticketSyncService.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
@@ -28,7 +30,7 @@ class _PaymentCardState extends State<PaymentCard> {
   void initState() {
     super.initState();
   }
-//TODO Arreglar el fornt de esto
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,9 +84,9 @@ class _PaymentCardState extends State<PaymentCard> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   QuantitySelector(
-                    title: 'Mayores de edad  ',
+                    title: 'Pasaje Normal',
                     initialQuantity: quantitySignal.value, //cantidad de mayores
                     onQuantityChanged: (newQuantity) {
                       if ((quantityMenoresSignal.value +
@@ -93,38 +95,65 @@ class _PaymentCardState extends State<PaymentCard> {
                         print('No puede seleccionar mas asientos');
                       } else {
                         if ((quantitySignal.value +
-                                quantityMenoresSignal.value) <=
+                                quantityMenoresSignal.value +
+                                quantityAdultsSignal.value) <=
                             tripsSelectSignal.value!.seats!) {}
                         quantitySignal.value = newQuantity;
                         // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-                        if ((newQuantity + quantityMenoresSignal.value) <
+                        if ((newQuantity +
+                                quantityMenoresSignal.value +
+                                quantityAdultsSignal.value) <
                             selectedSeatNumbersSN.value.length) {
                           selectedSeatNumbersSN.value =
-                              selectedSeatNumbersSN.value.sublist(0,
-                                  (newQuantity + quantityMenoresSignal.value));
+                              selectedSeatNumbersSN.value.sublist(
+                                  0,
+                                  (newQuantity +
+                                      quantityMenoresSignal.value +
+                                      quantityAdultsSignal.value));
                         }
+                        // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                       }
                     },
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
                   QuantitySelector(
-                    title: 'Menores 50% Valor',
+                    title: 'Menores de Edad',
                     initialQuantity: quantityMenoresSignal.value,
                     onQuantityChanged: (newQuantity) {
                       quantityMenoresSignal.value = newQuantity;
                       // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-                      if ((newQuantity + quantitySignal.value) <
+                      if ((newQuantity +
+                              quantitySignal.value +
+                              quantityAdultsSignal.value) <
                           selectedSeatNumbersSN.value.length) {
-                        selectedSeatNumbersSN.value = selectedSeatNumbersSN
-                            .value
-                            .sublist(0, (newQuantity + quantitySignal.value));
+                        selectedSeatNumbersSN.value =
+                            selectedSeatNumbersSN.value.sublist(
+                                0,
+                                (newQuantity +
+                                    quantitySignal.value +
+                                    quantityAdultsSignal.value));
                       }
+                      // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                     },
                   ),
+                  QuantitySelector(
+                      title: 'Adultos Mayores',
+                      initialQuantity: quantityAdultsSignal.value,
+                      onQuantityChanged: (newQuantity) {
+                        quantityAdultsSignal.value = newQuantity;
+                        if ((newQuantity +
+                                quantitySignal.value +
+                                quantityMenoresSignal.value) <
+                            selectedSeatNumbersSN.value.length) {
+                          selectedSeatNumbersSN.value =
+                              selectedSeatNumbersSN.value.sublist(
+                                  0,
+                                  (newQuantity +
+                                      quantitySignal.value +
+                                      quantityMenoresSignal.value));
+                        }
+                      }),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   CustomButton(
                     title: "Seleccionar asiento",
@@ -132,15 +161,18 @@ class _PaymentCardState extends State<PaymentCard> {
                       double total = ((double.parse(widget.price) / 2) *
                               quantityMenoresSignal.watch(context)) +
                           ((double.parse(widget.price)) *
-                              quantitySignal.watch(context));
+                              quantitySignal.watch(context)) +
+                          ((double.parse(widget.price)) *
+                              quantityAdultsSignal.watch(context));
                       if (total > 0) {
                         final seats = utilsTicket.generateSeats(
                             29,
                             tripsSelectSignal
                                 .value!.reservedSeats!); // Generar asientos
                         //  final seats = generateSeats(33, [5, 10]); // Generar asientos
-                        final int maxPassengers =
-                            quantitySignal.value + quantityMenoresSignal.value;
+                        final int maxPassengers = quantitySignal.value +
+                            quantityMenoresSignal.value +
+                            quantityAdultsSignal.value;
                         showSeatSelectionModal(context, seats, maxPassengers);
                       } else {
                         showCustomSnackBar(
@@ -155,7 +187,9 @@ class _PaymentCardState extends State<PaymentCard> {
                     color: ((double.parse(widget.price) / 2) *
                                     quantityMenoresSignal.watch(context)) +
                                 ((double.parse(widget.price)) *
-                                    quantitySignal.watch(context)) >
+                                    quantitySignal.watch(context)) +
+                                ((double.parse(widget.price)) *
+                                    quantityAdultsSignal.watch(context)) >
                             0
                         ? Colors.blue
                         : const Color.fromARGB(255, 167, 171, 173),
@@ -186,6 +220,16 @@ class _PaymentCardState extends State<PaymentCard> {
             height: 1,
             color: Colors.grey[400],
           ),
+          // SizedBox(height: 15),
+          // AdditionalDataWidget(
+          //   onDataChanged: (newDevice, newDescription, newDteType, newContact) {
+          //     device = newDevice;
+          //     description = newDescription;
+          //     dteType = newDteType;
+          //     contact = newContact;
+          //   },
+          // ),
+          // SizedBox(height: 15),
           Container(
             width: 1000,
             height: 1,
@@ -209,7 +253,9 @@ class _PaymentCardState extends State<PaymentCard> {
                     (((double.parse(widget.price) / 2) *
                                 quantityMenoresSignal.watch(context)) +
                             ((double.parse(widget.price)) *
-                                quantitySignal.watch(context)))
+                                quantitySignal.watch(context)) +
+                            ((double.parse(widget.price)) *
+                                quantityAdultsSignal.watch(context)))
                         .toStringAsFixed(2),
 
                     style: const TextStyle(
@@ -219,6 +265,16 @@ class _PaymentCardState extends State<PaymentCard> {
               ),
             ],
           ),
+
+          // SizedBox(height: 25),
+          // CustomButton(
+          //   title: "Comprar Ticket ",
+          //   onTap: () async {
+          //     await verifyPurchaseTicket(context);
+          //   },
+          //   color: Colors.blue,
+          //   width: 250,
+          // ),
           Container(
             height: 300,
           )
@@ -238,7 +294,8 @@ class _PaymentCardState extends State<PaymentCard> {
     {
       double total = ((double.parse(widget.price) / 2) *
               quantityMenoresSignal.watch(context)) +
-          ((double.parse(widget.price)) * quantitySignal.watch(context));
+          ((double.parse(widget.price)) * quantitySignal.watch(context)) +
+          ((double.parse(widget.price)) * quantityAdultsSignal.watch(context));
 
       Map<String, dynamic> jsonResponse = await handlePayment(
           total,
@@ -286,32 +343,6 @@ void showSeatSelectionModal(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      selectedSeatNumbers1.value = [];
-                      selectedSeatNumbersSN.value = [];
-                      for (var seat in seats) {
-                        seat.isSelected = false;
-                      }
-                      (context as Element).markNeedsBuild();
-                      Navigator.pop(context);
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Icon(Icons.arrow_back, color: Colors.black),
-                    ),
-                  ),
-
-                  const SizedBox(width: 40), // Espaciador para equilibrar
-                ],
-              ),
-            ),
             Text(
               "Selecciona tus asientos (máximo $maxSelectable)",
               style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
@@ -323,7 +354,7 @@ void showSeatSelectionModal(
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height *
-                  0.65, // Altura del grid de asientos
+                  0.70, // Altura del grid de asientos
               child: ValueListenableBuilder<List<int>>(
                 valueListenable: selectedSeatNumbers1,
                 builder: (context, selectedSeats, child) {
@@ -332,7 +363,7 @@ void showSeatSelectionModal(
                 },
               ),
             ),
-            // const SizedBox(height: 5),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -347,7 +378,7 @@ void showSeatSelectionModal(
                     (context as Element).markNeedsBuild();
                   },
                   color: Colors.red,
-                  width: 170,
+                  width: 160,
                 ),
                 CustomButton(
                   title: "Confirmar",
@@ -373,8 +404,9 @@ Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
   return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 5, // 5 columnas en total
-      // mainAxisSpacing: 5,
-      crossAxisSpacing: 15,
+      mainAxisSpacing: 10,
+      crossAxisSpacing: 10,
+      childAspectRatio: 1, // Hace los asientos más cuadrados
     ),
     itemCount: seats.length,
     itemBuilder: (context, index) {
@@ -420,6 +452,10 @@ Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
                   .number, // Asegura que el icono refleje si el asiento está seleccionado
             ),
           ),
+          // Text(
+          //   seat.number.toString(),
+          //   style: const TextStyle(fontSize: 14), // Número del asiento
+          // ),
         ],
       );
     },

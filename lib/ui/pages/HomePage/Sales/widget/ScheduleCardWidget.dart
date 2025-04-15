@@ -2,6 +2,8 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:intl/intl.dart';
+
 import '../../../../../domain/signals/tickets_signals/tickets_signal.dart';
 import '../../../../../models/trips/trips_model.dart';
 
@@ -68,8 +70,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
     }
     final displayPrice = tripForCard?.price ?? widget.price;
 
-    String travelTime = _calculateTravelTime(widget.timeIni, widget.timeFin);
     List<String> timeToGo = _calculateTimeToGo(widget.timeIni);
+    String travelTime = _calculateTravelTime(widget.timeIni, widget.timeFin);
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.99,
       child: InkWell(
@@ -104,7 +106,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     const VerticalDivider(
                       width: 5,
                     ),
-                    _infoText("Tiempo de Viaje:", travelTime, "min"),
+                    _infoText("Tiempo de Viaje:", travelTime),
                     const VerticalDivider(
                       width: 5,
                     ),
@@ -112,7 +114,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     const VerticalDivider(
                       width: 5,
                     ),
-                    _infoText("Disponibles:", '$seats'),
+                    _infoText("Disponibles:", '${widget.seatsAvailable}'),
                   ],
                 ),
                 const SizedBox(height: 5),
@@ -127,14 +129,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         _routeInfo(
                           getRegionFromAddress(
                               widget.origin), // Extraemos la región
-                          "Salida: ${widget.timeIni}",
+                          "Salida: ${_formatTime(widget.timeIni)}",
                           Icons.radio_button_checked,
                         ),
                         const SizedBox(height: 10),
                         _routeInfo(
                           getRegionFromAddress(
                               widget.destination), // Extraemos la región
-                          "Llegada: ${widget.timeFin}",
+                          "Llegada: ${_formatDateTime(widget.timeFin)}",
                           Icons.location_on,
                           isDestination: true,
                         ),
@@ -256,31 +258,59 @@ String getRegionFromAddress(String address) {
 }
 
 String _calculateTravelTime(String start, String end) {
-  // Convertir los strings en objetos DateTime
-  DateTime startTime = DateTime.parse("2024-01-01 $start:00");
-  DateTime endTime = DateTime.parse("2024-01-01 $end:00");
+  DateTime startTime = _safeParseDateTime(start);
+  DateTime endTime = _safeParseDateTime(end);
 
-  // Diferencia en minutos
-  int minutes = endTime.difference(startTime).inMinutes;
+  final duration = endTime.difference(startTime);
+  final totalMinutes = duration.inMinutes;
 
-  return "$minutes";
+  final hours = (totalMinutes ~/ 60).abs();
+  final minutes = totalMinutes % 60;
+
+  if (hours == 0) return '${minutes}m';
+  if (minutes == 0) return '${hours}h';
+  return '${hours}h ${minutes}min';
 }
 
 List<String> _calculateTimeToGo(String start) {
   DateTime now = DateTime.now();
-  DateTime startTime = DateTime.parse(
-      "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} $start:00");
+  DateTime startTime = _safeParseDateTime(start);
+  DateTime boardingEnd = startTime.subtract(const Duration(minutes: 15));
 
-  if (startTime.isBefore(now)) {
-    startTime = startTime.add(const Duration(days: 1));
-  }
+  if (now.isBefore(startTime)) {
+    final difference = startTime.difference(now);
+    int totalMinutes = difference.inMinutes;
+    int hours = totalMinutes ~/ 60;
+    int minutes = totalMinutes % 60;
 
-  int minutes = startTime.difference(now).inMinutes;
-  int hours = startTime.difference(now).inHours;
-
-  if (minutes > 60) {
-    return [hours.toString(), "h"]; // Retorna [valor, unidad]
+    if (hours > 0) return [hours.toString(), "h"];
+    return [minutes.toString(), "min"];
+  } else if (now.isBefore(boardingEnd)) {
+    return ["Abordando", ""];
   } else {
-    return [minutes.toString(), "min"]; // Retorna [valor, unidad]
+    return ["Salió", ""];
+  }
+}
+
+String _formatTime(String datetimeStr) {
+  DateTime dt = _safeParseDateTime(datetimeStr);
+  return DateFormat('HH:mm').format(dt);
+}
+
+String _formatDateTime(String datetimeStr) {
+  DateTime dt = _safeParseDateTime(datetimeStr);
+  return DateFormat('dd/MM/yyyy HH:mm').format(dt);
+}
+
+DateTime _safeParseDateTime(String input) {
+  try {
+    return DateTime.parse(input);
+  } catch (_) {
+    // Si falla, asumir que es solo hora y usar fecha actual
+    final now = DateTime.now();
+    final timeParts = input.split(':');
+    return DateTime(now.year, now.month, now.day,
+        int.parse(timeParts[0]),
+        int.parse(timeParts[1]));
   }
 }
