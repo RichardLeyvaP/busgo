@@ -13,9 +13,9 @@ class Ticket {
   final double total;
   final String? transactionStatus;
   final String? sequenceNumber;
-  final String? extraData;
   final double? transactionTip;
   final double? transactionCashback;
+  final DateTime? printedAt;
 
   Ticket({
     this.id,
@@ -30,9 +30,9 @@ class Ticket {
     required this.adults,
     required this.minors,
     required this.total,
+    this.printedAt,
     this.transactionStatus,
     this.sequenceNumber,
-    this.extraData,
     this.transactionTip,
     this.transactionCashback,
   });
@@ -54,9 +54,9 @@ class Ticket {
       'total': total,
       'transactionStatus': transactionStatus,
       'sequenceNumber': sequenceNumber,
-      'extraData': extraData,
       'transactionTip': transactionTip,
       'transactionCashback': transactionCashback,
+      'printedAt': printedAt,
     };
   }
 
@@ -77,9 +77,9 @@ class Ticket {
       total: map['total'],
       transactionStatus: map['transactionStatus'],
       sequenceNumber: map['sequenceNumber'],
-      extraData: map['extraData'],
       transactionTip: map['transactionTip'],
       transactionCashback: map['transactionCashback'],
+      printedAt: map['printedAt']
     );
   }
 }

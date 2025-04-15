@@ -1,76 +1,49 @@
 import 'package:flutter/material.dart';
 
+import '../../domain/signals/tickets_signals/tickets_signal.dart';
+
 class InternetConnectionModal {
-  static Future<void> show(
-    BuildContext context, {
+  static void show(BuildContext context, {
     required VoidCallback onPayWithCash,
     required VoidCallback onCancel,
-  }) async {
-    return showDialog(
+  }) {
+    final double total = ((double.parse(tripsSelectSignal.value!.price?? '0.0') / 2) *
+        quantityMenoresSignal.value) +
+        ((double.parse(tripsSelectSignal.value!.price?? '0.0') * quantitySignal.value));
+
+    showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: false, // obliga al usuario a elegir una opción
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          title: const Row(
-            children: [
-              Icon(Icons.wifi_off, color: Colors.red, size: 28),
-              SizedBox(width: 10),
-              Text(
-                'Conexión inestable',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          content: const Column(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text('Confirmar pago', style: TextStyle(fontWeight: FontWeight.bold)),
+          content: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Icon(Icons.attach_money, color: Colors.green, size: 48),
+              SizedBox(height: 12),
               Text(
-                'Parece que la conexión a internet es inestable. Puede continuar el proceso de pago utilizando "Efectivo".',
-                style: TextStyle(fontSize: 16),
+                'Total a pagar: \$${total.toStringAsFixed(2)}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
-              Divider(),
-              SizedBox(height: 10),
-              Text(
-                '¿Cómo desea proceder?',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              SizedBox(height: 8),
+              Text('¿Desea confirmar este pago?'),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                onCancel();
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.red,
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              child: const Text('Intentar más tarde'),
+              onPressed: onCancel,
+              child: Text('Cancelar', style: TextStyle(color: Colors.red)),
             ),
-            ElevatedButton(
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // cerrar el modal
                 onPayWithCash();
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                foregroundColor: Colors.white,
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              child: const Text('Pagar con Efectivo'),
+              icon: Icon(Icons.check),
+              label: Text('Confirmar'),
             ),
           ],
         );

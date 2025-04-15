@@ -1,5 +1,4 @@
 
-import 'dart:ffi';
 
 import 'package:BusGo/models/ticket/tickets_model.dart';
 import 'package:BusGo/models/trips/trips_model.dart';
@@ -9,6 +8,7 @@ import 'package:signals/signals.dart';
 final Signal<int> quantitySignal = Signal<int>(0); // Inicia en 1
 final Signal<int> availableSeatsSignal = Signal<int>(0); // Inicia en 1
 final Signal<int> quantityMenoresSignal = Signal<int>(0); // Inicia en 1
+final Signal<int> quantityAdultsSignal = Signal<int>(0); // Inicia en 1
 final Signal<List<int>> selectedSeatNumbersSN = Signal<List<int>>([]); // Inicia en 1
 final Signal<Trip?> tripsSelectSignal = Signal<Trip?>(null);
 

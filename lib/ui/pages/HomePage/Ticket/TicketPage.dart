@@ -15,6 +15,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:signals/signals_flutter.dart';
 import 'package:intl/intl.dart';
 
+enum PaymentMethod { cash, creditCard, debitCard }
+
 class TicketPage extends StatefulWidget {
   @override
   State<TicketPage> createState() => _TicketPageState();
@@ -38,113 +40,199 @@ Future<bool> _checkConnection() async {
   }
 }
 
-void cancelarCompraTicket(BuildContext context) {
-  // Limpia señales relacionadas
-  quantitySignal.value = 0;
-  quantityMenoresSignal.value = 0;
-  selectedSeatNumbersSN.value = [];
-  tripsSelectSignal.value = null;
-
-  // Si usás signals tipo Riverpod u otra forma, asegurate que esto los actualice visualmente
-
-  // Redirigir
-  GoRouter.of(context).go('/SalesPage');
-}
-
 class _TicketPageState extends State<TicketPage> {
+
+  //modal para seleccionar el metodo de pago
+  Future<PaymentMethod?> _showPaymentMethodModal(BuildContext context) async {
+    return showModalBottomSheet<PaymentMethod>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Seleccione método de pago',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              _buildPaymentMethodItem(
+                context,
+                icon: Icons.money_off,
+                color: Colors.orange,
+                text: 'Efectivo',
+                method: PaymentMethod.cash,
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodItem(
+                context,
+                icon: Icons.credit_card,
+                color: Colors.blue,
+                text: 'Tarjeta de Débito',
+                method: PaymentMethod.debitCard,
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodItem(
+                context,
+                icon: Icons.credit_score,
+                color: Colors.green,
+                text: 'Tarjeta de Crédito',
+                method: PaymentMethod.creditCard,
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // 3. Método para construir los ítems del modal
+  Widget _buildPaymentMethodItem(
+      BuildContext context, {
+        required IconData icon,
+        required Color color,
+        required String text,
+        required PaymentMethod method,
+      }) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: color.withOpacity(0.3),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: color, size: 30),
+        title: Text(text, style: TextStyle(color: Colors.grey[800])),
+        onTap: () => Navigator.pop(context, method),
+      ),
+    );
+  }
+
+  // 4. Manejo de pagos en efectivo
+  Future<void> _handleCashPayment() async {
+    double total = ((double.parse(tripsSelectSignal.value!.price!) / 2) *
+        quantityMenoresSignal.value) +
+        (double.parse(tripsSelectSignal.value!.price!) * quantitySignal.value);
+
+    Ticket newTicket = Ticket(
+      id: DateTime.now().millisecondsSinceEpoch,
+      branchId: currentUserBranchLG.value!.id,
+      tripId: tripsSelectSignal.value!.id!,
+      method: 'Efectivo',
+      quantity: quantitySignal.value + quantityMenoresSignal.value,
+      price: double.parse(tripsSelectSignal.value!.price!),
+      seats: selectedSeatNumbersSN.value,
+      date: DateFormat('yyyy-MM-dd').format(tripsSelectSignal.value!.date!),
+      adults: quantitySignal.value,
+      minors: quantityMenoresSignal.value,
+      total: total,
+      status: 1,
+      transactionStatus: 'pending',
+      sequenceNumber: 'abc123',
+      transactionTip: 10.0,
+      transactionCashback: 5.0,
+    );
+
+    final resultTicket = await dbHelper.insertTicket(newTicket);
+    if (resultTicket != null) {
+      sharedPreferencesStorage.incrementCounter();
+      showCustomSnackBar(
+        context: context,
+        title: 'Compra de Ticket guardada correctamente db-Local',
+        backgroundColor: Colors.green,
+      );
+
+      String scheduleActual = DateFormat('HH:mm').format(DateTime.now());
+      await utilsPrinterTicketLocal.printTicketPasajeLocal(
+        newTicket,
+        scheduleActual,
+        tripsSelectSignal.value!.origin.toString(),
+        tripsSelectSignal.value!.destination.toString(),
+      );
+    } else {
+      showCustomSnackBar(
+        context: context,
+        title: 'Error al guardar el Ticket',
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+
+  // 5. Manejo de pagos con tarjeta
+  Future<void> _handleCardPayment(PaymentMethod method) async {
+    final hasConnection = await _checkConnection();
+    if (!hasConnection) {
+      showCustomSnackBar(
+        context: context,
+        title: 'Se requiere conexión para pagos con tarjeta',
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
+
+    final methodName = method == PaymentMethod.creditCard ? 'Crédito' : 'Débito';
+    utilsTicket.verifyPurchaseTicketClass(
+      context,
+      tripsSelectSignal.value!.price.toString(),
+      paymentMethod: methodName,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          bool checkConnection = await _checkConnection();
-          if (checkConnection) {
-            print('TIENE CONEXION - SI, MANDAR A PAGAR');
-            utilsTicket.verifyPurchaseTicketClass(
-                context, tripsSelectSignal.value!.price.toString());
-          } else {
-            InternetConnectionModal.show(
-              context,
-              onPayWithCash: () async {
-                // Lógica para pagar con efectivo
-                print('TIENE CONEXION - NO, GUARDAR EN DB-LOCAL');
-                // Si no hay conexión, guardamos el ticket en la base de datos local
-                double total =
-                    ((double.parse(tripsSelectSignal.value!.price!) / 2) *
-                            quantityMenoresSignal.watch(context)) +
-                        ((double.parse(tripsSelectSignal.value!.price!)) *
-                            quantitySignal.watch(context));
-                int branch_id = currentUserBranchLG.value!.id;
-                int trip_id = tripsSelectSignal.value!.id!;
-                int quantity =
-                    quantityMenoresSignal.value + quantitySignal.value;
-                List<int> seats = selectedSeatNumbersSN.value;
-                DateTime date = tripsSelectSignal.value!.date!;
-                int adults = quantitySignal.value;
-                int minors = quantityMenoresSignal.value;
+      floatingActionButton:  Watch.builder(
+        builder: (context) {
+          final hasSeats = selectedSeatNumbersSN
+              .watch(context)
+              .isNotEmpty;
 
-                Ticket newTicket = Ticket(
-                  id: DateTime.now().millisecondsSinceEpoch,
-                  branchId: branch_id,
-                  tripId: trip_id,
-                  method: 'Efectivo',
-                  quantity: quantity,
-                  price: double.parse(tripsSelectSignal.value!.price!),
-                  seats: seats,
-                  date: DateFormat('yyyy-MM-dd').format(date),
-                  adults: adults,
-                  minors: minors,
-                  total: total,
-                  //estos estan ahi pero no se envian
-                  //************************* */
-                  status: 1,
-                  transactionStatus: 'pending',
-                  sequenceNumber: 'abc123',
-                  extraData: 'no extra data',
-                  transactionTip: 10.0,
-                  transactionCashback: 5.0,
-                  //************************* */
+          return FloatingActionButton.extended(
+            onPressed: () async {
+              if (selectedSeatNumbersSN.value.isEmpty) {
+                showCustomSnackBar(
+                  context: context,
+                  title: 'Debe seleccionar al menos un asiento',
+                  backgroundColor: Colors.red,
                 );
+                return;
+              }
 
-                final resultTicket = await dbHelper.insertTicket(newTicket);
-                if (resultTicket != null) {
-                  //Aumento la variable que me controla la cantidad de tickets guardados en la db-local
-                  sharedPreferencesStorage.incrementCounter();
-                  showCustomSnackBar(
-                      context: context,
-                      title:
-                          'Compra de Ticket guardada correctamente db-Local', // Obligatorio
-                      backgroundColor: Colors.green);
-                  //Mandar a Imprimir
-                  String scheduleActual =
-                      DateFormat('HH:mm').format(DateTime.now());
-                  await utilsPrinterTicketLocal.printTicketPasajeLocal(
-                      newTicket,
-                      scheduleActual,
-                      tripsSelectSignal.value!.origin.toString(),
-                      tripsSelectSignal.value!.destination.toString());
-                } else {
-                  showCustomSnackBar(
-                      context: context,
-                      title: 'Error al guardar el Ticket', // Obligatorio
-                      backgroundColor: Colors.red);
-                }
-              },
-              onCancel: () {
-                // Lógica cuando se cancela
-                cancelarCompraTicket(context);
-              },
-            );
-          }
-        },
-        backgroundColor: Colors.blue,
-        label: Row(
-          children: [
-            Icon(MdiIcons.ticket, color: Colors.white),
-            const SizedBox(width: 8),
-            const Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
-          ],
-        ),
+              bool checkConnection = await _checkConnection();
+              final paymentMethod = await _showPaymentMethodModal(context);
+              if (paymentMethod == null) return;
+
+              if (paymentMethod == PaymentMethod.cash) {
+                await _handleCashPayment();
+              } else {
+                await _handleCardPayment(paymentMethod);
+              }
+            },
+            backgroundColor: Colors.blue,
+            label: Row(
+              children: [
+                Icon(MdiIcons.ticket, color: Colors.white),
+                const SizedBox(width: 8),
+                const Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
+              ],
+            ),
+          );
+        }
       ),
       backgroundColor: Colors.blue[400],
       body: SafeArea(
@@ -165,12 +253,12 @@ class _TicketPageState extends State<TicketPage> {
                   children: [
                     InkWell(
                       onTap: () {
-                        selectedSeatNumbersSN.value = [];
-                        selectedSeatNumbersSN.value = []; // Asientos
-                        quantitySignal.value = 0; // Cantidad adultos
-                        quantityMenoresSignal.value = 0; // Cantidad menores
-                        (context as Element).markNeedsBuild();
                         GoRouter.of(context).pop();
+                        quantitySignal.value = 0;
+                        quantityMenoresSignal.value = 0;
+                        quantityAdultsSignal.value = 0;
+                        selectedSeatNumbersSN.value = [];
+                        tripsSelectSignal.value = null;
                       },
                       child: const Padding(
                         padding: EdgeInsets.only(left: 8.0),

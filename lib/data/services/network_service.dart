@@ -6,7 +6,7 @@ class NetworkService {
   Future<bool> checkInternetConnection() async {
     // Verifica la conectividad
     var connectivityResult = await Connectivity().checkConnectivity();
-     // Depuración: Mostrar el tipo de conectividad
+    // Depuración: Mostrar el tipo de conectividad
     print('TIENE CONEXION-Connectivity result: ${connectivityResult.first}');
 
     // Si estamos conectados a Wi-Fi o móvil, comprobamos el acceso real a Internet

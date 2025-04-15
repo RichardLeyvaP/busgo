@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'dart:convert';
 
 part 'trips_model.freezed.dart';
 part 'trips_model.g.dart';
