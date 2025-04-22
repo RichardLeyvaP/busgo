@@ -89,7 +89,7 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                           final isSel = promo == selectedPromo;
                           return ListTile(
                             title: Text(
-                              promo.name ?? 'Promo sin nombre',
+                              promo.name,
                               style: TextStyle(
                                 color: isSel ? Colors.blue : Colors.black,
                                 fontWeight:
@@ -97,7 +97,7 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                               ),
                             ),
                             subtitle: Text(
-                                '${promo.percentage?.toStringAsFixed(0)}%'),
+                                '${promo.percentage.toStringAsFixed(0)}%'),
                             trailing: isSel
                                 ? const Icon(Icons.check_circle,
                                     color: Colors.blue)

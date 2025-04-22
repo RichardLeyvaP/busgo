@@ -1,5 +1,5 @@
-import 'package:BusGo/data/services/local_database_service.dart';
-import 'package:BusGo/data/services/ticketSyncService.dart';
+// import 'package:BusGo/data/services/local_database_service.dart';
+// import 'package:BusGo/data/services/ticketSyncService.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
@@ -20,8 +20,8 @@ class PaymentCard extends StatefulWidget {
   final String timeFin;
   final String price;
 
-  PaymentCard(
-      {required this.timeIni, required this.price, required this.timeFin});
+  const PaymentCard(
+      {super.key, required this.timeIni, required this.price, required this.timeFin});
 
   @override
   State<PaymentCard> createState() => _PaymentCardState();
@@ -315,14 +315,14 @@ class _PaymentCardState extends State<PaymentCard> {
 
   double _getPriceWithDiscount(String ticketType, double basePrice) {
     final promo = _selectedPromotions[ticketType];
-    if (promo != null && promo.percentage != null) {
-      return basePrice * (1 - promo.percentage! / 100);
+    if (promo != null) {
+      return basePrice * (1 - promo.percentage / 100);
     }
     return basePrice;
   }
 
   Future<void> verifyPurchaseTicket(context) async {
-    if (selectedSeatNumbersSN.value.length <= 0) //no hay asientos seleccionados
+    if (selectedSeatNumbersSN.value.isEmpty) //no hay asientos seleccionados
     {
       showCustomSnackBar(
           context: context,
