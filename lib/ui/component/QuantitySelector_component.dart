@@ -3,6 +3,7 @@
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/signals/promotions_signals/promotions_signals.dart';
 import '../../models/promotions/promotions_model.dart';
@@ -108,25 +109,40 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    if (selectedPromo != null) {
-                      // 1) Cerramos el diálogo retornando la promo seleccionada
-                      Navigator.of(ctx).pop(selectedPromo);
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        if (selectedPromo != null) {
+                          // 1) Cerramos el diálogo retornando la promo seleccionada
+                          Navigator.of(ctx).pop(selectedPromo);
 
-                      // 2) Si el widget recibió un onPromotionApplied, lo invocamos
-                      if (widget.onPromotionApplied != null) {
-                        widget.onPromotionApplied!(selectedPromo!);
-                      }
+                          // 2) Si el widget recibió un onPromotionApplied, lo invocamos
+                          if (widget.onPromotionApplied != null) {
+                            widget.onPromotionApplied!(selectedPromo!);
+                          }
 
-                    } else {
-                      ScaffoldMessenger.of(ctx).showSnackBar(
-                        const SnackBar(content: Text('Seleccione una promoción')),
-                      );
-                    }
-                  },
-                  child: const Text('Aplicar'),
-                ),
+                        } else {
+                          ScaffoldMessenger.of(ctx).showSnackBar(
+                            const SnackBar(content: Text('Seleccione una promoción')),
+                          );
+                        }
+                      },
+                      child: const Text('Aplicar'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                      ),
+                      onPressed: () {
+                        context.pop(selectedPromo);
+                      },
+                      child: const Text('Cancelar'),
+                    ),
+                  ],
+                )
+
 
                   ],
                 ),

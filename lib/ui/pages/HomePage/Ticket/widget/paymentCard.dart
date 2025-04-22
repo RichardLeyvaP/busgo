@@ -96,7 +96,7 @@ class _PaymentCardState extends State<PaymentCard> {
                   ),
                   const SizedBox(height: 5),
                   QuantitySelector(
-                    title: 'Pasaje Normal',
+                    title: 'Pasaje   Normal   ',
                     initialQuantity: quantitySignal.value, //cantidad de mayores
                     onQuantityChanged: (newQuantity) {
                       if ((quantityMenoresSignal.value +
@@ -156,7 +156,7 @@ class _PaymentCardState extends State<PaymentCard> {
                     },
                   ),
                   QuantitySelector(
-                    title: 'Adultos Mayores',
+                    title: 'Adultos Mayores ',
                     initialQuantity: quantityAdultsSignal.value,
                     onQuantityChanged: (newQuantity) {
                       quantityAdultsSignal.value = newQuantity;
