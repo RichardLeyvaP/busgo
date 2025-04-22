@@ -4,17 +4,24 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
 import 'package:flutter/material.dart';
 
+import '../../domain/signals/promotions_signals/promotions_signals.dart';
+import '../../models/promotions/promotions_model.dart';
+import '../../repository/promotions_repository.dart';
+import '../../util/globalCallApi/apiService.dart';
+
 class QuantitySelector extends StatefulWidget {
   final int initialQuantity;
   final String title;
-  final ValueChanged<int> onQuantityChanged; // Función callback
+  final ValueChanged<int> onQuantityChanged;
+  final ValueChanged<Promotion>? onPromotionApplied;// Función callback
 
   const QuantitySelector({
-    Key? key,
+    super.key,
     required this.title,
     required this.initialQuantity,
-    required this.onQuantityChanged, // Recibimos la función callback
-  }) : super(key: key);
+    required this.onQuantityChanged,
+    this.onPromotionApplied,// Recibimos la función callback
+  });
 
   @override
   _QuantitySelectorState createState() => _QuantitySelectorState();
@@ -22,21 +29,40 @@ class QuantitySelector extends StatefulWidget {
 
 class _QuantitySelectorState extends State<QuantitySelector> {
   late int quantity;
-  void _showPromotionDialog() {
-    final List<String> promociones = [
-      'Promoción de 10%',
-      'Promoción de 20%',
-      'Promoción de 50%',
-    ];
+  @override
+  void initState() {
+    super.initState();
+    quantity = widget.initialQuantity;
+    final repo = PromotionsRepository(ApiService()); // <-- posicional
+    repo.getAll()                                // <-- método getAll()
+        .then((lista) {
+      promotionSignal.value = lista;
+    })
+        .catchError((error) {
+      // aquí tu manejo de error
+      print('Error al traer promociones: $error');
+    });
+  }
 
-    showDialog(
+  Future<void> _showPromotionDialog() async {
+    final List<Promotion>? promos = promotionSignal.value;
+
+    // Si todavía no llegó la data:
+    if (promos == null) {
+      showCustomSnackBar(
+        context: context,
+        title: 'Cargando promociones...',
+        backgroundColor: Colors.orange,
+      );
+      return;
+    }
+    Promotion? selectedPromo;
+
+    final Promotion? applied = await showDialog<Promotion>(
       context: context,
-      builder: (BuildContext context) {
-        // Variable local para almacenar la promoción seleccionada.
-        String? selectedPromotion;
+      builder: (ctx) {
         return StatefulBuilder(
-          builder:
-              (BuildContext context, void Function(void Function()) setState) {
+          builder: (ctx, setState) {
             return Dialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -48,68 +74,60 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                   children: [
                     const Text(
                       'Aplicar Promoción',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
-                    // Contenedor con tamaño limitado para el listado.
                     SizedBox(
-                      height: 150,
+                      height: 200,
                       child: ListView.separated(
-                        itemCount: promociones.length,
-                        separatorBuilder: (_, __) =>
-                            const Divider(height: 1, thickness: 1),
-                        itemBuilder: (context, index) {
-                          String promo = promociones[index];
-                          bool isSelected = promo == selectedPromotion;
+                        itemCount: promos.length,
+                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        itemBuilder: (_, i) {
+                          final promo = promos[i];
+                          final isSel = promo == selectedPromo;
                           return ListTile(
                             title: Text(
-                              promo,
+                              promo.name ?? 'Promo sin nombre',
                               style: TextStyle(
-                                color: isSelected ? Colors.blue : Colors.black,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
+                                color: isSel ? Colors.blue : Colors.black,
+                                fontWeight:
+                                    isSel ? FontWeight.bold : FontWeight.normal,
                               ),
                             ),
-                            trailing: isSelected
+                            subtitle: Text(
+                                '${promo.percentage?.toStringAsFixed(0)}%'),
+                            trailing: isSel
                                 ? const Icon(Icons.check_circle,
                                     color: Colors.blue)
                                 : null,
-                            selected: isSelected,
-                            selectedTileColor: Colors.blue.withOpacity(0.1),
-                            onTap: () {
-                              setState(() {
-                                selectedPromotion = promo;
-                              });
-                            },
+                            selected: isSel,
+                            onTap: () => setState(() => selectedPromo = promo),
                           );
                         },
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        // minimumSize: const Size(double.infinity, 40),
-                      ),
-                      onPressed: () {
-                        if (selectedPromotion != null) {
-                          Navigator.of(context).pop(selectedPromotion);
-                          print('Promoción aplicada: $selectedPromotion');
-                          // Aquí puedes agregar la lógica adicional para aplicar la promoción.
-                        } else {
-                          // Opcional: Notificar al usuario que debe seleccionar una promoción.
-                          print('Seleccione una promoción antes de aplicar.');
-                        }
-                      },
-                      child: const Text('Aplicar'),
-                    ),
+                    const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    if (selectedPromo != null) {
+                      // 1) Cerramos el diálogo retornando la promo seleccionada
+                      Navigator.of(ctx).pop(selectedPromo);
+
+                      // 2) Si el widget recibió un onPromotionApplied, lo invocamos
+                      if (widget.onPromotionApplied != null) {
+                        widget.onPromotionApplied!(selectedPromo!);
+                      }
+
+                    } else {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        const SnackBar(content: Text('Seleccione una promoción')),
+                      );
+                    }
+                  },
+                  child: const Text('Aplicar'),
+                ),
+
                   ],
                 ),
               ),
@@ -118,13 +136,19 @@ class _QuantitySelectorState extends State<QuantitySelector> {
         );
       },
     );
+    if (applied != null) {
+      // aquí ya tienes la Promotion completa
+      debugPrint(
+          'Promoción aplicada: ${applied.name} (${applied.percentage}%)');
+      // TODO: guarda la promo en un Signal o haz callback
+    }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    quantity = widget.initialQuantity;
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   quantity = widget.initialQuantity;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -211,35 +235,16 @@ class _QuantitySelectorState extends State<QuantitySelector> {
           },
         ),
         IconButton(
-            onPressed: () {
-              _showPromotionDialog();
-            },
-            icon: const Icon(
-              Icons.local_offer,
-              color: Colors.black26,
-            ),
-            tooltip: 'asasas',
+          icon: const Icon(Icons.local_offer_outlined, color: Colors.black26,),
+          tooltip: 'Aplicar promoción',
+          onPressed: _showPromotionDialog,
         ),
-        const Text('Promo',
-        style: TextStyle(
-          fontSize: 10,
-          color: Colors.black26
-        ),
+        const Text(
+          'Promo',
+          style: TextStyle(fontSize: 10, color: Colors.black26),
         )
       ],
     );
   }
 }
 
-// Métodos para aumentar o disminuir la cantidad
-// void increaseQuantity() {
-//   quantitySignal.value += 1;
-// }
-
-// void decreaseQuantity() {
-//   if (quantitySignal.value > 0) {
-//     quantitySignal.value -= 1;
-//   }
-// }
-//******************* */
-//selccionador de cantidades
