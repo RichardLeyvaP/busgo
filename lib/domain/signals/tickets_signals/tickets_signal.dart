@@ -34,8 +34,6 @@ final Signal<bool> floatingActionButtonSignal = Signal<bool>(true);
 final Signal<List<Ticket>?> ticketsSignal = Signal<List<Ticket>?>(null);
 final Signal<String?> ticketsErrorSignal = Signal<String?>(null);
 
-//Señal para las promociones
-final Signal<List<Promotion>?> promotionSignal= Signal<List<Promotion>?>(null);\
 
 
 
