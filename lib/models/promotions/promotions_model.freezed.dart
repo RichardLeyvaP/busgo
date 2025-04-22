@@ -20,10 +20,15 @@ Promotion _$PromotionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Promotion {
-  int? get id => throw _privateConstructorUsedError;
-  String? get name => throw _privateConstructorUsedError;
-  double? get percentage => throw _privateConstructorUsedError;
-  String? get description => throw _privateConstructorUsedError;
+  int get id =>
+      throw _privateConstructorUsedError; // <-- Cambiado a required (siempre viene del API)
+  String get name =>
+      throw _privateConstructorUsedError; // <-- required (el API siempre lo envía)
+  String? get description =>
+      throw _privateConstructorUsedError; // <-- Permite nulos (si el API lo permite)
+  int get percentage =>
+      throw _privateConstructorUsedError; // <-- Cambiado a int (coincide con el API)
+  bool get active => throw _privateConstructorUsedError;
 
   /// Serializes this Promotion to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -40,7 +45,8 @@ abstract class $PromotionCopyWith<$Res> {
   factory $PromotionCopyWith(Promotion value, $Res Function(Promotion) then) =
       _$PromotionCopyWithImpl<$Res, Promotion>;
   @useResult
-  $Res call({int? id, String? name, double? percentage, String? description});
+  $Res call(
+      {int id, String name, String? description, int percentage, bool active});
 }
 
 /// @nodoc
@@ -58,28 +64,33 @@ class _$PromotionCopyWithImpl<$Res, $Val extends Promotion>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? name = freezed,
-    Object? percentage = freezed,
+    Object? id = null,
+    Object? name = null,
     Object? description = freezed,
+    Object? percentage = null,
+    Object? active = null,
   }) {
     return _then(_value.copyWith(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      name: freezed == name
+              as int,
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      percentage: freezed == percentage
-          ? _value.percentage
-          : percentage // ignore: cast_nullable_to_non_nullable
-              as double?,
+              as String,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
+      percentage: null == percentage
+          ? _value.percentage
+          : percentage // ignore: cast_nullable_to_non_nullable
+              as int,
+      active: null == active
+          ? _value.active
+          : active // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -92,7 +103,8 @@ abstract class _$$PromotionImplCopyWith<$Res>
       __$$PromotionImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? id, String? name, double? percentage, String? description});
+  $Res call(
+      {int id, String name, String? description, int percentage, bool active});
 }
 
 /// @nodoc
@@ -108,28 +120,33 @@ class __$$PromotionImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
-    Object? name = freezed,
-    Object? percentage = freezed,
+    Object? id = null,
+    Object? name = null,
     Object? description = freezed,
+    Object? percentage = null,
+    Object? active = null,
   }) {
     return _then(_$PromotionImpl(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      name: freezed == name
+              as int,
+      name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-      percentage: freezed == percentage
-          ? _value.percentage
-          : percentage // ignore: cast_nullable_to_non_nullable
-              as double?,
+              as String,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
+      percentage: null == percentage
+          ? _value.percentage
+          : percentage // ignore: cast_nullable_to_non_nullable
+              as int,
+      active: null == active
+          ? _value.active
+          : active // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -137,23 +154,35 @@ class __$$PromotionImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PromotionImpl implements _Promotion {
-  _$PromotionImpl({this.id, this.name, this.percentage, this.description});
+  _$PromotionImpl(
+      {required this.id,
+      required this.name,
+      this.description,
+      required this.percentage,
+      this.active = true});
 
   factory _$PromotionImpl.fromJson(Map<String, dynamic> json) =>
       _$$PromotionImplFromJson(json);
 
   @override
-  final int? id;
+  final int id;
+// <-- Cambiado a required (siempre viene del API)
   @override
-  final String? name;
-  @override
-  final double? percentage;
+  final String name;
+// <-- required (el API siempre lo envía)
   @override
   final String? description;
+// <-- Permite nulos (si el API lo permite)
+  @override
+  final int percentage;
+// <-- Cambiado a int (coincide con el API)
+  @override
+  @JsonKey()
+  final bool active;
 
   @override
   String toString() {
-    return 'Promotion(id: $id, name: $name, percentage: $percentage, description: $description)';
+    return 'Promotion(id: $id, name: $name, description: $description, percentage: $percentage, active: $active)';
   }
 
   @override
@@ -163,16 +192,17 @@ class _$PromotionImpl implements _Promotion {
             other is _$PromotionImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
             (identical(other.percentage, percentage) ||
                 other.percentage == percentage) &&
-            (identical(other.description, description) ||
-                other.description == description));
+            (identical(other.active, active) || other.active == active));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, name, percentage, description);
+      Object.hash(runtimeType, id, name, description, percentage, active);
 
   /// Create a copy of Promotion
   /// with the given fields replaced by the non-null parameter values.
@@ -188,26 +218,35 @@ class _$PromotionImpl implements _Promotion {
       this,
     );
   }
+
+  @override
+  double applyDiscount(double price) {
+    // TODO: implement applyDiscount
+    throw UnimplementedError();
+  }
 }
 
 abstract class _Promotion implements Promotion {
   factory _Promotion(
-      {final int? id,
-      final String? name,
-      final double? percentage,
-      final String? description}) = _$PromotionImpl;
+      {required final int id,
+      required final String name,
+      final String? description,
+      required final int percentage,
+      final bool active}) = _$PromotionImpl;
 
   factory _Promotion.fromJson(Map<String, dynamic> json) =
       _$PromotionImpl.fromJson;
 
   @override
-  int? get id;
+  int get id; // <-- Cambiado a required (siempre viene del API)
   @override
-  String? get name;
+  String get name; // <-- required (el API siempre lo envía)
   @override
-  double? get percentage;
+  String? get description; // <-- Permite nulos (si el API lo permite)
   @override
-  String? get description;
+  int get percentage; // <-- Cambiado a int (coincide con el API)
+  @override
+  bool get active;
 
   /// Create a copy of Promotion
   /// with the given fields replaced by the non-null parameter values.
