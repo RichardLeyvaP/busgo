@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:signals/signals_flutter.dart';
 
+import '../../../../../models/promotions/promotions_model.dart';
+
 class PaymentCard extends StatefulWidget {
   final String timeIni;
   final String timeFin;
@@ -26,6 +28,12 @@ class PaymentCard extends StatefulWidget {
 }
 
 class _PaymentCardState extends State<PaymentCard> {
+  final Map<String, Promotion?> _selectedPromotions = {
+    'Pasaje Normal': null,
+    'Menores de Edad': null,
+    'Adultos Mayores': null,
+  };
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +41,8 @@ class _PaymentCardState extends State<PaymentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final double precioBase = double.parse(widget.price);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.all(15),
@@ -114,6 +124,11 @@ class _PaymentCardState extends State<PaymentCard> {
                         // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                       }
                     },
+                    onPromotionApplied: (promo) {
+                      // <-- Agregar esto
+                      setState(
+                          () => _selectedPromotions['Pasaje Normal'] = promo);
+                    },
                   ),
                   QuantitySelector(
                     title: 'Menores de Edad',
@@ -134,36 +149,51 @@ class _PaymentCardState extends State<PaymentCard> {
                       }
                       // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                     },
+                    onPromotionApplied: (promo) {
+                      // <-- Agregar esto
+                      setState(
+                          () => _selectedPromotions['Menores de Edad'] = promo);
+                    },
                   ),
                   QuantitySelector(
-                      title: 'Adultos Mayores',
-                      initialQuantity: quantityAdultsSignal.value,
-                      onQuantityChanged: (newQuantity) {
-                        quantityAdultsSignal.value = newQuantity;
-                        if ((newQuantity +
-                                quantitySignal.value +
-                                quantityMenoresSignal.value) <
-                            selectedSeatNumbersSN.value.length) {
-                          selectedSeatNumbersSN.value =
-                              selectedSeatNumbersSN.value.sublist(
-                                  0,
-                                  (newQuantity +
-                                      quantitySignal.value +
-                                      quantityMenoresSignal.value));
-                        }
-                      }),
+                    title: 'Adultos Mayores',
+                    initialQuantity: quantityAdultsSignal.value,
+                    onQuantityChanged: (newQuantity) {
+                      quantityAdultsSignal.value = newQuantity;
+                      if ((newQuantity +
+                              quantitySignal.value +
+                              quantityMenoresSignal.value) <
+                          selectedSeatNumbersSN.value.length) {
+                        selectedSeatNumbersSN.value =
+                            selectedSeatNumbersSN.value.sublist(
+                                0,
+                                (newQuantity +
+                                    quantitySignal.value +
+                                    quantityMenoresSignal.value));
+                      }
+                    },
+                    onPromotionApplied: (promo) {
+                      // <-- Agregar esto
+                      setState(
+                          () => _selectedPromotions['Adultos Mayores'] = promo);
+                    },
+                  ),
                   const SizedBox(
                     height: 5,
                   ),
                   CustomButton(
                     title: "Seleccionar asiento",
                     onTap: () {
-                      double total = ((double.parse(widget.price) / 2) *
-                              quantityMenoresSignal.watch(context)) +
-                          ((double.parse(widget.price)) *
-                              quantitySignal.watch(context)) +
-                          ((double.parse(widget.price)) *
-                              quantityAdultsSignal.watch(context));
+                      double total =
+                          (_getPriceWithDiscount('Pasaje Normal', precioBase) *
+                                  quantitySignal.watch(context)) +
+                              (_getPriceWithDiscount(
+                                      'Menores de Edad', precioBase) *
+                                  quantityMenoresSignal.watch(context)) +
+                              (_getPriceWithDiscount(
+                                      'Adultos Mayores', precioBase) *
+                                  quantityAdultsSignal.watch(context));
+
                       if (total > 0) {
                         final seats = utilsTicket.generateSeats(
                             29,
@@ -249,15 +279,15 @@ class _PaymentCardState extends State<PaymentCard> {
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   Text(
-                    //(double.parse(price) * quantitySignal.watch(context)) +
-                    (((double.parse(widget.price) / 2) *
-                                quantityMenoresSignal.watch(context)) +
-                            ((double.parse(widget.price)) *
+                    (((_getPriceWithDiscount('Pasaje Normal', precioBase) *
                                 quantitySignal.watch(context)) +
-                            ((double.parse(widget.price)) *
-                                quantityAdultsSignal.watch(context)))
+                            (_getPriceWithDiscount(
+                                    'Menores de Edad', precioBase) *
+                                quantityMenoresSignal.watch(context)) +
+                            (_getPriceWithDiscount(
+                                    'Adultos Mayores', precioBase) *
+                                quantityAdultsSignal.watch(context))))
                         .toStringAsFixed(2),
-
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -281,6 +311,14 @@ class _PaymentCardState extends State<PaymentCard> {
         ],
       ),
     );
+  }
+
+  double _getPriceWithDiscount(String ticketType, double basePrice) {
+    final promo = _selectedPromotions[ticketType];
+    if (promo != null && promo.percentage != null) {
+      return basePrice * (1 - promo.percentage! / 100);
+    }
+    return basePrice;
   }
 
   Future<void> verifyPurchaseTicket(context) async {
@@ -321,7 +359,6 @@ class _PaymentCardState extends State<PaymentCard> {
   }
 }
 
-//TODO: resololucion
 void showSeatSelectionModal(
     BuildContext context, List<Seat> seats, int maxSelectable) {
   final selectedSeatNumbers1 = ValueNotifier<List<int>>([]);
