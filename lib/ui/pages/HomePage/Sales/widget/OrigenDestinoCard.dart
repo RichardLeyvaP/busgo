@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../domain/signals/sales_signals/sales_signals.dart';
+import '../../../../../domain/signals/tickets_signals/tickets_signal.dart';
+import '../../../../../models/trips/trips_model.dart';
+
 class OrigenDestinoCard extends StatefulWidget {
   final String origen;
   final String destino;
@@ -24,11 +28,15 @@ class _OrigenDestinoCardState extends State<OrigenDestinoCard> {
   }
   // método _showDestinoModal para seleccionar el destino
   void _showDestinoModal(BuildContext context) {
+    final trips = tripsSignal.value; // Accede a los viajes desde la señal
+    final isLoading = isLoadingTripsSignal.value;
+    final error = tripsErrorSignal.value;
+
     showDialog(
       context: context,
       builder: (context) => Center(
-        child: Material( // <-- Agregar este Material [[9]]
-          color: Colors.transparent, // Fondo transparente
+        child: Material(
+          color: Colors.transparent,
           child: Container(
             width: MediaQuery.of(context).size.width * 0.95,
             constraints: BoxConstraints(
@@ -40,30 +48,40 @@ class _OrigenDestinoCardState extends State<OrigenDestinoCard> {
               boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
             ),
             child: SingleChildScrollView(
-              physics: const ClampingScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Padding(
                     padding: EdgeInsets.all(16),
-                    child: Text(
-                      "Selecciona un destino",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Text("Selecciona un destino", /* ... */),
+                  ),
+                  const Divider(),
+                  if (isLoading)
+                    const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: CircularProgressIndicator(),
+                    )
+                  else if (error != null)
+                    Text('Error: $error', style: TextStyle(color: Colors.red))
+                  else if (trips == null || trips.isEmpty)
+                      const Text('No hay destinos disponibles')
+                    else
+                      ..._getUniqueDestinations(trips).map((destino) => _buildDestinoOption(destino!)).toList(),
+
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: (){
+                        selectedDestinationSignal.value = null;
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Mostrar todos'),
                     ),
                   ),
-                  const Divider(height: 1, thickness: 1),
-                  _buildDestinoOption("Región Metropolitana"),
-                  _buildDestinoOption("Puerto Natales"),
-                  _buildDestinoOption("Nueva Costanera"),
-                  _buildDestinoOption("Región Metropolitana"),
-                  _buildDestinoOption("Puerto Natales"),
-                  _buildDestinoOption("Nueva Costanera"),
-                  _buildDestinoOption("Región Metropolitana"),
-                  _buildDestinoOption("Puerto Natales"),
-                  _buildDestinoOption("Nueva Costanera"),
-
                 ],
+
               ),
+
             ),
           ),
         ),
@@ -78,9 +96,15 @@ class _OrigenDestinoCardState extends State<OrigenDestinoCard> {
         setState(() { // Ahora setState está disponible [7]
           _selectedDestino = destino;
         });
+        selectedDestinationSignal.value = destino;
         Navigator.pop(context); // Usar context del builder
       },
     );
+  }
+
+  List<String?> _getUniqueDestinations(List<Trip> trips) {
+    final destinations = trips.map((trip) => trip.destination).toSet();
+    return destinations.toList();
   }
 
   Widget build(BuildContext context) { // Contexto propio del State [5]
