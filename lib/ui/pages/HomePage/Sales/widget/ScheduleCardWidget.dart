@@ -49,17 +49,14 @@ class ScheduleCard extends StatefulWidget {
 class _ScheduleCardState extends State<ScheduleCard> {
   bool isExpanded = false;
 
-
   int seats = availableSeatsSignal.value;
-
 
   @override
   Widget build(BuildContext context) {
 //se garantiza siempre un resultado positivo, no es la mejor forma. Hay que hacer que esto venga positivo del backend
-    if(availableSeatsSignal.value <0){
-      seats = availableSeatsSignal.value*-1;
+    if (availableSeatsSignal.value < 0) {
+      seats = availableSeatsSignal.value * -1;
     }
-
 
     Trip? tripForCard;
     try {
@@ -309,8 +306,7 @@ DateTime _safeParseDateTime(String input) {
     // Si falla, asumir que es solo hora y usar fecha actual
     final now = DateTime.now();
     final timeParts = input.split(':');
-    return DateTime(now.year, now.month, now.day,
-        int.parse(timeParts[0]),
+    return DateTime(now.year, now.month, now.day, int.parse(timeParts[0]),
         int.parse(timeParts[1]));
   }
 }
