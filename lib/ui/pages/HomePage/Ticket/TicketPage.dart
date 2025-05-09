@@ -5,7 +5,7 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/ticket/ticket_dabase_local/ticket_dabase_local_model.dart';
 import 'package:BusGo/ui/component/internetConnectionModal_component.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
-import 'package:BusGo/ui/pages/HomePage/Ticket/widget/classUtilsTikecket.dart';
+import 'package:BusGo/ui/pages/HomePage/Ticket/widget/classUtilsTicket.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/widget/paymentCard.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicketLocal.dart';
 import 'package:BusGo/util/util_class_sharedPreferences.dart';
@@ -22,7 +22,7 @@ class TicketPage extends StatefulWidget {
   State<TicketPage> createState() => _TicketPageState();
 }
 
-final utilsTicket = UtilsTicket();
+// final utilsTicket = UtilsTicket();
 final NetworkService _networkService = NetworkService();
 final DatabaseHelper dbHelper =
     DatabaseHelper(); // Instancia de la base de datos
@@ -187,7 +187,7 @@ class _TicketPageState extends State<TicketPage> {
     }
 
     final methodName = method == PaymentMethod.creditCard ? 'Crédito' : 'Débito';
-    utilsTicket.verifyPurchaseTicketClass(
+    verifyPurchaseTicketClass(
       context,
       tripsSelectSignal.value!.price.toString(),
       paymentMethod: methodName,
@@ -266,7 +266,7 @@ class _TicketPageState extends State<TicketPage> {
                       ),
                     ),
                     const Text(
-                      "Ticket",
+                      "Pago de Pasaje",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -287,28 +287,22 @@ class _TicketPageState extends State<TicketPage> {
                     // Contenedor blanco de detalles
                     Container(
                       margin: const EdgeInsets.fromLTRB(
-                          0, 30, 0, 0), // Empuja hacia abajo
+                          0, 40, 0, 0), // Empuja hacia abajo
                       decoration: const BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.transparent,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
                           topRight: Radius.circular(30),
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 150, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
                         child: Card(
                           child: Column(
                             children: [
                               const SizedBox(
                                   height: 50), // Espacio para el Card superior
-                              const Text(
-                                "Pago de Pasaje",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
+
                               const SizedBox(height: 5),
                               PaymentCard(
                                 timeIni: tripsSelectSignal.value!.schedule
@@ -333,60 +327,10 @@ class _TicketPageState extends State<TicketPage> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      const Icon(Icons.location_on,
-                                          color: Colors.blue),
-                                      const SizedBox(height: 5),
-                                      Container(
-                                        width: 1,
-                                        height: 40,
-                                        color: Colors.grey[400],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      const Icon(Icons.location_on,
-                                          color: Color(0xFF55698F)),
-                                    ],
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text("ORIGEN",
-                                            style: TextStyle(
-                                                color: Colors.grey[600])),
-                                        Text(
-                                          tripsSelectSignal.value!.origin
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Divider(color: Colors.grey[400]),
-                                        const SizedBox(height: 4),
-                                        Text("DESTINO",
-                                            style: TextStyle(
-                                                color: Colors.grey[600])),
-                                        Text(
-                                          tripsSelectSignal.value!.destination
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
                               const SizedBox(height: 10),
                               Row(
                                 children: [
