@@ -1,28 +1,25 @@
-//selccionador de cantidades
-
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
+import 'package:BusGo/domain/signals/promotions_signals/promotions_signals.dart';
+import 'package:BusGo/models/promotions/promotions_model.dart';
+import 'package:BusGo/repository/promotions_repository.dart';
+import 'package:BusGo/util/globalCallApi/apiService.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../domain/signals/promotions_signals/promotions_signals.dart';
-import '../../models/promotions/promotions_model.dart';
-import '../../repository/promotions_repository.dart';
-import '../../util/globalCallApi/apiService.dart';
 
 class QuantitySelector extends StatefulWidget {
   final int initialQuantity;
   final String title;
   final ValueChanged<int> onQuantityChanged;
-  final ValueChanged<Promotion>? onPromotionApplied;// Función callback
+  final ValueChanged<Promotion?>? onPromotionApplied;
 
   const QuantitySelector({
-    super.key,
+    Key? key,
     required this.title,
     required this.initialQuantity,
     required this.onQuantityChanged,
-    this.onPromotionApplied,// Recibimos la función callback
-  });
+    this.onPromotionApplied,
+  }) : super(key: key);
 
   @override
   _QuantitySelectorState createState() => _QuantitySelectorState();
@@ -30,25 +27,29 @@ class QuantitySelector extends StatefulWidget {
 
 class _QuantitySelectorState extends State<QuantitySelector> {
   late int quantity;
+
   @override
   void initState() {
     super.initState();
     quantity = widget.initialQuantity;
-    final repo = PromotionsRepository(ApiService()); // <-- posicional
-    repo.getAll()                                // <-- método getAll()
-        .then((lista) {
-      promotionSignal.value = lista;
-    })
-        .catchError((error) {
-      // aquí tu manejo de error
-      print('Error al traer promociones: $error');
-    });
+    // Carga inicial de promociones
+    PromotionsRepository(ApiService())
+        .getAll()
+        .then((lista) => promotionSignal.value = lista)
+        .catchError((e) => debugPrint('Error al traer promociones: $e'));
   }
 
   Future<void> _showPromotionDialog() async {
-    final List<Promotion>? promos = promotionSignal.value;
+    if (quantity <= 0) {
+      showCustomSnackBar(
+        context: context,
+        title: 'Debe seleccionar al menos un asiento para aplicar promoción',
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
 
-    // Si todavía no llegó la data:
+    final promos = promotionSignal.value;
     if (promos == null) {
       showCustomSnackBar(
         context: context,
@@ -57,210 +58,149 @@ class _QuantitySelectorState extends State<QuantitySelector> {
       );
       return;
     }
-    Promotion? selectedPromo;
 
-    final Promotion? applied = await showDialog<Promotion>(
+    Promotion? selectedPromo = widget.title == 'Menores de Edad'
+        ? promotionMenoresSignal.value
+        : widget.title == 'Pasaje Normal'
+            ? promotionNormalSignal.value
+            : promotionAdultSignal.value;
+
+    final result = await showDialog<Promotion?>(
       context: context,
       builder: (ctx) {
         return StatefulBuilder(
-          builder: (ctx, setState) {
-            return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Aplicar Promoción',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      height: 200,
-                      child: ListView.separated(
-                        itemCount: promos.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
-                        itemBuilder: (_, i) {
-                          final promo = promos[i];
-                          final isSel = promo == selectedPromo;
-                          return ListTile(
-                            title: Text(
-                              promo.name,
-                              style: TextStyle(
-                                color: isSel ? Colors.blue : Colors.black,
-                                fontWeight:
-                                    isSel ? FontWeight.bold : FontWeight.normal,
-                              ),
-                            ),
-                            subtitle: Text(
-                                '${promo.percentage.toStringAsFixed(0)}%'),
-                            trailing: isSel
-                                ? const Icon(Icons.check_circle,
-                                    color: Colors.blue)
-                                : null,
-                            selected: isSel,
-                            onTap: () => setState(() => selectedPromo = promo),
-                          );
+          builder: (ctx, setState) => Dialog(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                const Text(
+                  'Aplicar Promoción',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 200,
+                  child: ListView.separated(
+                    itemCount: promos.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (_, i) {
+                      final promo = promos[i];
+                      final isSel = promo == selectedPromo;
+                      return ListTile(
+                        title: Text(promo.name),
+                        subtitle:
+                            Text('${promo.percentage.toStringAsFixed(0)}%'),
+                        selected: isSel,
+                        trailing: isSel
+                            ? const Icon(Icons.check_circle, color: Colors.blue)
+                            : null,
+                        onTap: () {
+                          setState(() {
+                            // toggle: si ya estaba seleccionado, lo quitamos
+                            selectedPromo = isSel ? null : promo;
+                          });
                         },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        if (selectedPromo != null) {
-                          // 1) Cerramos el diálogo retornando la promo seleccionada
-                          Navigator.of(ctx).pop(selectedPromo);
-
-                          // 2) Si el widget recibió un onPromotionApplied, lo invocamos
-                          if (widget.onPromotionApplied != null) {
-                            widget.onPromotionApplied!(selectedPromo!);
-                          }
-
-                        } else {
-                          ScaffoldMessenger.of(ctx).showSnackBar(
-                            const SnackBar(content: Text('Seleccione una promoción')),
-                          );
+                        Navigator.of(ctx).pop(selectedPromo);
+                        if (widget.onPromotionApplied != null) {
+                          widget.onPromotionApplied!(selectedPromo);
                         }
                       },
                       child: const Text('Aplicar'),
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                      ),
-                      onPressed: () {
-                        context.pop(selectedPromo);
-                      },
+                          backgroundColor: Colors.orange),
+                      onPressed: () => context.pop(),
                       child: const Text('Cancelar'),
                     ),
                   ],
-                )
-
-
-                  ],
                 ),
-              ),
-            );
-          },
+              ]),
+            ),
+          ),
         );
       },
     );
-    if (applied != null) {
-      // aquí ya tienes la Promotion completa
+
+    if (result != null) {
       debugPrint(
-          'Promoción aplicada: ${applied.name} (${applied.percentage}%)');
-      // TODO: guarda la promo en un Signal o haz callback
+          'Promo aplicada en ${widget.title}: ${result.name} (${result.percentage}%)');
     }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   quantity = widget.initialQuantity;
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('${widget.title}: ', style: const TextStyle(fontSize: 12)),
-        IconButton(
-          icon: const Icon(
-            Icons.remove_circle_outline,
-            size: 18,
-          ),
-          onPressed: quantity > 0
-              ? () {
-                  // decreaseQuantity();
-                  if (widget.title == 'Menores de Edad') {
-                    quantityMenoresSignal.value--;
-                    setState(() {
-                      quantity--;
-                    });
-                    widget.onQuantityChanged(
-                        quantity); // Llamamos la función callback
-                  } else if (widget.title == 'Pasaje Normal') {
-                    quantitySignal.value--;
-                    setState(() {
-                      quantity--;
-                    });
-                    widget.onQuantityChanged(
-                        quantity); // Llamamos la función callback
-                  } else if (widget.title == 'Adultos Mayores') {
-                    quantityAdultsSignal.value--;
-                    setState(() {
-                      quantity--;
-                    });
-                    widget.onQuantityChanged(quantity);
-                  } else {
-                    setState(() {
-                      quantity--;
-                    });
-                    widget.onQuantityChanged(quantity);
-                    _showPromotionDialog();
-                    // Llamamos la función callback
-                  }
+    return Row(children: [
+      Text('${widget.title}: ', style: const TextStyle(fontSize: 12)),
+      IconButton(
+        icon: const Icon(Icons.remove_circle_outline, size: 18),
+        onPressed: quantity > 0
+            ? () {
+                setState(() => quantity--);
+                widget.onQuantityChanged(quantity);
+
+                // si llega a cero, quitamos la promo vinculada
+                if (quantity == 0 && widget.onPromotionApplied != null) {
+                  widget.onPromotionApplied!(null);
                 }
-              : null,
-        ),
-        Text('$quantity', style: const TextStyle(fontSize: 14)),
-        IconButton(
-          icon: const Icon(
-            Icons.add_circle_outline,
-            size: 18,
-          ),
-          onPressed: () {
-            // increaseQuantity();
-            if (widget.title == 'Menores de Edad' ||
-                widget.title == 'Pasaje Normal' ||
-                widget.title == 'Adultos Mayores') {
-              if ((quantityMenoresSignal.value +
-                      quantitySignal.value +
-                      quantityAdultsSignal.value) >=
-                  availableSeatsSignal.value) {
-                print('No puede seleccionar mas asientos');
-                showCustomSnackBar(
-                  context: context,
-                  title: 'No hay asientos disponibles', // Obligatorio
-                  titleColor: Colors.white, // Opcional
-                  icon: Icons.check_circle, // Opcional
-                  backgroundColor: Colors.red, // Opcional
-                  duration: const Duration(seconds: 3), // Opcional
-                );
-              } else {
-                setState(() {
-                  quantity++;
-                });
-                widget.onQuantityChanged(
-                    quantity); // Llamamos la función callback
+
+                // actualizar signal de cantidad
+                if (widget.title == 'Menores de Edad') {
+                  quantityMenoresSignal.value = quantity;
+                } else if (widget.title == 'Pasaje Normal') {
+                  quantitySignal.value = quantity;
+                } else if (widget.title == 'Adultos Mayores') {
+                  quantityAdultsSignal.value = quantity;
+                }
               }
-            } else {
-              setState(() {
-                quantity++;
-              });
-              widget.onQuantityChanged(quantity);
-              // Llamamos la función callback
-            }
-          },
-        ),
-        IconButton(
-          icon: const Icon(Icons.local_offer_outlined, color: Colors.black26,),
-          tooltip: 'Aplicar promoción',
-          onPressed: _showPromotionDialog,
-        ),
-        const Text(
-          'Promo',
-          style: TextStyle(fontSize: 10, color: Colors.black26),
-        )
-      ],
-    );
+            : null,
+      ),
+      Text('$quantity', style: const TextStyle(fontSize: 14)),
+      IconButton(
+        icon: const Icon(Icons.add_circle_outline, size: 18),
+        onPressed: () {
+          final totalSelected = quantityMenoresSignal.value +
+              quantitySignal.value +
+              quantityAdultsSignal.value;
+          if (totalSelected >= availableSeatsSignal.value) {
+            showCustomSnackBar(
+              context: context,
+              title: 'No hay asientos disponibles',
+              backgroundColor: Colors.red,
+            );
+            return;
+          }
+          setState(() => quantity++);
+          widget.onQuantityChanged(quantity);
+
+          if (widget.title == 'Menores de Edad') {
+            quantityMenoresSignal.value = quantity;
+          } else if (widget.title == 'Pasaje Normal') {
+            quantitySignal.value = quantity;
+          } else if (widget.title == 'Adultos Mayores') {
+            quantityAdultsSignal.value = quantity;
+          }
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.local_offer_outlined, color: Colors.black26),
+        tooltip: 'Aplicar promoción',
+        onPressed: () => _showPromotionDialog(),
+      ),
+      const Text('Promo',
+          style: TextStyle(fontSize: 10, color: Colors.black26)),
+    ]);
   }
 }
-
