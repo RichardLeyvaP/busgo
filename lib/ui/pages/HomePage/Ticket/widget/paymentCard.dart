@@ -1,13 +1,10 @@
-// import 'package:BusGo/data/services/local_database_service.dart';
-// import 'package:BusGo/data/services/ticketSyncService.dart';
-import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/CustomButton_component.dart';
 import 'package:BusGo/ui/component/QuantitySelector_component.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
 import 'package:BusGo/ui/component/showJsonDialog_component.dart';
-import 'package:BusGo/ui/pages/HomePage/Ticket/TicketPage.dart';
+import 'package:BusGo/ui/pages/HomePage/Ticket/widget/classUtilsTicket.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/widget/customIcons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -184,35 +181,18 @@ class _PaymentCardState extends State<PaymentCard> {
                   CustomButton(
                     title: "Seleccionar asiento",
                     onTap: () {
-                      double total =
-                          (_getPriceWithDiscount('Pasaje Normal', precioBase) *
-                                  quantitySignal.watch(context)) +
-                              (_getPriceWithDiscount(
-                                      'Menores de Edad', precioBase) *
-                                  quantityMenoresSignal.watch(context)) +
-                              (_getPriceWithDiscount(
-                                      'Adultos Mayores', precioBase) *
-                                  quantityAdultsSignal.watch(context));
+                      final trip = tripsSelectSignal.value!;
+                      final seats = generateSeatsFromTrip(trip);
 
-                      if (total > 0) {
-                        final seats = utilsTicket.generateSeats(
-                            29,
-                            tripsSelectSignal
-                                .value!.reservedSeats!); // Generar asientos
-                        //  final seats = generateSeats(33, [5, 10]); // Generar asientos
-                        final int maxPassengers = quantitySignal.value +
-                            quantityMenoresSignal.value +
-                            quantityAdultsSignal.value;
-                        showSeatSelectionModal(context, seats, maxPassengers);
-                      } else {
-                        showCustomSnackBar(
-                            context: context,
-                            title:
-                                'Seleccione la cantidad de asientos', // Obligatorio
-                            backgroundColor: Colors.red);
-                      }
-                      //final seats = generateSeats(25, [5, 10]); // Generar asientos
-                      // final seats = generateSeats(21, [5, 10]); // Generar asientos
+                      final int maxPassengers = quantitySignal.value +
+                          quantityMenoresSignal.value +
+                          quantityAdultsSignal.value;
+
+                      showSeatSelectionModal(
+                        context,
+                        seats,
+                        maxPassengers,
+                      );
                     },
                     color: ((double.parse(widget.price) / 2) *
                                     quantityMenoresSignal.watch(context)) +
@@ -250,16 +230,7 @@ class _PaymentCardState extends State<PaymentCard> {
             height: 1,
             color: Colors.grey[400],
           ),
-          // SizedBox(height: 15),
-          // AdditionalDataWidget(
-          //   onDataChanged: (newDevice, newDescription, newDteType, newContact) {
-          //     device = newDevice;
-          //     description = newDescription;
-          //     dteType = newDteType;
-          //     contact = newContact;
-          //   },
-          // ),
-          // SizedBox(height: 15),
+
           Container(
             width: 1000,
             height: 1,
@@ -296,15 +267,7 @@ class _PaymentCardState extends State<PaymentCard> {
             ],
           ),
 
-          // SizedBox(height: 25),
-          // CustomButton(
-          //   title: "Comprar Ticket ",
-          //   onTap: () async {
-          //     await verifyPurchaseTicket(context);
-          //   },
-          //   color: Colors.blue,
-          //   width: 250,
-          // ),
+
           Container(
             height: 300,
           )
@@ -360,7 +323,10 @@ class _PaymentCardState extends State<PaymentCard> {
 }
 
 void showSeatSelectionModal(
-    BuildContext context, List<Seat> seats, int maxSelectable) {
+    BuildContext context,
+    List<Seat> seats,
+    int maxSelectable
+    ) {
   final selectedSeatNumbers1 = ValueNotifier<List<int>>([]);
 
   showModalBottomSheet(
@@ -436,65 +402,47 @@ void showSeatSelectionModal(
   );
 }
 
-Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
-    Signal<List<int>> selectedSeatNumbersSN) {
+Widget buildSeatSelection(
+    List<Seat> seats,
+    int maxSelectable,
+    Signal<List<int>> selectedSeatNumbersSN,
+    ) {
   return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 5, // 5 columnas en total
+      crossAxisCount: 5,
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
-      childAspectRatio: 1, // Hace los asientos más cuadrados
+      childAspectRatio: 1,
     ),
     itemCount: seats.length,
     itemBuilder: (context, index) {
       final seat = seats[index];
 
-      if (seat.number == -1) {
-        return const SizedBox.shrink(); // Espacio para el pasillo
-      }
-
-      // Verifica si el asiento está seleccionado
       bool isSelected = selectedSeatNumbersSN.value.contains(seat.number);
 
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Centra el contenido
-        children: [
-          GestureDetector(
-            onTap: seat.isOccupied ||
-                    (isSelected == false &&
-                        selectedSeatNumbersSN.value.length >= maxSelectable)
-                ? null // Si está ocupado o ya se ha alcanzado el máximo de selecciones, no se puede seleccionar
-                : () {
-                    // Si el asiento está seleccionado, desmarcarlo
-                    if (isSelected) {
-                      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value
-                          .where((n) => n != seat.number)
-                          .toList();
-                    }
-                    // Si el asiento no está seleccionado, marcarlo
-                    else if (selectedSeatNumbersSN.value.length <
-                        maxSelectable) {
-                      selectedSeatNumbersSN.value = [
-                        ...selectedSeatNumbersSN.value,
-                        seat.number
-                      ];
-                    }
-                    (context as Element)
-                        .markNeedsBuild(); // Forzar actualización visual
-                  },
-            child: CustomSeatIcon(
-              isOccupied: seat.isOccupied,
-              isSelected: isSelected,
-              seatNumber: seat
-                  .number, // Asegura que el icono refleje si el asiento está seleccionado
-            ),
-          ),
-          // Text(
-          //   seat.number.toString(),
-          //   style: const TextStyle(fontSize: 14), // Número del asiento
-          // ),
-        ],
+      return GestureDetector(
+        onTap: seat.isOccupied ||
+            (!isSelected && selectedSeatNumbersSN.value.length >= maxSelectable)
+            ? null
+            : () {
+          if (isSelected) {
+            selectedSeatNumbersSN.value =
+                selectedSeatNumbersSN.value.where((n) => n != seat.number).toList();
+          } else {
+            selectedSeatNumbersSN.value = [
+              ...selectedSeatNumbersSN.value,
+              seat.number,
+            ];
+          }
+          (context as Element).markNeedsBuild();
+        },
+        child: CustomSeatIcon(
+          isOccupied: seat.isOccupied,
+          isSelected: isSelected,
+          seatNumber: seat.number,
+        ),
       );
     },
   );
 }
+
