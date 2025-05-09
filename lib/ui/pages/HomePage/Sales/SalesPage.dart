@@ -44,8 +44,6 @@ class SalesPage extends StatelessWidget {
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 14),
                           ),
-                          // SizedBox(height: 10),
-                          // ContainerSourceDestinationWidget(),
                           const SizedBox(height: 20),
                           tripsSignal.watch(context) == null ||
                                   tripsSignal.watch(context)!.isEmpty
