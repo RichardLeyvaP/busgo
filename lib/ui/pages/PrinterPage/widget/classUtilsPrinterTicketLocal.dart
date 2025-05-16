@@ -78,83 +78,159 @@ class UtilsPrinterTicketLocal {
 
   
   // Método para imprimir el ticket de pasaje
-  Future<void> printTicketPasajeLocal(Ticket ticket,schedule,tripOrigin,tripDestination) async {
+  Future<void> printTicketPasajeLocal(
+      Ticket ticket,
+      String schedule,
+      String tripOrigin,
+      String tripDestination,
+      ) async {
     try {
       await SunmiPrinter.initPrinter();
       await SunmiPrinter.startTransactionPrint(true);
- final qrImage = await _generateQRImage(ticket.id!.toString());
 
-       String imageLogo =
-          '${Env.apiEndpoint}/images/${currentUserBranchCompanyLG.value?.image}';
-      await printImageFromUrl(imageLogo);
-      //await SunmiPrinter.printImage(qrImage); // Imprimir la imagen del QR
-      await SunmiPrinter.lineWrap(1);
+      // 1. Encabezado común
+      await _printHeader(ticket);
 
-      // Imprime la información del ticket
-      await SunmiPrinter.printText(
-          currentUserBranchCompanyLG.value?.name ?? '-- No tiene --',
-          style: SunmiTextStyle(
-              align: SunmiPrintAlign.CENTER, fontSize: 24, bold: true));
-      await SunmiPrinter.printText(
-          'RUT: ${currentUserBranchCompanyLG.value?.rut ?? '-- No tiene --'}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      // await SunmiPrinter.printText('Dirección: ${currentUserBranchCompanyLG.value?.address??'-- No tiene --'}', style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText(
-          'Teléfono: ${currentUserBranchCompanyLG.value?.phone ?? '-- No tiene --'}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      // await SunmiPrinter.printText('Boleta Electrónica  N° 340999',
-      //     style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.lineWrap(1);
-      await SunmiPrinter.lineWrap(1);
-      await SunmiPrinter.printText(
-          'FECHA: ${resultReport1RP.value!.fecha} HORA: ${schedule}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.lineWrap(1);
-      await SunmiPrinter.printText('RECORRIDO:',
-          style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('ORIGEN: ${tripOrigin}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DESTINO: ${tripDestination}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Precio: \$${ticket.price}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Medio de pago: ${ticket.method}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.lineWrap(1);
-      await SunmiPrinter.lineWrap(1);
-      //imprimir Qr
-     // String imageQR = '${Env.apiEndpoint}/images/${ticket.barcode}';
-      await printImageFromUrl(qrImage.toString());
+      // 2. Detalles principales del viaje
+      await _printJourneyDetails(ticket, schedule, tripOrigin, tripDestination);
 
-      await SunmiPrinter.lineWrap(2);
-      //mandar a cortar
-      await SunmiPrinter.cutPaper();
-      await SunmiPrinter.lineWrap(1);
-      // Imprime el segundo ticket
-      await SunmiPrinter.printText('- Copia de control -',
-          style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('N° 99999',
-          style: SunmiTextStyle(align: SunmiPrintAlign.CENTER));
-      await SunmiPrinter.printText('FECHA: ${ticket.date} HORA: ${schedule}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('RECORRIDO:',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('ORIGEN: ${tripOrigin}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('DESTINO: ${tripDestination}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.printText('Precio: \$${ticket.price}',
-          style: SunmiTextStyle(align: SunmiPrintAlign.LEFT));
-      await SunmiPrinter.lineWrap(2);
+      // 3. Sección de pago dinámica
+      await _printPaymentSection(ticket);
 
-      await SunmiPrinter.cutPaper();
+      // 4. Información adicional para tarjetas
+      if (ticket.method != 'Efectivo') {
+        await _printCardDetails(ticket);
+      }
+
+      // 5. QR y cierre común
+      await _printFooter(ticket, schedule);
 
       await SunmiPrinter.exitTransactionPrint(true);
     } catch (e) {
-      print('Error al imprimir ticket de pasaje: $e');
+      print('Error al imprimir ticket: $e');
+      throw Exception('Error de impresión: $e');
     }
   }
 
+// ------------------ Métodos auxiliares ------------------
+  Future<void> _printHeader(Ticket ticket) async {
+    final company = currentUserBranchCompanyLG.value;
+    String imageLogo = '${Env.apiEndpoint}/images/${company?.image}';
+
+    await printImageFromUrl(imageLogo);
+    await SunmiPrinter.lineWrap(1);
+
+    await SunmiPrinter.printText(
+      company?.name ?? '-- No tiene --',
+      style: SunmiTextStyle(align: SunmiPrintAlign.CENTER, fontSize: 24, bold: true),
+    );
+
+    await SunmiPrinter.printText(
+      'RUT: ${company?.rut ?? '-- No tiene --'}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.CENTER),
+    );
+
+    await SunmiPrinter.printText(
+      'Teléfono: ${company?.phone ?? '-- No tiene --'}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.CENTER),
+    );
+  }
+
+  Future<void> _printJourneyDetails(
+      Ticket ticket,
+      String schedule,
+      String origin,
+      String destination,
+      ) async {
+    await SunmiPrinter.lineWrap(2);
+
+    await SunmiPrinter.printText(
+      'FECHA: ${ticket.date} HORA: $schedule',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+    );
+
+    await SunmiPrinter.printText(
+      'RECORRIDO:',
+      style: SunmiTextStyle(align: SunmiPrintAlign.CENTER, bold: true),
+    );
+
+    await SunmiPrinter.printText(
+      'ORIGEN: $origin',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+    );
+
+    await SunmiPrinter.printText(
+      'DESTINO: $destination',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+    );
+  }
+
+  Future<void> _printPaymentSection(Ticket ticket) async {
+    await SunmiPrinter.lineWrap(1);
+
+    await SunmiPrinter.printText(
+      'Precio unitario: \$${ticket.price.toStringAsFixed(2)}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+    );
+
+    await SunmiPrinter.printText(
+      'Adultos: ${ticket.adults} x \$${ticket.price}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+    );
+
+    if (ticket.minors > 0) {
+      await SunmiPrinter.printText(
+        'Menores: ${ticket.minors} x \$${(ticket.price / 2).toStringAsFixed(2)}',
+        style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+      );
+    }
+
+    await SunmiPrinter.printText(
+      'Total: \$${ticket.total.toStringAsFixed(2)}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT, bold: true),
+    );
+
+    await SunmiPrinter.printText(
+      'Medio de pago: ${ticket.method}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT, bold: true),
+    );
+  }
+
+  Future<void> _printCardDetails(Ticket ticket) async {
+    await SunmiPrinter.lineWrap(1);
+
+    // Solo información básica
+    await SunmiPrinter.printText(
+      'N° Transacción: ${ticket.sequenceNumber ?? 'N/A'}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.LEFT),
+    );
+
+    await SunmiPrinter.printText(
+      'Estado: ${ticket.transactionStatus}',
+      style: SunmiTextStyle(
+        align: SunmiPrintAlign.LEFT,
+        bold: true,
+      ),
+    );
+  }
+
+  Future<void> _printFooter(Ticket ticket, String schedule) async {
+    final qrImage = await _generateQRImage(ticket.id!.toString());
+    await SunmiPrinter.printImage(qrImage);
+
+    await SunmiPrinter.lineWrap(2);
+    await SunmiPrinter.printText(
+      'Copia de control',
+      style: SunmiTextStyle(align: SunmiPrintAlign.CENTER, bold: true),
+    );
+
+    await SunmiPrinter.printText(
+      'ID Transacción: ${ticket.sequenceNumber ?? ticket.id}',
+      style: SunmiTextStyle(align: SunmiPrintAlign.CENTER),
+    );
+
+    await SunmiPrinter.cutPaper();
+  }
 
 
  Future<Uint8List> _generateQRImage(String data) async {

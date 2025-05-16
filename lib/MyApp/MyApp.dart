@@ -9,20 +9,23 @@ import 'package:BusGo/ui/pages/ListPage.dart';
 import 'package:BusGo/ui/menu_bottom/BottomAppBarWidget.dart';
 import 'package:flutter/material.dart';
 
-
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: appRouter,
       theme: themeDataInitial(),
       debugShowCheckedModeBanner: false,
-     // home: DashboardPage(),
+      // home: DashboardPage(),
     );
   }
 }
 
 class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -42,11 +45,11 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: 
-      AppBarWidget(context),
+      appBar: AppBarWidget(context),
       body: PageView(
         controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(), // Evita deslizar entre páginas
+        physics:
+            const NeverScrollableScrollPhysics(), // Evita deslizar entre páginas
         children: [
           HomePage(),
           ListPage(),
@@ -55,8 +58,7 @@ class _DashboardPageState extends State<DashboardPage> {
           FunPage(),
         ],
       ),
-      bottomNavigationBar: 
-      BottomAppBarWidget(_currentIndex,_onItemTapped),
+      bottomNavigationBar: BottomAppBarWidget(_currentIndex, _onItemTapped),
     );
   }
-  }
+}

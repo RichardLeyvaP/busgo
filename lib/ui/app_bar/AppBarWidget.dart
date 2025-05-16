@@ -10,17 +10,17 @@ AppBar AppBarWidget( BuildContext context) {
         statusBarColor: Colors.grey[200],
         statusBarIconBrightness: Brightness.dark,
       ),
-      title: Row(
+      title: const Row(
         children: [
           Text('Bus', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-          Text('Go', style: TextStyle(color: const Color.fromARGB(255, 240, 115, 32), fontWeight: FontWeight.bold)),
+          Text('Go', style: TextStyle(color: Color.fromARGB(255, 240, 115, 32), fontWeight: FontWeight.bold)),
         ],
       ),
       backgroundColor: Colors.grey[200],
       elevation: 0,
       actions: [
         IconButton(
-          icon: Icon(Icons.notifications, color: Colors.black),
+          icon: const Icon(Icons.notifications, color: Colors.black),
           onPressed: () {},
         ),
         InkWell(
@@ -53,7 +53,7 @@ AppBar AppBarWidget( BuildContext context) {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.exit_to_app),
+      icon: const Icon(Icons.exit_to_app),
       tooltip: 'Salir de sesión',
       onPressed: () => _logout(context),
     );

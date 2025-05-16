@@ -1,44 +1,49 @@
 import 'package:BusGo/ui/pages/HomePage/Sales/widget/OrigenDestinoCard.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:signals/signals.dart';
 
 class AppBarSalesWidget extends StatelessWidget {
   const AppBarSalesWidget({
     super.key,
+    required this.origen,
   });
-
+  final String origen;
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
+      height: 215,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.blue[400],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
+        padding:  EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
               onTap: () {
+
                 GoRouter.of(context).pop();
               },
               child: const Padding(
-                padding: EdgeInsets.only(left: 8.0),
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                 child: Icon(Icons.arrow_back, color: Colors.white),
               ),
             ),
-            const Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                OrigenDestinoCard(
-                  origen: "Aereopuerto el Tepual",
-                  destino: "Terminal Puerto Montt",
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(7, 25, 0, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  OrigenDestinoCard(
+                    origen: origen,
+                    destino: "Destino",
+                  ),
+                ],
+              ),
             ),
             const Text('      '),
           ],
