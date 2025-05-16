@@ -112,7 +112,7 @@ class _LoginFormPageState extends State<LoginFormPage> {
       Icons.directions_bus,
       color: Colors.blue.shade900, // Color del ícono
     ),
-    SizedBox(width: 8), // Espacio entre el ícono y el texto
+    const SizedBox(width: 8), // Espacio entre el ícono y el texto
     Text(
       'BusGo',
       style: Theme.of(context).textTheme.displayMedium!.copyWith(
@@ -251,7 +251,7 @@ class _LoginFormPageState extends State<LoginFormPage> {
                                     },
                                     child: Text(
                                       TranslationManager.translate('loginButton'),
-                                      style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w800),
+                                      style: const TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w800),
                                     )),
                               ),
                             ],

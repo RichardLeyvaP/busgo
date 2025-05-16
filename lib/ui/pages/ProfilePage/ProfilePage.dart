@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Perfil'),
+        title: const Text('Perfil'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -94,8 +94,8 @@ class _ProfilePageState extends State<ProfilePage> {
               }),
               () => setState(() => isEditingGender = false),
             ),
-            Divider(height: 32),
-            SizedBox(height: 20),
+            const Divider(height: 32),
+            const SizedBox(height: 20),
             if (isEditingPassword)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: newPasswordController,
                     obscureText: !isNewPasswordVisible,
@@ -139,12 +139,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Text(
                     passwordMessageLG.watch(context),
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -159,7 +159,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           if(passwordTrueMessageLG.value == true)
                           {
                          ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(
+  const SnackBar(
     content: Row(
       children: [
         Icon(Icons.check_circle, color: Colors.white), // Ícono de palomita
@@ -173,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ],
     ),
     backgroundColor: Colors.green, // Fondo verde
-    duration: const Duration(seconds: 2), // Duración del SnackBar
+    duration: Duration(seconds: 2), // Duración del SnackBar
   ),
 );
 
@@ -182,15 +182,15 @@ class _ProfilePageState extends State<ProfilePage> {
                            setState(() => isEditingPassword = false); 
                           }
                         },
-                        child: Text("Guardar"),
+                        child: const Text("Guardar"),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       TextButton(
                         onPressed: () {
                           passwordMessageLG.value = ''; // Mensaje en la clave 'msg'
                           setState(() => isEditingPassword = false);
                         },
-                        child: Text("Cancelar"),
+                        child: const Text("Cancelar"),
                       ),
                     ],
                   ),
@@ -201,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () {
                   setState(() => isEditingPassword = true);
                 },
-                child: Text("Cambiar Contraseña"),
+                child: const Text("Cambiar Contraseña"),
               ),
           ],
         ),
@@ -223,35 +223,35 @@ class _ProfilePageState extends State<ProfilePage> {
       children: <Widget>[
         Text(
           label,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         Row(
           children: <Widget>[
             Expanded(
               child: isEditing
                   ? TextField(controller: controller)
-                  : Text(value, style: TextStyle(fontSize: 12)),
+                  : Text(value, style: const TextStyle(fontSize: 12)),
             ),
             isEditing
                 ? Row(
                     children: <Widget>[
                       IconButton(
-                        icon: Icon(Icons.check),
+                        icon: const Icon(Icons.check),
                         onPressed: onSave,
                       ),
                       IconButton(
-                        icon: Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                         onPressed: onCancel,
                       ),
                     ],
                   )
                 : IconButton(
-                    icon: Icon(Icons.edit),
+                    icon: const Icon(Icons.edit),
                     onPressed: onEdit,
                   ),
           ],
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
       ],
     );
   }
