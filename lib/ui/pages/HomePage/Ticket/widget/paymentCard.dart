@@ -1,31 +1,38 @@
-import 'package:BusGo/data/services/local_database_service.dart';
-import 'package:BusGo/data/services/ticketSyncService.dart';
-import 'package:BusGo/domain/signals/tickets_signals/tickets_service.dart';
 import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/SeatModel.dart';
 import 'package:BusGo/ui/component/CustomButton_component.dart';
 import 'package:BusGo/ui/component/QuantitySelector_component.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
 import 'package:BusGo/ui/component/showJsonDialog_component.dart';
-import 'package:BusGo/ui/pages/HomePage/Ticket/TicketPage.dart';
+import 'package:BusGo/ui/pages/HomePage/Ticket/widget/classUtilsTicket.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/widget/customIcons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../../../../../models/promotions/promotions_model.dart';
 
 class PaymentCard extends StatefulWidget {
   final String timeIni;
   final String timeFin;
   final String price;
 
-  PaymentCard(
-      {required this.timeIni, required this.price, required this.timeFin});
+  const PaymentCard(
+      {super.key, required this.timeIni, required this.price, required this.timeFin});
 
   @override
   State<PaymentCard> createState() => _PaymentCardState();
 }
 
 class _PaymentCardState extends State<PaymentCard> {
+  final Map<String, Promotion?> _selectedPromotions = {
+    'Pasaje Normal': null,
+    'Menores de Edad': null,
+    'Adultos Mayores': null,
+
+  };
+
+
   @override
   void initState() {
     super.initState();
@@ -33,8 +40,10 @@ class _PaymentCardState extends State<PaymentCard> {
 
   @override
   Widget build(BuildContext context) {
+    final double precioBase = double.parse(widget.price);
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -84,9 +93,9 @@ class _PaymentCardState extends State<PaymentCard> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   QuantitySelector(
-                    title: 'Mayores de edad  ',
+                    title: 'Pasaje   Normal   ',
                     initialQuantity: quantitySignal.value, //cantidad de mayores
                     onQuantityChanged: (newQuantity) {
                       if ((quantityMenoresSignal.value +
@@ -95,75 +104,102 @@ class _PaymentCardState extends State<PaymentCard> {
                         print('No puede seleccionar mas asientos');
                       } else {
                         if ((quantitySignal.value +
-                                quantityMenoresSignal.value) <=
+                                quantityMenoresSignal.value +
+                                quantityAdultsSignal.value) <=
                             tripsSelectSignal.value!.seats!) {}
                         quantitySignal.value = newQuantity;
                         // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-                        if ((newQuantity + quantityMenoresSignal.value) <
+                        if ((newQuantity +
+                                quantityMenoresSignal.value +
+                                quantityAdultsSignal.value) <
                             selectedSeatNumbersSN.value.length) {
                           selectedSeatNumbersSN.value =
-                              selectedSeatNumbersSN.value.sublist(0,
-                                  (newQuantity + quantityMenoresSignal.value));
+                              selectedSeatNumbersSN.value.sublist(
+                                  0,
+                                  (newQuantity +
+                                      quantityMenoresSignal.value +
+                                      quantityAdultsSignal.value));
                         }
                         // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                       }
                     },
-                  ),
-                  const SizedBox(
-                    height: 10,
+                    onPromotionApplied: (promo) {
+                      // <-- Agregar esto
+                      setState(
+                          () => _selectedPromotions['Pasaje Normal'] = promo);
+                    },
                   ),
                   QuantitySelector(
-                    title: 'Menores 50% Valor',
+                    title: 'Menores de Edad',
                     initialQuantity: quantityMenoresSignal.value,
                     onQuantityChanged: (newQuantity) {
                       quantityMenoresSignal.value = newQuantity;
                       // Si la nueva cantidad es menor que la cantidad de asientos seleccionados, eliminamos los asientos extra
-                      if ((newQuantity + quantitySignal.value) <
+                      if ((newQuantity +
+                              quantitySignal.value +
+                              quantityAdultsSignal.value) <
                           selectedSeatNumbersSN.value.length) {
-                        selectedSeatNumbersSN.value = selectedSeatNumbersSN
-                            .value
-                            .sublist(0, (newQuantity + quantitySignal.value));
+                        selectedSeatNumbersSN.value =
+                            selectedSeatNumbersSN.value.sublist(
+                                0,
+                                (newQuantity +
+                                    quantitySignal.value +
+                                    quantityAdultsSignal.value));
                       }
                       // context.read<CategoriesPrioritiesBloc>().add(QuantityProductEvent(newQuantity));
                     },
+                    onPromotionApplied: (promo) {
+                      // <-- Agregar esto
+                      setState(
+                          () => _selectedPromotions['Menores de Edad'] = promo);
+                    },
+                  ),
+                  QuantitySelector(
+                    title: 'Adultos Mayores ',
+                    initialQuantity: quantityAdultsSignal.value,
+                    onQuantityChanged: (newQuantity) {
+                      quantityAdultsSignal.value = newQuantity;
+                      if ((newQuantity +
+                              quantitySignal.value +
+                              quantityMenoresSignal.value) <
+                          selectedSeatNumbersSN.value.length) {
+                        selectedSeatNumbersSN.value =
+                            selectedSeatNumbersSN.value.sublist(
+                                0,
+                                (newQuantity +
+                                    quantitySignal.value +
+                                    quantityMenoresSignal.value));
+                      }
+                    },
+                    onPromotionApplied: (promo) {
+                      // <-- Agregar esto
+                      setState(
+                          () => _selectedPromotions['Adultos Mayores'] = promo);
+                    },
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 5,
                   ),
                   CustomButton(
                     title: "Seleccionar asiento",
                     onTap: () {
-                      double total = ((double.parse(widget.price) / 2) *
-                              quantityMenoresSignal.watch(context)) +
-                          ((double.parse(widget.price)) *
-                              quantitySignal.watch(context));
-                      if (total > 0) {
-                        final seats = utilsTicket.generateSeats(
-                            29,
-                            tripsSelectSignal
-                                .value!.reservedSeats!); // Generar asientos
-                        //  final seats = generateSeats(33, [5, 10]); // Generar asientos
-                        final int maxPassengers =
-                            quantitySignal.value + quantityMenoresSignal.value;
-                        showSeatSelectionModal(context, seats, maxPassengers);
-                      } else {
-                        showCustomSnackBar(
-                            context: context,
-                            title:
-                                'Seleccione la cantidad de asientos', // Obligatorio
-                            backgroundColor: Colors.red);
-                      }
-                      //final seats = generateSeats(25, [5, 10]); // Generar asientos
-                      // final seats = generateSeats(21, [5, 10]); // Generar asientos
+                      final seats = generateSeatsFromTrip(tripsSelectSignal.value!);
+                      final int maxPassengers = quantitySignal.value +
+                          quantityMenoresSignal.value +
+                          quantityAdultsSignal.value;
+                      showSeatSelectionModal(context, seats, maxPassengers);
+
                     },
                     color: ((double.parse(widget.price) / 2) *
                                     quantityMenoresSignal.watch(context)) +
                                 ((double.parse(widget.price)) *
-                                    quantitySignal.watch(context)) >
+                                    quantitySignal.watch(context)) +
+                                ((double.parse(widget.price)) *
+                                    quantityAdultsSignal.watch(context)) >
                             0
                         ? Colors.blue
                         : const Color.fromARGB(255, 167, 171, 173),
-                    width: 170,
+                    width: MediaQuery.of(context).devicePixelRatio * 121,
                   ),
                   const SizedBox(
                     height: 10,
@@ -190,16 +226,7 @@ class _PaymentCardState extends State<PaymentCard> {
             height: 1,
             color: Colors.grey[400],
           ),
-          // SizedBox(height: 15),
-          // AdditionalDataWidget(
-          //   onDataChanged: (newDevice, newDescription, newDteType, newContact) {
-          //     device = newDevice;
-          //     description = newDescription;
-          //     dteType = newDteType;
-          //     contact = newContact;
-          //   },
-          // ),
-          // SizedBox(height: 15),
+
           Container(
             width: 1000,
             height: 1,
@@ -219,13 +246,15 @@ class _PaymentCardState extends State<PaymentCard> {
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   Text(
-                    //(double.parse(price) * quantitySignal.watch(context)) +
-                    (((double.parse(widget.price) / 2) *
+                    (((_getPriceWithDiscount('Pasaje Normal', precioBase) *
+                                quantitySignal.watch(context)) +
+                            (_getPriceWithDiscount(
+                                    'Menores de Edad', precioBase) *
                                 quantityMenoresSignal.watch(context)) +
-                            ((double.parse(widget.price)) *
-                                quantitySignal.watch(context)))
+                            (_getPriceWithDiscount(
+                                    'Adultos Mayores', precioBase) *
+                                quantityAdultsSignal.watch(context))))
                         .toStringAsFixed(2),
-
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -234,15 +263,7 @@ class _PaymentCardState extends State<PaymentCard> {
             ],
           ),
 
-          // SizedBox(height: 25),
-          // CustomButton(
-          //   title: "Comprar Ticket ",
-          //   onTap: () async {
-          //     await verifyPurchaseTicket(context);
-          //   },
-          //   color: Colors.blue,
-          //   width: 250,
-          // ),
+
           Container(
             height: 300,
           )
@@ -251,8 +272,16 @@ class _PaymentCardState extends State<PaymentCard> {
     );
   }
 
+  double _getPriceWithDiscount(String ticketType, double basePrice) {
+    final promo = _selectedPromotions[ticketType];
+    if (promo != null) {
+      return basePrice * (1 - promo.percentage / 100);
+    }
+    return basePrice;
+  }
+
   Future<void> verifyPurchaseTicket(context) async {
-    if (selectedSeatNumbersSN.value.length <= 0) //no hay asientos seleccionados
+    if (selectedSeatNumbersSN.value.isEmpty) //no hay asientos seleccionados
     {
       showCustomSnackBar(
           context: context,
@@ -262,7 +291,10 @@ class _PaymentCardState extends State<PaymentCard> {
     {
       double total = ((double.parse(widget.price) / 2) *
               quantityMenoresSignal.watch(context)) +
-          ((double.parse(widget.price)) * quantitySignal.watch(context));
+          ((double.parse(widget.price)) * quantitySignal.watch(context)) +
+          ((double.parse(widget.price)) * quantityAdultsSignal.watch(context));
+
+      totalToPaySignal.value = total.sign;
 
       Map<String, dynamic> jsonResponse = await handlePayment(
           total,
@@ -289,7 +321,10 @@ class _PaymentCardState extends State<PaymentCard> {
 }
 
 void showSeatSelectionModal(
-    BuildContext context, List<Seat> seats, int maxSelectable) {
+    BuildContext context,
+    List<Seat> seats,
+    int maxSelectable
+    ) {
   final selectedSeatNumbers1 = ValueNotifier<List<int>>([]);
 
   showModalBottomSheet(
@@ -298,132 +333,151 @@ void showSeatSelectionModal(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (context) {
-      return Padding(
-        padding: EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Selecciona tus asientos (máximo $maxSelectable)",
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+    builder: (_) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Selecciona tus asientos (máximo $maxSelectable)",
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'La posición de los asientos que se muestran en el plano es solamente de referencia, por tanto puede variar',
+            style: TextStyle(fontSize: 12),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.70,
+            child: Watch.builder(                         // :contentReference[oaicite:1]{index=1}
+              builder: (ctx) {
+                final selectedSeats = selectedSeatNumbersSN.value;
+                return LayoutBuilder(
+                  builder: (c, cons) {
+                    final w = cons.maxWidth;
+                    const minW = 60.0;
+                    final cols = (w / minW).floor().clamp(2, 6);
+                    final cell = w / cols;
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(8),
+                      gridDelegate:
+                      SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: cols,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: seats.length,
+                      itemBuilder: (c2, i) {
+                        final seat = seats[i];
+                        if (seat.number == -1) return const SizedBox.shrink();
+                        final isSel = selectedSeats.contains(seat.number);
+                        return GestureDetector(
+                          onTap: seat.isOccupied ||
+                              (!isSel &&
+                                  selectedSeats.length >= maxSelectable)
+                              ? null
+                              : () {
+                            if (isSel) {
+                              selectedSeatNumbersSN.value =
+                                  selectedSeatNumbersSN.value
+                                      .where((n) => n != seat.number)
+                                      .toList();
+                            } else {
+                              selectedSeatNumbersSN.value = [
+                                ...selectedSeatNumbersSN.value,
+                                seat.number
+                              ];
+                            }
+                          },
+                          child: CustomSeatIcon(
+                            isOccupied: seat.isOccupied,
+                            isSelected: isSel,
+                            seatNumber: seat.number,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'La posición de los asientos que se muestran en el plano es solamente de referenda, por tanto puede variar',
-              style: TextStyle(fontSize: 12),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height *
-                  0.70, // Altura del grid de asientos
-              child: ValueListenableBuilder<List<int>>(
-                valueListenable: selectedSeatNumbers1,
-                builder: (context, selectedSeats, child) {
-                  return buildSeatSelection(
-                      seats, maxSelectable, selectedSeatNumbersSN);
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomButton(
+                title: "Limpiar Selección",
+                onTap: () {
+                  selectedSeatNumbers1.value = [];
+                  selectedSeatNumbersSN.value = [];
+                  for (var seat in seats) {
+                    seat.isSelected = false;
+                  }
+                  (context as Element).markNeedsBuild();
                 },
+                color: Colors.red,
+                width: 160,
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomButton(
-                  title: "Limpiar Selección",
-                  onTap: () {
-                    selectedSeatNumbers1.value = [];
-                    selectedSeatNumbersSN.value = [];
-                    for (var seat in seats) {
-                      seat.isSelected = false;
-                    }
-                    (context as Element).markNeedsBuild();
-                  },
-                  color: Colors.red,
-                  width: 160,
-                ),
-                CustomButton(
-                  title: "Confirmar",
-                  onTap: () {
-                    // selectedSeatNumbersSN.value = selectedSeatNumbers1.value;
-                    print(
-                        "Asientos seleccionados: ${selectedSeatNumbersSN.value}");
-                    Navigator.pop(context);
-                  },
-                  color: Colors.blue,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    },
+              CustomButton(
+                title: "Confirmar",
+                onTap: () {
+                  // selectedSeatNumbersSN.value = selectedSeatNumbers1.value;
+                  print(
+                      "Asientos seleccionados: ${selectedSeatNumbersSN.value}");
+                  Navigator.pop(context);
+                },
+                color: Colors.blue,
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
   );
 }
 
-Widget buildSeatSelection(List<Seat> seats, int maxSelectable,
-    Signal<List<int>> selectedSeatNumbersSN) {
+Widget buildSeatSelection(
+    List<Seat> seats,
+    int maxSelectable,
+    Signal<List<int>> selectedSeatNumbersSN,
+    ) {
   return GridView.builder(
     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 5, // 5 columnas en total
+      crossAxisCount: 5,
       mainAxisSpacing: 10,
       crossAxisSpacing: 10,
-      childAspectRatio: 1, // Hace los asientos más cuadrados
+      childAspectRatio: 1,
     ),
     itemCount: seats.length,
     itemBuilder: (context, index) {
       final seat = seats[index];
 
-      if (seat.number == -1) {
-        return const SizedBox.shrink(); // Espacio para el pasillo
-      }
-
-      // Verifica si el asiento está seleccionado
       bool isSelected = selectedSeatNumbersSN.value.contains(seat.number);
 
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Centra el contenido
-        children: [
-          GestureDetector(
-            onTap: seat.isOccupied ||
-                    (isSelected == false &&
-                        selectedSeatNumbersSN.value.length >= maxSelectable)
-                ? null // Si está ocupado o ya se ha alcanzado el máximo de selecciones, no se puede seleccionar
-                : () {
-                    // Si el asiento está seleccionado, desmarcarlo
-                    if (isSelected) {
-                      selectedSeatNumbersSN.value = selectedSeatNumbersSN.value
-                          .where((n) => n != seat.number)
-                          .toList();
-                    }
-                    // Si el asiento no está seleccionado, marcarlo
-                    else if (selectedSeatNumbersSN.value.length <
-                        maxSelectable) {
-                      selectedSeatNumbersSN.value = [
-                        ...selectedSeatNumbersSN.value,
-                        seat.number
-                      ];
-                    }
-                    (context as Element)
-                        .markNeedsBuild(); // Forzar actualización visual
-                  },
-            child: CustomSeatIcon(
-              isOccupied: seat.isOccupied,
-              isSelected: isSelected,
-              seatNumber: seat
-                  .number, // Asegura que el icono refleje si el asiento está seleccionado
-            ),
-          ),
-          // Text(
-          //   seat.number.toString(),
-          //   style: const TextStyle(fontSize: 14), // Número del asiento
-          // ),
-        ],
+      return GestureDetector(
+        onTap: seat.isOccupied ||
+            (!isSelected && selectedSeatNumbersSN.value.length >= maxSelectable)
+            ? null
+            : () {
+          if (isSelected) {
+            selectedSeatNumbersSN.value =
+                selectedSeatNumbersSN.value.where((n) => n != seat.number).toList();
+          } else {
+            selectedSeatNumbersSN.value = [
+              ...selectedSeatNumbersSN.value,
+              seat.number,
+            ];
+          }
+          (context as Element).markNeedsBuild();
+        },
+        child: CustomSeatIcon(
+          isOccupied: seat.isOccupied,
+          isSelected: isSelected,
+          seatNumber: seat.number,
+        ),
       );
     },
   );
 }
+
