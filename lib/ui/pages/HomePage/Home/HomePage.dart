@@ -48,10 +48,15 @@ class _HomePageState extends State<HomePage> {
       }
     });
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(
+            0,
+            8,
+            0,
+            0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -63,10 +68,10 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                     color: Colors.black),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Modules Row
               const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ModuleCard(
                     color: Colors.blue,
@@ -86,12 +91,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Statistics Title
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Estadísticas diarias',
                     style: TextStyle(
                         fontSize: 16,
@@ -102,20 +107,20 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       GoRouter.of(context).push('/StatisticsPageAll');
                     },
-                    child: Text(
+                    child: const Text(
                       'Ver todas',
                       style: TextStyle(fontSize: 16, color: Colors.blue),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               // Statistics Cards
               FutureBuilder<void>(
                 future: fetchSalesData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
+                    return const Center(
                         child: CircularProgressIndicator()); // Cargando...
                   }
                   if (snapshot.hasError) {
@@ -139,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                                 value: '${sale.value}',
                                 complement: '',
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                             ],
                           );
                         }).toList(),
