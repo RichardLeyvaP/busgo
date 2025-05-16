@@ -226,9 +226,9 @@ class _LanguageSelectorNewState extends State<LanguageSelectorNew> {
         children: [
           Text(
             TranslationManager.translate('titleLanguage'),
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Wrap(
             spacing: 16.0,
             runSpacing: 16.0,
@@ -281,7 +281,7 @@ class _LanguageSelectorNewState extends State<LanguageSelectorNew> {
               );
             }).toList(),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -307,7 +307,7 @@ class _LanguageSelectorNewState extends State<LanguageSelectorNew> {
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     );
