@@ -82,44 +82,43 @@ class TripDetailsCard extends StatelessWidget {
               _buildImage(destinationImage),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           // Detalles adicionales
           _buildInfoRow("Placa:", plate),
           // _buildInfoRow("Hora de llegada:", arrival),
-          _buildInfoRow(
-              "Precio:", price != null ? "\$$price" : "No disponible"),
+          _buildInfoRow("Precio:", price != null ? "\$$price" : "No disponible"),
           // _buildInfoRow("Asientos disponibles:", seats != null ? "$seats" : "No especificado"),
-          _buildInfoRow("Reservados:",
-              reservedSeats != null ? "${reservedSeats!.length}" : "0"),
+          _buildInfoRow("Reservados:", reservedSeats != null ? "${reservedSeats!.length}" : "0"),
         ],
       ),
     );
   }
 
-  Widget _buildImage(String? imageUrl) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8), // Borde redondeado
-      child: CachedNetworkImage(
-        imageUrl: imageUrl ?? "https://via.placeholder.com/50",
+ Widget _buildImage(String? imageUrl) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(8), // Borde redondeado
+    child: CachedNetworkImage(
+      imageUrl: imageUrl ?? "https://via.placeholder.com/50",
+      width: 50,
+      height: 50,
+      fit: BoxFit.cover,
+      placeholder: (context, url) => Container(
         width: 50,
         height: 50,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Container(
-          width: 50,
-          height: 50,
-          color: Colors.grey[300], // Color de fondo mientras carga
-          child: const Center(child: CircularProgressIndicator()),
-        ),
-        errorWidget: (context, url, error) => Container(
-          width: 50,
-          height: 50,
-          color: Colors.grey, // Color de fondo en caso de error
-          child: const Icon(Icons.error, size: 30, color: Colors.white),
-        ),
+        color: Colors.grey[300], // Color de fondo mientras carga
+        child: const Center(child: CircularProgressIndicator()),
       ),
-    );
-  }
+      errorWidget: (context, url, error) => Container(
+        width: 50,
+        height: 50,
+        color: Colors.grey, // Color de fondo en caso de error
+        child: const Icon(Icons.error, size: 30, color: Colors.white),
+      ),
+    ),
+  );
+}
+
 
   Widget _buildInfoRow(String title, String? value) {
     return Padding(
