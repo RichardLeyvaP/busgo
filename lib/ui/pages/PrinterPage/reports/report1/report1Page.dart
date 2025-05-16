@@ -44,105 +44,136 @@ class _Report1PageState extends State<Report1Page> {
     startDate ??= today;
     endDate ??= today;
 
-    await showModalBottomSheet(
+    await showDialog(
+      // <-- Cambia a showDialog
       context: context,
-      isScrollControlled: true,
       builder: (context) {
-        return StatefulBuilder(builder: (context, setModalState) {
-          // ⬅ Usa StatefulBuilder para actualizar el modal
-          return Container(
-            height: 500,
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Stack(
               children: [
-                Text("Seleccionar rango de fechas",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                SizedBox(height: 10),
-                Expanded(
-                  child: TableCalendar(
-                    firstDay: DateTime(2000),
-                    lastDay: DateTime(2100),
-                    focusedDay: startDate ?? DateTime.now(),
-                    selectedDayPredicate: (day) {
-                      if (startDate != null && endDate != null) {
-                        return day.isAfter(
-                                startDate!.subtract(Duration(days: 1))) &&
-                            day.isBefore(endDate!.add(Duration(days: 1)));
-                      }
-                      return day == startDate;
-                    },
-                    onDaySelected: (selectedDay, _) {
-                      setModalState(() {
-                        // ⬅ Actualiza solo el modal
-                        if (startDate == null ||
-                            (startDate != null && endDate != null)) {
-                          startDate = selectedDay;
-                          endDate = null;
-                        } else {
-                          endDate = selectedDay.isAfter(startDate!)
-                              ? selectedDay
-                              : startDate;
-                        }
-                      });
-                    },
-                    calendarStyle: CalendarStyle(
-                      rangeHighlightColor: Colors.orange.withOpacity(0.3),
-                      todayDecoration: BoxDecoration(
-                          color: Colors.blue, shape: BoxShape.circle),
-                      selectedDecoration: BoxDecoration(
-                          color: Colors.orange, shape: BoxShape.circle),
+                // Fondo semitransparente
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(color: Colors.black54),
+                  ),
+                ),
+                // Card flotante
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Card(
+                      elevation: 8,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.95,
+                        height: MediaQuery.of(context).size.height * 0.95,
+                        padding: const EdgeInsets.fromLTRB(10,10,10,0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text("Seleccionar rango de fechas",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18)),
+                            const SizedBox(height: 5),
+                            Expanded(
+                              child: TableCalendar(
+                                locale: 'es_ES',
+                                firstDay: DateTime(2000),
+                                lastDay: DateTime(2100),
+                                focusedDay: startDate ?? DateTime.now(),
+                                availableCalendarFormats: const {
+                                  CalendarFormat.month: 'Mes',
+                                  CalendarFormat.twoWeeks: '2 semanas',
+                                  CalendarFormat.week: 'Semana',
+                                },
+                                selectedDayPredicate: (day) {
+                                  if (startDate != null && endDate != null) {
+                                    return day.isAfter(startDate!.subtract(
+                                            const Duration(days: 1))) &&
+                                        day.isBefore(endDate!
+                                            .add(const Duration(days: 1)));
+                                  }
+                                  return day == startDate;
+                                },
+                                onDaySelected: (selectedDay, _) {
+                                  setModalState(() {
+                                    if (startDate == null ||
+                                        (startDate != null &&
+                                            endDate != null)) {
+                                      startDate = selectedDay;
+                                      endDate = null;
+                                    } else {
+                                      endDate = selectedDay.isAfter(startDate!)
+                                          ? selectedDay
+                                          : startDate;
+                                    }
+                                  });
+                                },
+                                calendarStyle: const CalendarStyle(
+                                  rangeHighlightColor:
+                                      Colors.orange,
+                                  todayDecoration: BoxDecoration(
+                                      color: Colors.blue,
+                                      shape: BoxShape.circle),
+                                  selectedDecoration: BoxDecoration(
+                                      color: Colors.orange,
+                                      shape: BoxShape.circle),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text("Cancelar"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    if (startDate != null && endDate != null) {
+                                      setState(() {
+                                        _selectedDateRange = DateTimeRange(
+                                            start: startDate!, end: endDate!);
+                                      });
+                                      Navigator.pop(context);
+                                    } else {
+                                      setState(() {
+                                        endDate = startDate!;
+                                        _selectedDateRange = DateTimeRange(
+                                            start: startDate!, end: endDate!);
+                                      });
+                                      Navigator.pop(context);
+                                    }
+                                    await getReports1(
+                                        -999,
+                                        'ya esta por defecto en el método',
+                                        formatDate(startDate),
+                                        formatDate(endDate));
+                                    setState(() {});
+                                  },
+                                  child: const Text("Aceptar"),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("Cancelar"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        if (startDate != null && endDate != null) {
-                          setState(() {
-                            // ⬅ Actualiza la UI principal
-                            _selectedDateRange =
-                                DateTimeRange(start: startDate!, end: endDate!);
-                          });
-                          Navigator.pop(context);
-                        } else {
-                          setState(() {
-                            // ⬅ Actualiza la UI principal
-                            endDate = startDate!;
-                            _selectedDateRange =
-                                DateTimeRange(start: startDate!, end: endDate!);
-                          });
-                          Navigator.pop(context);
-                        }
-                        await getReports1(
-                            -999,
-                            'ya esta por defecto en el metodo',
-                            formatDate(startDate),
-                            formatDate(endDate));
-                        setState(() {
-                          //actualizar ui
-                        });
-                      },
-                      child: Text("Aceptar"),
-                    ),
-                  ],
-                ),
               ],
-            ),
-          );
-        });
+            );
+          },
+        );
       },
     );
-
-  
   }
 
   @override
@@ -152,7 +183,7 @@ class _Report1PageState extends State<Report1Page> {
         future: _reportDataFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -176,18 +207,17 @@ class _Report1PageState extends State<Report1Page> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: Alignment.center,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8, right: 8,bottom: 8),
+                    padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
                     child: ElevatedButton(
-                      
                       onPressed: _selectDateRange,
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8), // Ajusta el padding si es necesario
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize
                             .min, // Hace que el Row ocupe solo el tamaño necesario
                         children: [
@@ -201,30 +231,31 @@ class _Report1PageState extends State<Report1Page> {
                   ),
                 ),
                 Container(
-                  width: 300,
-                  padding: EdgeInsets.all(16),
+                  width: 350,
+                  padding: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
-                    border: Border.all(),
+                    border: Border.all(width: .5),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        currentUserBranchCompanyLG.value?.name ??
+                        // currentUserBranchCompanyLG.value?.name ??
+                        currentUserBranchLG.value?.name ??
                             '-- No tiene --',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                           "FECHA: ${resultReport1RP.value?.fecha ?? fechaIni}"),
                       Text(
                           "Sucursal: ${currentUserBranchLG.value?.name ?? '-- No tiene --'}"),
-                      SizedBox(height: 10),
-                      Text("RESUMEN:",
+                      const SizedBox(height: 10),
+                      const Text("RESUMEN:",
                           style: TextStyle(fontWeight: FontWeight.bold)),
-                      SizedBox(height: 5),
-                      Text("EMISIÓN DE PASAJES",
+                      const SizedBox(height: 5),
+                      const Text("EMISIÓN DE PASAJES",
                           style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(
                           "Pasajes emitidos: ${resultReport1RP.value?.pasajesEmitidos ?? 0}"),
@@ -234,30 +265,29 @@ class _Report1PageState extends State<Report1Page> {
                         for (var totalesPorMetodo in totalesPorMetodos) ...[
                           Text(
                             "${totalesPorMetodo.metodo}: ${totalesPorMetodo.cantidad ?? 0}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ],
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       if (totalesPorMetodos != null) ...[
-                        Text("TOTALES:",
+                        const Text("TOTALES:",
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         for (var totalesPorMetodo in totalesPorMetodos) ...[
                           Text(
                             "${totalesPorMetodo.metodo}: \$${totalesPorMetodo.total ?? 0}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ],
                       Text(
                         "TOTAL: \$${resultReport1RP.value?.totales ?? 0}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
-               
+                const SizedBox(height: 20),
               ],
             ),
           );

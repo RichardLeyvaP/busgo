@@ -5,32 +5,32 @@ class StatisticsPageAll extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Estadísticas'),
+        title: const Text('Estadísticas'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
+            const Text(
               'Resumen de Datos',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             StatCard(
               label: 'Usuarios Activos',
               value: '1200',
               icon: Icons.person,
               color: Colors.blue,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             StatCard(
               label: 'Ventas Totales',
               value: '340',
               icon: Icons.shopping_cart,
               color: Colors.green,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             StatCard(
               label: 'Ganancias',
               value: '\$8.900',
@@ -65,17 +65,17 @@ class StatCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Icon(icon, size: 40, color: color),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   label,
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 Text(
                   value,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

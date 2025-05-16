@@ -5,25 +5,25 @@ class ReportPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Reportes de Boletines'),
+        title: const Text('Reportes de Boletines'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Text(
+            const Text(
               'Resumen de Boletines',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ReportCard(
               title: 'Boletines Vendidos',
               count: '1500',
               icon: Icons.check_circle,
               color: Colors.green,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ReportCard(
               title: 'Boletines Cancelados',
               count: '300',
@@ -52,11 +52,11 @@ class ReportCard extends StatelessWidget {
         leading: Icon(icon, size: 40, color: color),
         title: Text(
           title,
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         subtitle: Text(
           count,
-          style: TextStyle(fontSize: 12),
+          style: const TextStyle(fontSize: 12),
         ),
       ),
     );
