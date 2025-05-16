@@ -50,7 +50,7 @@ class _AdditionalDataWidgetState extends State<AdditionalDataWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 "Datos Adicionales",
                 style: TextStyle(fontSize: 12, ),
               ),
@@ -62,7 +62,7 @@ class _AdditionalDataWidgetState extends State<AdditionalDataWidget> {
           ),
         ),
         if (_isExpanded) ...[
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           _buildTextField("Dispositivo", deviceController),
           _buildTextField("Descripción", descriptionController),
           _buildTextField("Tipo de Dte", dteTypeController),
@@ -79,8 +79,8 @@ class _AdditionalDataWidgetState extends State<AdditionalDataWidget> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          border: const OutlineInputBorder(),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         ),
         onChanged: (value) => _updateValues(),
       ),
