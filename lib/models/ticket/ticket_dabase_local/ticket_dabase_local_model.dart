@@ -13,9 +13,9 @@ class Ticket {
   final double total;
   final String? transactionStatus;
   final String? sequenceNumber;
-  final String? extraData;
   final double? transactionTip;
   final double? transactionCashback;
+  final DateTime? printedAt;
 
   Ticket({
     this.id,
@@ -30,12 +30,53 @@ class Ticket {
     required this.adults,
     required this.minors,
     required this.total,
+    this.printedAt,
     this.transactionStatus,
     this.sequenceNumber,
-    this.extraData,
     this.transactionTip,
     this.transactionCashback,
   });
+
+  Ticket copyWith({
+    int? id,
+    int? branchId,
+    int? tripId,
+    String? method,
+    int? status,
+    int? quantity,
+    double? price,
+    List<int>? seats,
+    String? date,
+    int? adults,
+    int? minors,
+    double? total,
+    String? transactionStatus,
+    String? sequenceNumber,
+    double? transactionTip,
+    double? transactionCashback,
+    DateTime? printedAt,
+  }) {
+    return Ticket(
+      id: id ?? this.id,
+      branchId: branchId ?? this.branchId,
+      tripId: tripId ?? this.tripId,
+      method: method ?? this.method,
+      status: status ?? this.status,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      seats: seats ?? this.seats,
+      date: date ?? this.date,
+      adults: adults ?? this.adults,
+      minors: minors ?? this.minors,
+      total: total ?? this.total,
+      transactionStatus: transactionStatus ?? this.transactionStatus,
+      sequenceNumber: sequenceNumber ?? this.sequenceNumber,
+      transactionTip: transactionTip ?? this.transactionTip,
+      transactionCashback: transactionCashback ?? this.transactionCashback,
+      printedAt: printedAt ?? this.printedAt,
+    );
+  }
+
 
   // Convertir a Map para insertar en la base de datos
   Map<String, dynamic> toMap() {
@@ -54,9 +95,9 @@ class Ticket {
       'total': total,
       'transactionStatus': transactionStatus,
       'sequenceNumber': sequenceNumber,
-      'extraData': extraData,
       'transactionTip': transactionTip,
       'transactionCashback': transactionCashback,
+      'printedAt': printedAt,
     };
   }
 
@@ -77,9 +118,9 @@ class Ticket {
       total: map['total'],
       transactionStatus: map['transactionStatus'],
       sequenceNumber: map['sequenceNumber'],
-      extraData: map['extraData'],
       transactionTip: map['transactionTip'],
       transactionCashback: map['transactionCashback'],
+      printedAt: map['printedAt']
     );
   }
 }

@@ -5,7 +5,7 @@ import 'package:BusGo/domain/signals/tickets_signals/tickets_signal.dart';
 import 'package:BusGo/models/ticket/ticket_dabase_local/ticket_dabase_local_model.dart';
 import 'package:BusGo/ui/component/internetConnectionModal_component.dart';
 import 'package:BusGo/ui/component/showCustomSnackBar_component.dart';
-import 'package:BusGo/ui/pages/HomePage/Ticket/widget/classUtilsTikecket.dart';
+import 'package:BusGo/ui/pages/HomePage/Ticket/widget/classUtilsTicket.dart';
 import 'package:BusGo/ui/pages/HomePage/Ticket/widget/paymentCard.dart';
 import 'package:BusGo/ui/pages/PrinterPage/widget/classUtilsPrinterTicketLocal.dart';
 import 'package:BusGo/util/util_class_sharedPreferences.dart';
@@ -15,138 +15,225 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:signals/signals_flutter.dart';
 import 'package:intl/intl.dart';
 
+enum PaymentMethod { cash, creditCard, debitCard }
+
 class TicketPage extends StatefulWidget {
   @override
   State<TicketPage> createState() => _TicketPageState();
 }
 
-final utilsTicket = UtilsTicket();
+// final utilsTicket = UtilsTicket();
 final NetworkService _networkService = NetworkService();
- final DatabaseHelper dbHelper = DatabaseHelper();  // Instancia de la base de datos
- SharedPreferencesStorage sharedPreferencesStorage = SharedPreferencesStorage(); // Instancia de la base de datos
- UtilsPrinterTicketLocal utilsPrinterTicketLocal = UtilsPrinterTicketLocal();
+final DatabaseHelper dbHelper =
+    DatabaseHelper(); // Instancia de la base de datos
+SharedPreferencesStorage sharedPreferencesStorage =
+    SharedPreferencesStorage(); // Instancia de la base de datos
+UtilsPrinterTicketLocal utilsPrinterTicketLocal = UtilsPrinterTicketLocal();
 
-  // Método para verificar la conexión y actualizar el estado
-  Future<bool> _checkConnection() async {
-    bool isConnected = await _networkService.checkInternetConnection();
-    if(isConnected){
-return true;
-    }
-    else{
-      return false;
+// Método para verificar la conexión y actualizar el estado
+Future<bool> _checkConnection() async {
+  bool isConnected = await _networkService.checkInternetConnection();
+  if (isConnected) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+class _TicketPageState extends State<TicketPage> {
+
+  //modal para seleccionar el metodo de pago
+  Future<PaymentMethod?> _showPaymentMethodModal(BuildContext context) async {
+    return showModalBottomSheet<PaymentMethod>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Seleccione método de pago',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              _buildPaymentMethodItem(
+                context,
+                icon: Icons.money_off,
+                color: Colors.orange,
+                text: 'Efectivo',
+                method: PaymentMethod.cash,
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodItem(
+                context,
+                icon: Icons.credit_card,
+                color: Colors.blue,
+                text: 'Tarjeta de Débito',
+                method: PaymentMethod.debitCard,
+              ),
+              const SizedBox(height: 10),
+              _buildPaymentMethodItem(
+                context,
+                icon: Icons.credit_score,
+                color: Colors.green,
+                text: 'Tarjeta de Crédito',
+                method: PaymentMethod.creditCard,
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // 3. Método para construir los ítems del modal
+  Widget _buildPaymentMethodItem(
+      BuildContext context, {
+        required IconData icon,
+        required Color color,
+        required String text,
+        required PaymentMethod method,
+      }) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: color.withOpacity(0.3),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: color, size: 30),
+        title: Text(text, style: TextStyle(color: Colors.grey[800])),
+        onTap: () => Navigator.pop(context, method),
+      ),
+    );
+  }
+
+  // 4. Manejo de pagos en efectivo
+  Future<void> _handleCashPayment() async {
+    double total = ((double.parse(tripsSelectSignal.value!.price!) / 2) *
+        quantityMenoresSignal.value) +
+        (double.parse(tripsSelectSignal.value!.price!) * quantitySignal.value);
+
+    Ticket newTicket = Ticket(
+      id: DateTime.now().millisecondsSinceEpoch,
+      branchId: currentUserBranchLG.value!.id,
+      tripId: tripsSelectSignal.value!.id!,
+      method: 'Efectivo',
+      quantity: quantitySignal.value + quantityMenoresSignal.value,
+      price: double.parse(tripsSelectSignal.value!.price!),
+      seats: selectedSeatNumbersSN.value,
+      date: DateFormat('yyyy-MM-dd').format(tripsSelectSignal.value!.date!),
+      adults: quantitySignal.value,
+      minors: quantityMenoresSignal.value,
+      total: total,
+      status: 1,
+      transactionStatus: 'pending',
+      sequenceNumber: 'abc123',
+      transactionTip: 10.0,
+      transactionCashback: 5.0,
+    );
+
+    final resultTicket = await dbHelper.insertTicket(newTicket);
+    if (resultTicket != null) {
+      sharedPreferencesStorage.incrementCounter();
+      showCustomSnackBar(
+        context: context,
+        title: 'Compra de Ticket guardada correctamente db-Local',
+        backgroundColor: Colors.green,
+      );
+
+      String scheduleActual = DateFormat('HH:mm').format(DateTime.now());
+      await utilsPrinterTicketLocal.printTicketPasajeLocal(
+        newTicket,
+        scheduleActual,
+        tripsSelectSignal.value!.origin.toString(),
+        tripsSelectSignal.value!.destination.toString(),
+      );
+    } else {
+      showCustomSnackBar(
+        context: context,
+        title: 'Error al guardar el Ticket',
+        backgroundColor: Colors.red,
+      );
     }
   }
 
-class _TicketPageState extends State<TicketPage> {
+  // 5. Manejo de pagos con tarjeta
+  Future<void> _handleCardPayment(PaymentMethod method) async {
+    final hasConnection = await _checkConnection();
+    if (!hasConnection) {
+      showCustomSnackBar(
+        context: context,
+        title: 'Se requiere conexión para pagos con tarjeta',
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
+
+    final methodName = method == PaymentMethod.creditCard ? 'Crédito' : 'Débito';
+    verifyPurchaseTicketClass(
+      context,
+      tripsSelectSignal.value!.price.toString(),
+      paymentMethod: methodName,
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-  onPressed: () async {
-   
-    
-    bool checkConnection = await _checkConnection();
-    if(checkConnection){
-      print('TIENE CONEXION - SI, MANDAR A PAGAR');
- utilsTicket.verifyPurchaseTicketClass(context, tripsSelectSignal.value!.price.toString());
-    }
-    else{
+      floatingActionButton:  Watch.builder(
+        builder: (context) {
+          final hasSeats = selectedSeatNumbersSN
+              .watch(context)
+              .isNotEmpty;
 
+          return FloatingActionButton.extended(
+            onPressed: () async {
+              if (selectedSeatNumbersSN.value.isEmpty) {
+                showCustomSnackBar(
+                  context: context,
+                  title: 'Debe seleccionar al menos un asiento',
+                  backgroundColor: Colors.red,
+                );
+                return;
+              }
 
- InternetConnectionModal.show(
-  context,
-  onPayWithCash: () async {
-    // Lógica para pagar con efectivo
-      print('TIENE CONEXION - NO, GUARDAR EN DB-LOCAL');
-       // Si no hay conexión, guardamos el ticket en la base de datos local
-       double total = ((double.parse(tripsSelectSignal.value!.price!) / 2) *
-              quantityMenoresSignal.watch(context)) +
-          ((double.parse(tripsSelectSignal.value!.price!)) * quantitySignal.watch(context));
-int branch_id = currentUserBranchLG.value!.id;
-      int trip_id = tripsSelectSignal.value!.id!;
-      int quantity = quantityMenoresSignal.value + quantitySignal.value;
-      List<int> seats = selectedSeatNumbersSN.value;
-      DateTime date = tripsSelectSignal.value!.date!;
-      int adults = quantitySignal.value;
-      int minors = quantityMenoresSignal.value;
+              bool checkConnection = await _checkConnection();
+              final paymentMethod = await _showPaymentMethodModal(context);
+              if (paymentMethod == null) return;
 
-     
-
-
-
-
-
-       Ticket newTicket = Ticket(
-  id:  DateTime.now().millisecondsSinceEpoch,
-  branchId: branch_id,
-  tripId: trip_id,
-  method: 'Efectivo',  
-  quantity: quantity,
-  price:double.parse(tripsSelectSignal.value!.price!) ,
-  seats: seats,
-  date: DateFormat('yyyy-MM-dd').format(date),
-  adults: adults,
-  minors: minors,
-  total: total,
-  //estos estan ahi pero no se envian
-  //************************* */
-  status: 1,
-  transactionStatus: 'pending',
-  sequenceNumber: 'abc123',
-  extraData: 'no extra data',
-  transactionTip: 10.0,
-  transactionCashback: 5.0,
-   //************************* */
-);
-
-
-    final resultTicket =  await dbHelper.insertTicket(newTicket);
-    if(resultTicket != null)
-    { 
-      //Aumento la variable que me controla la cantidad de tickets guardados en la db-local
-      sharedPreferencesStorage.incrementCounter();      
-       showCustomSnackBar(
-        context: context,
-        title: 'Compra de Ticket guardada correctamente db-Local', // Obligatorio
-        backgroundColor: Colors.green
-      );
-      //Mandar a Imprimir
-      String scheduleActual = DateFormat('HH:mm').format(DateTime.now());
-      await utilsPrinterTicketLocal.printTicketPasajeLocal(newTicket,scheduleActual,tripsSelectSignal.value!.origin.toString(),tripsSelectSignal.value!.destination.toString());
-    }
-    else{
-      showCustomSnackBar(
-        context: context,
-        title: 'Error al guardar el Ticket', // Obligatorio
-        backgroundColor: Colors.red
-      );
-    }
-  },
-  onCancel: () {
-    // Lógica cuando se cancela
-  },
-);
-
-
-
-
-    
-
-    }
-   
-  },
-  backgroundColor: Colors.blue,
-  label: Row(
-    children: [
-      Icon(MdiIcons.ticket, color: Colors.white),
-      SizedBox(width: 8),
-      Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
-    ],
-  ),
-),
-
-
-      
+              if (paymentMethod == PaymentMethod.cash) {
+                await _handleCashPayment();
+              } else {
+                await _handleCardPayment(paymentMethod);
+              }
+            },
+            backgroundColor: Colors.blue,
+            label: Row(
+              children: [
+                Icon(MdiIcons.ticket, color: Colors.white),
+                const SizedBox(width: 8),
+                const Text('Comprar Ticket', style: TextStyle(fontSize: 14)),
+              ],
+            ),
+          );
+        }
+      ),
       backgroundColor: Colors.blue[400],
       body: SafeArea(
         child: Column(
@@ -159,7 +246,7 @@ int branch_id = currentUserBranchLG.value!.id;
                 color: Colors.blue[400],
               ),
               child: Padding(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -167,21 +254,26 @@ int branch_id = currentUserBranchLG.value!.id;
                     InkWell(
                       onTap: () {
                         GoRouter.of(context).pop();
+                        quantitySignal.value = 0;
+                        quantityMenoresSignal.value = 0;
+                        quantityAdultsSignal.value = 0;
+                        selectedSeatNumbersSN.value = [];
+                        tripsSelectSignal.value = null;
                       },
-                      child: Padding(
+                      child: const Padding(
                         padding: EdgeInsets.only(left: 8.0),
                         child: Icon(Icons.arrow_back, color: Colors.white),
                       ),
                     ),
-                    Text(
-                      "Ticket",
+                    const Text(
+                      "Pago de Pasaje",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(width: 40), // Espaciador para equilibrar
+                    const SizedBox(width: 50), // Espaciador para equilibrar
                   ],
                 ),
               ),
@@ -194,33 +286,33 @@ int branch_id = currentUserBranchLG.value!.id;
                   children: [
                     // Contenedor blanco de detalles
                     Container(
-                      margin: EdgeInsets.only(top: 160), // Empuja hacia abajo
-                      decoration: BoxDecoration(
-                        color: Colors.white,
+                      margin: const EdgeInsets.fromLTRB(
+                          0, 40, 0, 0), // Empuja hacia abajo
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(30),
                           topRight: Radius.circular(30),
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 100), // Espacio para el Card superior
-                            Text(
-                              "Pago de Pasaje",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                        padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                        child: Card(
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                  height: 50), // Espacio para el Card superior
+
+                              const SizedBox(height: 5),
+                              PaymentCard(
+                                timeIni: tripsSelectSignal.value!.schedule
+                                    .toString(),
+                                timeFin: '10:30xxx',
+                                price:
+                                    tripsSelectSignal.value!.price.toString(),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            PaymentCard(
-                              timeIni: tripsSelectSignal.value!.schedule.toString(),
-                              timeFin: '10:30xxx',
-                              price: tripsSelectSignal.value!.price.toString(),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -235,89 +327,64 @@ int branch_id = currentUserBranchLG.value!.id;
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Icon(Icons.location_on, color: Colors.blue),
-                                      SizedBox(height: 5),
-                                      Container(
-                                        width: 1,
-                                        height: 40,
-                                        color: Colors.grey[400],
-                                      ),
-                                      SizedBox(height: 5),
-                                      Icon(Icons.location_on, color: Color(0xFF55698F)),
-                                    ],
-                                  ),
-                                  SizedBox(width: 20),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text("ORIGEN", style: TextStyle(color: Colors.grey[600])),
-                                        Text(
-                                          tripsSelectSignal.value!.origin.toString(),
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Divider(color: Colors.grey[400]),
-                                        SizedBox(height: 4),
-                                        Text("DESTINO", style: TextStyle(color: Colors.grey[600])),
-                                        Text(
-                                          tripsSelectSignal.value!.destination.toString(),
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Row(
                                 children: [
-                                  Icon(Icons.access_time, size: 15, color: Colors.black),
-                                  SizedBox(width: 5),
+                                  const Icon(Icons.access_time,
+                                      size: 15, color: Colors.black),
+                                  const SizedBox(width: 5),
                                   Text(
-                                    tripsSelectSignal.value!.schedule.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    tripsSelectSignal.value!.schedule
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                    child: Icon(MdiIcons.rayStartArrow, size: 24, color: Colors.black),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5),
+                                    child: Icon(MdiIcons.rayStartArrow,
+                                        size: 24, color: Colors.black),
                                   ),
                                   Text(
                                     tripsSelectSignal.value!.arrival.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  Icon(MdiIcons.bus, size: 15, color: Colors.black),
-                                  SizedBox(width: 5),
-                                  Text('Bus: ', style: TextStyle(color: Colors.grey[600])),
+                                  Icon(MdiIcons.bus,
+                                      size: 15, color: Colors.black),
+                                  const SizedBox(width: 5),
+                                  Text('Bus: ',
+                                      style:
+                                          TextStyle(color: Colors.grey[600])),
                                   Text(
                                     tripsSelectSignal.value!.plate.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  Icon(MdiIcons.seatReclineExtra, size: 15, color: Colors.black),
-                                  SizedBox(width: 5),
-                                  Text('Capacidad: ', style: TextStyle(color: Colors.grey[600])),
+                                  Icon(MdiIcons.seatReclineExtra,
+                                      size: 15, color: Colors.black),
+                                  const SizedBox(width: 5),
+                                  Text('Capacidad: ',
+                                      style:
+                                          TextStyle(color: Colors.grey[600])),
                                   Text(
                                     tripsSelectSignal.value!.seats.toString(),
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -333,7 +400,6 @@ int branch_id = currentUserBranchLG.value!.id;
           ],
         ),
       ),
-  
     );
   }
 }
