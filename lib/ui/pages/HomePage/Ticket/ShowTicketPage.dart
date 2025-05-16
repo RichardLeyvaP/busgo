@@ -68,7 +68,7 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Align(
-                alignment: Alignment.centerRight,
+                alignment: Alignment.center,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
                   child: ElevatedButton(
@@ -233,12 +233,4 @@ class _ShowTicketPageState extends State<ShowTicketPage> {
     );
   }
 
-  String _formatDate(String date) {
-    try {
-      final parsedDate = DateTime.parse(date);
-      return DateFormat('dd/MM/yyyy').format(parsedDate);
-    } catch (e) {
-      return 'Fecha inválida';
-    }
-  }
 }

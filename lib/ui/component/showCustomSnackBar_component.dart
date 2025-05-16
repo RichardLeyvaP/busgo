@@ -15,7 +15,7 @@ void showCustomSnackBar({
       children: [
         if (icon != null) ...[
           Icon(icon, color: titleColor), // Ícono personalizado
-          SizedBox(width: 8), // Espaciado entre el ícono y el texto
+          const SizedBox(width: 8), // Espaciado entre el ícono y el texto
         ],
         Expanded(
           child: Text(
@@ -31,7 +31,7 @@ void showCustomSnackBar({
       ],
     ),
     backgroundColor: backgroundColor,
-    duration: isPersistent ? Duration(days: 1) : duration, // No se cierra si es persistente
+    duration: isPersistent ? const Duration(days: 1) : duration, // No se cierra si es persistente
     behavior: SnackBarBehavior.floating, // Para que flote en la pantalla
   );
 

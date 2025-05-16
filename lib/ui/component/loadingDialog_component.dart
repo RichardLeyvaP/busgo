@@ -29,7 +29,7 @@ class _LoadingDialogState extends State<LoadingDialog> {
     });
 
     // Esperar 2 segundos y cerrar el modal
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
     // Cerrar el modal
     Navigator.of(context).pop();
@@ -42,8 +42,8 @@ class _LoadingDialogState extends State<LoadingDialog> {
         padding: const EdgeInsets.all(20.0),
         child: Row(
           children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 20),
+            const CircularProgressIndicator(),
+            const SizedBox(width: 20),
             Expanded(
               child: Text(_message),
             ),
