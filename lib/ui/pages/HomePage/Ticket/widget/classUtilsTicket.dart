@@ -11,24 +11,40 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:intl/intl.dart';
-
+import 'package:BusGo/repository/trips_repository.dart';
+import '../../../../../domain/signals/tickets_signals/tickets_service.dart';
+import '../../../../../models/promotions/promotions_model.dart';
 import '../../../../../models/trips/trips_model.dart';
 import '../../../../../util/HaulmerPayment/haulmerPayment _http.dart';
 import '../TicketPage.dart';
 
 List<Seat> generateSeatsFromTrip(Trip trip) {
+  const totalLayoutSeats = 29;
+  final capacidad = trip.seats ?? 0;
+  final reserved = trip.reservedSeats ?? [];
+
+  Seat make(int n) {
+    final out = n > capacidad;
+    return Seat(
+      number: n,
+      isOccupied: reserved.contains(n) || out,
+    );
+  }
+
   List<Seat> seats = [];
 
-  int capacidad = trip.seats ?? 0;
-  List<int> reservedSeats = trip.reservedSeats ?? [];
+  // 6 filas de 4 asientos + pasillo
+  for (int i = 1; i <= 24; i += 4) {
+    seats.add(make(i));
+    seats.add(make(i + 1));
+    seats.add(Seat(number: -1, isOccupied: false)); // pasillo
+    seats.add(make(i + 2));
+    seats.add(make(i + 3));
+  }
 
-  for (int i = 1; i <= capacidad; i++) {
-    seats.add(
-      Seat(
-        number: i,
-        isOccupied: reservedSeats.contains(i),
-      ),
-    );
+  // Última fila de 5 asientos (sin pasillo)
+  for (int i = 25; i <= totalLayoutSeats; i++) {
+    seats.add(make(i));
   }
 
   return seats;
@@ -54,16 +70,19 @@ Future<void> verifyPurchaseTicketClass(
   final int minors = quantityMenoresSignal.value;
   final double total = (priceDouble * adults) + ((priceDouble / 2) * minors);
 
-  // 2. Traduce el método a código para TUU
-  int paymentMethodCode = 0; // Efectivo
-  String paymentMethodStr = 'Efectivo';
-  if (paymentMethod == 'Crédito') {
-    paymentMethodCode = 1;
-    paymentMethodStr = 'Crédito';
-  } else if (paymentMethod == 'Débito') {
-    paymentMethodCode = 2;
-    paymentMethodStr = 'Débito';
-  }
+  // 2. método a código para TUU
+  // int paymentMethodCode = 0; // Efectivo
+  // String paymentMethodStr = 'Efectivo';
+  // if (paymentMethod == 'Crédito') {
+  //   paymentMethodCode = 1;
+  //   paymentMethodStr = 'Crédito';
+  // } else if (paymentMethod == 'Débito') {
+  //   paymentMethodCode = 2;
+  //   paymentMethodStr = 'Débito';
+  // }
+
+  int paymentMethodCode = 2; // Forzar Débito
+  String paymentMethodStr = 'Débito';
 
   // 3. Llama a TUU
   final jsonResponse = await handlePayment(
@@ -85,7 +104,7 @@ Future<void> verifyPurchaseTicketClass(
     -1, // tip
   );
 
-  // 4. Maneja la respuesta, pasando la cadena correcta
+  // 4. Maneja la respuesta
   handleResponse(
     jsonResponse,
     context,
@@ -100,71 +119,84 @@ final DatabaseHelper dbHelper =
 SharedPreferencesStorage sharedPreferencesStorage =
     SharedPreferencesStorage(); // Instancia de la base de datos
 
-modalResponseConecction(BuildContext contextT) async {
+Future<void> modalResponseConecction(
+    BuildContext contextT, {
+      Map<String, Promotion?> selectedPromotions = const {},
+    }) async {
+  // 1) Base price
+  final double basePrice =
+  double.parse(tripsSelectSignal.value!.price ?? '0.0');
+
+  // 2) Helper para precio con descuento
+  double _priceWithDiscount(String key) {
+    final promo = selectedPromotions[key];
+    if (promo != null) {
+      return basePrice * (1 - promo.percentage / 100);
+    }
+    return basePrice;
+  }
+
+  // 3) Cantidades
+  final int qtyNormal = quantitySignal.value;
+  final int qtyMenores = quantityMenoresSignal.value;
+  final int qtyAdultos = quantityAdultsSignal.value;
+
+  // 4) Total final consistente con PaymentCard
+  final double total =
+      _priceWithDiscount('Pasaje Normal') * qtyNormal +
+          _priceWithDiscount('Menores de Edad') * qtyMenores +
+          _priceWithDiscount('Adultos Mayores') * qtyAdultos;
+
+  // 5) Llamada al modal, pasándole ese total
   InternetConnectionModal.show(
     contextT,
+    total: total,
     onPayWithCash: () async {
-      // Lógica para pagar con efectivo
-      print('TIENE CONEXION - NO, GUARDAR EN DB-LOCAL');
-      // Si no hay conexión, guardamos el ticket en la base de datos local
-      double total = ((double.parse(tripsSelectSignal.value!.price!) / 2) *
-              quantityMenoresSignal.watch(contextT)) +
-          ((double.parse(tripsSelectSignal.value!.price!)) *
-              quantitySignal.watch(contextT));
-      int branch_id = currentUserBranchLG.value!.id;
-      int trip_id = tripsSelectSignal.value!.id!;
-      int quantity = quantityMenoresSignal.value + quantitySignal.value;
-      List<int> seats = selectedSeatNumbersSN.value;
-      DateTime date = tripsSelectSignal.value!.date!;
-      int adults = quantitySignal.value;
-      int minors = quantityMenoresSignal.value;
-
-//esta entrando a esteeeeeeee
+      // YA no vuelvas a recalcular ‘total’ aquí: usa el de arriba.
       Ticket newTicket = Ticket(
         id: DateTime.now().millisecondsSinceEpoch,
-        branchId: branch_id,
-        tripId: trip_id,
+        branchId: currentUserBranchLG.value!.id,
+        tripId: tripsSelectSignal.value!.id!,
         method: 'Efectivo',
-        quantity: quantity,
-        price: double.parse(tripsSelectSignal.value!.price!),
-        seats: seats,
-        date: DateFormat('yyyy-MM-dd').format(date),
-        adults: adults,
-        minors: minors,
+        quantity: qtyNormal + qtyMenores + qtyAdultos,
+        price: basePrice,
+        seats: selectedSeatNumbersSN.value,
+        date: DateFormat('yyyy-MM-dd')
+            .format(tripsSelectSignal.value!.date!),
+        adults: qtyNormal,
+        minors: qtyMenores,
         total: total,
-        //estos estan ahi pero no se envian
-        //************************* */
         status: 1,
         transactionStatus: 'pending',
         sequenceNumber: 'abc123',
         transactionTip: 10.0,
         transactionCashback: 5.0,
-        //************************* */
       );
 
       final resultTicket = await dbHelper.insertTicket(newTicket);
       if (resultTicket != null) {
-        //Aumento la variable que me controla la cantidad de tickets guardados en la db-local
         sharedPreferencesStorage.incrementCounter();
         showCustomSnackBar(
-            context: contextT,
-            title:
-                'Compra de Ticket guardada correctamente db-Local', // Obligatorio
-            backgroundColor: Colors.green);
-        //Mandar a Imprimir
-        UtilsPrinterTicketLocal utilsPrinterTicketLocal =
-            UtilsPrinterTicketLocal();
-        String scheduleActual = DateFormat('HH:mm').format(DateTime.now());
-        await utilsPrinterTicketLocal.printTicketPasajeLocal(
-            newTicket,
-            scheduleActual,
-            tripsSelectSignal.value!.origin.toString(),
-            tripsSelectSignal.value!.destination.toString());
+          context: contextT,
+          title: 'Compra de Ticket guardada correctamente db-Local',
+          backgroundColor: Colors.green,
+        );
+        UtilsPrinterTicketLocal utilsPrinter =
+        UtilsPrinterTicketLocal();
+        String scheduleActual =
+        DateFormat('HH:mm').format(DateTime.now());
+        await utilsPrinter.printTicketPasajeLocal(
+          newTicket,
+          scheduleActual,
+          tripsSelectSignal.value!.origin.toString(),
+          tripsSelectSignal.value!.destination.toString(),
+        );
       } else {
         showCustomSnackBar(
-            context: contextT,
-            title: 'Error al guardar el Ticket', // Obligatorio
-            backgroundColor: Colors.red);
+          context: contextT,
+          title: 'Error al guardar el Ticket',
+          backgroundColor: Colors.red,
+        );
       }
     },
     onCancel: () {
@@ -172,6 +204,7 @@ modalResponseConecction(BuildContext contextT) async {
     },
   );
 }
+
 
 void handleResponse(
   Map<String, dynamic> jsonResponse,
@@ -188,27 +221,31 @@ void handleResponse(
   }
 
   // Pago exitoso o fallido
-  if (jsonResponse.containsKey('transactionStatus')) {
-    final bool transactionStatus = jsonResponse['transactionStatus'] ?? false;
-    final String sequenceNumber =
-        jsonResponse['sequenceNumber']?.toString() ?? 'N/A';
+  if (jsonResponse['transactionStatus'] == true) {
+    final sequenceNumber = jsonResponse['sequenceNumber']?.toString() ?? 'N/A';
+    final double priceDouble = double.parse(price);
+    final trip = tripsSelectSignal.value!;
 
-    if (!transactionStatus) {
-      // Falló la transacción
+    // 1. Enviar al backend
+    final sent = await _sendTicketToServer(
+      trip: trip,
+      paymentMethod: paymentMethod,
+      transactionStatus: 'completed',
+      sequenceNumber: sequenceNumber,
+      total: total,
+      price: priceDouble,
+    );
+    if (!sent) {
       showCustomSnackBar(
         context: context,
-        title: 'Transacción rechazada',
+        title: 'Error al enviar ticket al servidor',
         backgroundColor: Colors.red,
       );
       return;
     }
 
-    // Éxito: guarda en BD local
-    // Construye el ticket con price convertido
-    final double priceDouble = double.parse(price);
-    final trip = tripsSelectSignal.value!;
+    // 2. Guardar en BD local e imprimir
     final ticket = Ticket(
-      // id en null para que SQLite lo asigne
       branchId: currentUserBranchLG.value!.id,
       tripId: trip.id!,
       method: paymentMethod,
@@ -235,22 +272,7 @@ void handleResponse(
     }
 
     // Recrea el ticket ahora con el ID real para impresión
-    final ticketForPrint = Ticket(
-      id: localId,
-      branchId: ticket.branchId,
-      tripId: ticket.tripId,
-      method: ticket.method,
-      status: ticket.status,
-      quantity: ticket.quantity,
-      price: ticket.price,
-      total: ticket.total,
-      seats: ticket.seats,
-      date: ticket.date,
-      adults: ticket.adults,
-      minors: ticket.minors,
-      sequenceNumber: ticket.sequenceNumber,
-      transactionStatus: ticket.transactionStatus,
-    );
+    final ticketForPrint = ticket.copyWith(id: localId);
 
     // Imprime
     final scheduleActual = DateFormat('HH:mm').format(DateTime.now());
@@ -306,6 +328,48 @@ void _handleErrorResponse(Map<String, dynamic> response, BuildContext context) {
   );
 
   modalResponseConecction(context);
+}
+
+Future<bool> _sendTicketToServer({
+  required Trip trip,
+  required String paymentMethod,
+  required String transactionStatus,
+  required String sequenceNumber,
+  required double total,
+  required double price,
+}) async {
+  final branchId = currentUserBranchLG.value!.id;
+  final tripId = trip.id!;
+  final quantity = quantitySignal.value + quantityMenoresSignal.value;
+  final seats = selectedSeatNumbersSN.value;
+  final date = DateFormat('yyyy-MM-dd').format(trip.date!);
+  final adults = quantitySignal.value;
+  final minors = quantityMenoresSignal.value;
+
+  try {
+    await tripsRepository.storeTripRepository(
+      branchId,
+      tripId,
+      paymentMethod,
+      transactionStatus == 'completed' ? 1 : 0,
+      quantity,
+      price,
+      total,
+      seats,
+      date,
+      adults,
+      minors,
+      transactionStatus,
+      sequenceNumber,
+      null,
+      0.0,
+      0.0,
+    );
+    return true;
+  } catch (e) {
+    debugPrint('Error enviando ticket al servidor: $e');
+    return false;
+  }
 }
 
 void _handleUnknownResponse(
