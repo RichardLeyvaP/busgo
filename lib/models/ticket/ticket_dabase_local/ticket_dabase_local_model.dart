@@ -37,6 +37,47 @@ class Ticket {
     this.transactionCashback,
   });
 
+  Ticket copyWith({
+    int? id,
+    int? branchId,
+    int? tripId,
+    String? method,
+    int? status,
+    int? quantity,
+    double? price,
+    List<int>? seats,
+    String? date,
+    int? adults,
+    int? minors,
+    double? total,
+    String? transactionStatus,
+    String? sequenceNumber,
+    double? transactionTip,
+    double? transactionCashback,
+    DateTime? printedAt,
+  }) {
+    return Ticket(
+      id: id ?? this.id,
+      branchId: branchId ?? this.branchId,
+      tripId: tripId ?? this.tripId,
+      method: method ?? this.method,
+      status: status ?? this.status,
+      quantity: quantity ?? this.quantity,
+      price: price ?? this.price,
+      seats: seats ?? this.seats,
+      date: date ?? this.date,
+      adults: adults ?? this.adults,
+      minors: minors ?? this.minors,
+      total: total ?? this.total,
+      transactionStatus: transactionStatus ?? this.transactionStatus,
+      sequenceNumber: sequenceNumber ?? this.sequenceNumber,
+      transactionTip: transactionTip ?? this.transactionTip,
+      transactionCashback: transactionCashback ?? this.transactionCashback,
+      printedAt: printedAt ?? this.printedAt,
+    );
+  }
+
+
   // Convertir a Map para insertar en la base de datos
   Map<String, dynamic> toMap() {
     return {

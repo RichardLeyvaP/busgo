@@ -29,7 +29,9 @@ class _PaymentCardState extends State<PaymentCard> {
     'Pasaje Normal': null,
     'Menores de Edad': null,
     'Adultos Mayores': null,
+
   };
+
 
   @override
   void initState() {
@@ -181,18 +183,12 @@ class _PaymentCardState extends State<PaymentCard> {
                   CustomButton(
                     title: "Seleccionar asiento",
                     onTap: () {
-                      final trip = tripsSelectSignal.value!;
-                      final seats = generateSeatsFromTrip(trip);
-
+                      final seats = generateSeatsFromTrip(tripsSelectSignal.value!);
                       final int maxPassengers = quantitySignal.value +
                           quantityMenoresSignal.value +
                           quantityAdultsSignal.value;
+                      showSeatSelectionModal(context, seats, maxPassengers);
 
-                      showSeatSelectionModal(
-                        context,
-                        seats,
-                        maxPassengers,
-                      );
                     },
                     color: ((double.parse(widget.price) / 2) *
                                     quantityMenoresSignal.watch(context)) +
@@ -298,6 +294,8 @@ class _PaymentCardState extends State<PaymentCard> {
           ((double.parse(widget.price)) * quantitySignal.watch(context)) +
           ((double.parse(widget.price)) * quantityAdultsSignal.watch(context));
 
+      totalToPaySignal.value = total.sign;
+
       Map<String, dynamic> jsonResponse = await handlePayment(
           total,
           -1, //cashback,
@@ -335,70 +333,107 @@ void showSeatSelectionModal(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.only(
-          left: 16,
-          right: 16,
-          top: 5,
-          bottom: 10,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Selecciona tus asientos (máximo $maxSelectable)",
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+    builder: (_) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Selecciona tus asientos (máximo $maxSelectable)",
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 14),
+          const Text(
+            'La posición de los asientos que se muestran en el plano es solamente de referencia, por tanto puede variar',
+            style: TextStyle(fontSize: 12),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.70,
+            child: Watch.builder(                         // :contentReference[oaicite:1]{index=1}
+              builder: (ctx) {
+                final selectedSeats = selectedSeatNumbersSN.value;
+                return LayoutBuilder(
+                  builder: (c, cons) {
+                    final w = cons.maxWidth;
+                    const minW = 60.0;
+                    final cols = (w / minW).floor().clamp(2, 6);
+                    final cell = w / cols;
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(8),
+                      gridDelegate:
+                      SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: cols,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        childAspectRatio: 1,
+                      ),
+                      itemCount: seats.length,
+                      itemBuilder: (c2, i) {
+                        final seat = seats[i];
+                        if (seat.number == -1) return const SizedBox.shrink();
+                        final isSel = selectedSeats.contains(seat.number);
+                        return GestureDetector(
+                          onTap: seat.isOccupied ||
+                              (!isSel &&
+                                  selectedSeats.length >= maxSelectable)
+                              ? null
+                              : () {
+                            if (isSel) {
+                              selectedSeatNumbersSN.value =
+                                  selectedSeatNumbersSN.value
+                                      .where((n) => n != seat.number)
+                                      .toList();
+                            } else {
+                              selectedSeatNumbersSN.value = [
+                                ...selectedSeatNumbersSN.value,
+                                seat.number
+                              ];
+                            }
+                          },
+                          child: CustomSeatIcon(
+                            isOccupied: seat.isOccupied,
+                            isSelected: isSel,
+                            seatNumber: seat.number,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
             ),
-            const SizedBox(height: 14),
-            const Text(
-              'La posición de los asientos que se muestran en el plano es solamente de referencia, por tanto puede variar',
-              style: TextStyle(fontSize: 12),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height *
-                  0.70, // Altura del grid de asientos
-              child: ValueListenableBuilder<List<int>>(
-                valueListenable: selectedSeatNumbers1,
-                builder: (context, selectedSeats, child) {
-                  return buildSeatSelection(
-                      seats, maxSelectable, selectedSeatNumbersSN);
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomButton(
+                title: "Limpiar Selección",
+                onTap: () {
+                  selectedSeatNumbers1.value = [];
+                  selectedSeatNumbersSN.value = [];
+                  for (var seat in seats) {
+                    seat.isSelected = false;
+                  }
+                  (context as Element).markNeedsBuild();
                 },
+                color: Colors.red,
+                width: 160,
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CustomButton(
-                  title: "Limpiar Selección",
-                  onTap: () {
-                    selectedSeatNumbers1.value = [];
-                    selectedSeatNumbersSN.value = [];
-                    for (var seat in seats) {
-                      seat.isSelected = false;
-                    }
-                    (context as Element).markNeedsBuild();
-                  },
-                  color: Colors.red,
-                  width: 160,
-                ),
-                CustomButton(
-                  title: "Confirmar",
-                  onTap: () {
-                    // selectedSeatNumbersSN.value = selectedSeatNumbers1.value;
-                    print(
-                        "Asientos seleccionados: ${selectedSeatNumbersSN.value}");
-                    Navigator.pop(context);
-                  },
-                  color: Colors.blue,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    },
+              CustomButton(
+                title: "Confirmar",
+                onTap: () {
+                  // selectedSeatNumbersSN.value = selectedSeatNumbers1.value;
+                  print(
+                      "Asientos seleccionados: ${selectedSeatNumbersSN.value}");
+                  Navigator.pop(context);
+                },
+                color: Colors.blue,
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
   );
 }
 

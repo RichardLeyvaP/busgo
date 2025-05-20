@@ -111,6 +111,12 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red),
+                      onPressed: () => context.pop(),
+                      child: const Text('Cancelar'),
+                    ),
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.of(ctx).pop(selectedPromo);
                         if (widget.onPromotionApplied != null) {
@@ -119,12 +125,7 @@ class _QuantitySelectorState extends State<QuantitySelector> {
                       },
                       child: const Text('Aplicar'),
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange),
-                      onPressed: () => context.pop(),
-                      child: const Text('Cancelar'),
-                    ),
+
                   ],
                 ),
               ]),

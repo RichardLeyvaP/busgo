@@ -213,31 +213,6 @@ Future<Map<String, dynamic>> handlePayment(
     Map<String, dynamic> jsonResponse = Map<String, dynamic>.from(result);
     return jsonResponse;
 
-    // if (result["success"] == true) {
-    // storeTrip(branch_id,trip_id,'method','status',quantity,widget.price,total,seats,date,adults,minors);
-    // int branch_id = 1;
-    // int trip_id = tripsSelectSignal.value!.id!;
-    // int quantity = quantityMenoresSignal.value + quantitySignal.value;
-    // double total = ((double.parse(widget.price) / 2) *
-    //         quantityMenoresSignal.watch(context)) +
-    //     ((double.parse(widget.price)) * quantitySignal.watch(context));
-    // List<int> seats = selectedSeatNumbersSN.value;
-    // DateTime date = tripsSelectSignal.value!.date!;
-    // int adults = quantitySignal.value;
-    // int minors = quantityMenoresSignal.value;
-    // storeTrip(branch_id, trip_id, 'method', 'status', quantity, widget.price,
-    //     total, seats, date, adults, minors);
-    // showCustomSnackBar(
-    //   context: context,
-    //   title: 'Compra de pasaje realizada con éxito', // Obligatorio
-    //   titleColor: Colors.white, // Opcional
-    //   icon: Icons.check_circle, // Opcional
-    //   backgroundColor: Colors.green, // Opcional
-    //   duration: Duration(seconds: 5), // Opcional
-    // );
-
-    // GoRouter.of(context).go('/DashboardPage');
-    // }
   } catch (e) {
     return {
       "error": "La respuesta del pago entro en el catch-handlePayment:$e"

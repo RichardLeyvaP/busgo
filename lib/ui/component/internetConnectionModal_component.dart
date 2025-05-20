@@ -4,12 +4,13 @@ import '../../domain/signals/tickets_signals/tickets_signal.dart';
 
 class InternetConnectionModal {
   static void show(BuildContext context, {
+    required double total,
     required VoidCallback onPayWithCash,
     required VoidCallback onCancel,
   }) {
-    final double total = ((double.parse(tripsSelectSignal.value!.price?? '0.0') / 2) *
-        quantityMenoresSignal.value) +
-        ((double.parse(tripsSelectSignal.value!.price?? '0.0') * quantitySignal.value));
+    // final double total = ((double.parse(tripsSelectSignal.value!.price?? '0.0') / 2) *
+    //     quantityMenoresSignal.value) +
+    //     ((double.parse(tripsSelectSignal.value!.price?? '0.0') * quantitySignal.value));
 
     showDialog(
       context: context,

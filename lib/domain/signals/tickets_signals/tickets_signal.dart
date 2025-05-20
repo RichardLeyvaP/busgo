@@ -28,6 +28,8 @@ final Signal<bool> isUpdateProductSignal = Signal<bool>(false);
 final Signal<bool> isLoadingTripsSignal = Signal<bool>(false);
 final Signal<List<Trip>?> tripsSignal = Signal<List<Trip>?>(null);
 final Signal<String?> tripsErrorSignal = Signal<String?>(null);
+final totalToPaySignal = Signal<double>(0.0);
+final promotionsSelectedSignal = Signal<Map<String, Promotion?>>({});
 // Señales relacionadas con Tickets
 final Signal<bool> isLoadingTicketsSignal = Signal<bool>(false);
 final Signal<bool> floatingActionButtonSignal = Signal<bool>(true);
