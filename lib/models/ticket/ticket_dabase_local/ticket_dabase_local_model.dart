@@ -15,7 +15,6 @@ class Ticket {
   final String? sequenceNumber;
   final double? transactionTip;
   final double? transactionCashback;
-  final DateTime? printedAt;
 
   Ticket({
     this.id,
@@ -30,7 +29,6 @@ class Ticket {
     required this.adults,
     required this.minors,
     required this.total,
-    this.printedAt,
     this.transactionStatus,
     this.sequenceNumber,
     this.transactionTip,
@@ -54,7 +52,6 @@ class Ticket {
     String? sequenceNumber,
     double? transactionTip,
     double? transactionCashback,
-    DateTime? printedAt,
   }) {
     return Ticket(
       id: id ?? this.id,
@@ -73,7 +70,6 @@ class Ticket {
       sequenceNumber: sequenceNumber ?? this.sequenceNumber,
       transactionTip: transactionTip ?? this.transactionTip,
       transactionCashback: transactionCashback ?? this.transactionCashback,
-      printedAt: printedAt ?? this.printedAt,
     );
   }
 
@@ -97,7 +93,6 @@ class Ticket {
       'sequenceNumber': sequenceNumber,
       'transactionTip': transactionTip,
       'transactionCashback': transactionCashback,
-      'printedAt': printedAt,
     };
   }
 
@@ -120,7 +115,6 @@ class Ticket {
       sequenceNumber: map['sequenceNumber'],
       transactionTip: map['transactionTip'],
       transactionCashback: map['transactionCashback'],
-      printedAt: map['printedAt']
     );
   }
 }

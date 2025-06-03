@@ -16,6 +16,12 @@ import 'dart:ui' as ui;
 
 class UtilsPrinterTicketLocal {
 // Método para descargar la imagen desde URL y luego imprimirla
+
+    UtilsPrinterTicketLocal() {
+      // Inicializamos SunmiPrinter al instanciar el helper
+      SunmiPrinter.initPrinter();
+    }
+
   Future<void> printImageFromUrl(String imageUrl) async {
     try {
       // Descarga la imagen desde la URL
@@ -84,6 +90,7 @@ class UtilsPrinterTicketLocal {
       String tripOrigin,
       String tripDestination,
       ) async {
+
     try {
       await SunmiPrinter.initPrinter();
       await SunmiPrinter.startTransactionPrint(true);
@@ -97,6 +104,7 @@ class UtilsPrinterTicketLocal {
       // 3. Sección de pago dinámica
       await _printPaymentSection(ticket);
 
+
       // 4. Información adicional para tarjetas
       if (ticket.method != 'Efectivo') {
         await _printCardDetails(ticket);
@@ -106,9 +114,10 @@ class UtilsPrinterTicketLocal {
       await _printFooter(ticket, schedule);
 
       await SunmiPrinter.exitTransactionPrint(true);
+
+      await SunmiPrinter.exitTransactionPrint(true);
     } catch (e) {
-      print('Error al imprimir ticket: $e');
-      throw Exception('Error de impresión: $e');
+      debugPrint('⚠️ UtilsPrinter: no se pudo imprimir pasaje: $e');
     }
   }
 

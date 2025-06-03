@@ -28,66 +28,131 @@ class _OrigenDestinoCardState extends State<OrigenDestinoCard> {
   }
   // método _showDestinoModal para seleccionar el destino
   void _showDestinoModal(BuildContext context) {
-    final trips = tripsSignal.value; // Accede a los viajes desde la señal
+    final trips = tripsSignal.value;
     final isLoading = isLoadingTripsSignal.value;
     final error = tripsErrorSignal.value;
 
     showDialog(
       context: context,
-      builder: (context) => Center(
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.95,
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.6,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.0),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Padding(
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.6,
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Título
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Selecciona un destino",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Divider(height: 1),
+
+              // Contenido principal
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : error != null
+                    ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text('Error: $error', style: const TextStyle(color: Colors.red)),
+                  ),
+                )
+                    : (trips == null || trips.isEmpty)
+                    ? const Center(
+                  child: Padding(
                     padding: EdgeInsets.all(16),
-                    child: Text("Selecciona un destino", /* ... */),
+                    child: Text('No hay destinos disponibles'),
                   ),
-                  const Divider(),
-                  if (isLoading)
-                    const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: CircularProgressIndicator(),
-                    )
-                  else if (error != null)
-                    Text('Error: $error', style: TextStyle(color: Colors.red))
-                  else if (trips == null || trips.isEmpty)
-                      const Text('No hay destinos disponibles')
-                    else
-                      ..._getUniqueDestinations(trips).map((destino) => _buildDestinoOption(destino!)).toList(),
-
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: (){
-                        selectedDestinationSignal.value = null;
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Mostrar todos'),
-                    ),
-                  ),
-                ],
-
+                )
+                    : ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: _getUniqueDestinations(trips).length,
+                  itemBuilder: (context, index) {
+                    final destino = _getUniqueDestinations(trips)[index]!;
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          leading: const Icon(Icons.place, color: Colors.blue),
+                          title: Text(destino),
+                          onTap: () {
+                            selectedDestinationSignal.value = destino;
+                            Navigator.of(context).pop();
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          hoverColor: Colors.blue.shade50,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        ),
+                        // Línea sutil
+                        if (index != _getUniqueDestinations(trips).length - 1)
+                          const Divider(
+                            height: 2,
+                            thickness: 1,
+                            color: Colors.black12,
+                            indent: 16,
+                            endIndent: 16,
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
 
-            ),
+              const Divider(height: 1),
+              // Botones abajo
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text('Cancelar'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: TextButton(
+
+                        onPressed: () {
+                          selectedDestinationSignal.value = null;
+                          Navigator.of(context).pop();
+                        },
+                        child: const FittedBox(
+
+                          fit: BoxFit.scaleDown,
+                          child: Text('Mostrar todos', style: TextStyle(
+                            fontSize: 50
+                          ),),
+                        ),
+                      ),
+                    ),
+
+
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
 
   Widget _buildDestinoOption(String destino) {
     return ListTile(

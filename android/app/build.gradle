@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.BusGo"
-    compileSdk = 34 // Actualizado a la API 33 (Android 13)
+    compileSdk = 35 // Actualizado a la API 33 (Android 13)
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId = "com.example.BusGo"
         minSdk = 28 // Compatible desde Android 9 (API 28)
-        targetSdk = 34 // Optimizado para Android 13 (API 33)
+        targetSdk = 35 // Optimizado para Android 13 (API 33)
         versionCode = 1
         versionName = "1.2.0"
     }

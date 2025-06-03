@@ -193,8 +193,17 @@ class _TicketPageState extends State<TicketPage> {
       paymentMethod: methodName,
     );
   }
+
+  String formatoChilenoSinSimbolo(int valor) {
+    final formatter = NumberFormat('####', 'es_CL');
+    return formatter.format(valor);
+  }
+
   @override
   Widget build(BuildContext context) {
+    String value=tripsSelectSignal.value!.price.toString();
+    int valorInt = double.tryParse(value)?.toInt() ?? 0;  // Si falla, usa 0
+    String valorFormateado = formatoChilenoSinSimbolo(valorInt);
     return Scaffold(
       floatingActionButton:  Watch.builder(
         builder: (context) {
@@ -388,6 +397,19 @@ class _TicketPageState extends State<TicketPage> {
                                   ),
                                 ],
                               ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: [
+                                  Icon(MdiIcons.ticket, size: 15, color: Colors.black),
+                                  const SizedBox(width: 5),
+                                  Text('Precio: ', style: TextStyle(color: Colors.grey[600])),
+                                  Text(
+                                      valorFormateado ,// Asegúrate que es int
+
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),

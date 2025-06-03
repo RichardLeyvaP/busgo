@@ -425,7 +425,7 @@ packages:
     source: hosted
     version: "10.8.0"
   freezed:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: freezed
       sha256: "59a584c24b3acdc5250bb856d0d3e9c0b798ed14a4af1ddb7dc1c7b41df91c9c"
@@ -929,7 +929,7 @@ packages:
     source: hosted
     version: "6.0.2"
   signals_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: signals_flutter
       sha256: "66b36ed0b5961cc7d8d0606813bc3fd66758dc1728cbfcffef0d2a97c7a706a2"

@@ -40,9 +40,12 @@ class SalesPage extends StatelessWidget {
                       child: Column(
                         children: [
                           const Text(
-                            'Viajes',
+                            "recorridos disponibles",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 14),
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.grey,
+                            ),
                           ),
                           const SizedBox(height: 20),
                           tripsSignal.watch(context) == null ||

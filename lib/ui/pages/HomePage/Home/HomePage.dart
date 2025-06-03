@@ -17,16 +17,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<void> fetchSalesData() async {
-    await getSales("", 'Negocio', "2025-02");
+    await getSales("", 'Negocio', "2025-05");
   }
 
   SharedPreferencesStorage sharedPreferencesStorage =
       SharedPreferencesStorage(); // Instancia de la base de datos
   int sharedPrefStorage = 0;
+
   @override
   void initState() {
-    // TODO: implement initState
-
     super.initState();
   }
 
@@ -159,8 +158,8 @@ class _HomePageState extends State<HomePage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return WillPopScope(
-                                  onWillPop: () async =>
-                                      false, // Esto previene que el modal se cierre con el botón atrás
+                                  onWillPop: () async => false,
+                                  // Esto previene que el modal se cierre con el botón atrás
                                   child: LoadingDialog(
                                     taskToExecute: () async {
                                       final ticketSyncService =

@@ -73,6 +73,7 @@ class HaulmerPayment {
     };
 
     String dataSend = jsonEncode(requestData);
+    print(' estas es la variable del pago: $dataSend');
 
     try {
       final result = await platform
@@ -108,6 +109,47 @@ class HaulmerPayment {
       return {"error": "Error inesperado: $e"};
     } finally {
       print("Finalizando ejecución");
+    }
+  }
+
+  Future<Map<String, dynamic>> sendPaymentIntentJson(
+      Map<String, dynamic> payload) async {
+    // 1) Asegúrate de que la app de pago esté instalada
+    bool installed =
+    await isPaymentAppInstalled("com.haulmer.paymentapp.dev");
+    if (!installed) {
+      return {
+        "transactionStatus": false,
+        "error": "App de pago no instalada"
+      };
+    }
+
+    // 2) Serializa payload
+    final String jsonData = jsonEncode(payload);
+
+    try {
+      // 3) Invoca nativo enviando 'paymentData'
+      final String? result = await platform.invokeMethod<String>(
+        'startPayment',
+        {'paymentData': jsonData},
+      );
+
+      if (result == null) {
+        throw Exception('Respuesta nula de TUU');
+      }
+
+      // 4) Decodifica la respuesta
+      return Map<String, dynamic>.from(jsonDecode(result));
+    } on PlatformException catch (e) {
+      return {
+        "transactionStatus": false,
+        "error": "PlatformException: ${e.message}"
+      };
+    } catch (e) {
+      return {
+        "transactionStatus": false,
+        "error": e.toString(),
+      };
     }
   }
 }
