@@ -95,12 +95,26 @@ class _ScheduleCardState extends State<ScheduleCard> {
     );
   }
 
+  String formatoChilenoSinSimbolo(String valorComoString) {
+    // Parseamos el número como double para manejar decimales
+    final numero = double.tryParse(valorComoString.replaceAll(',', '').trim());
+    if (numero == null) return 'Valor inválido';
+
+    // Convertimos el double a int, porque no quieres decimales
+    final numeroEntero = numero.toInt();
+
+    // Retornamos el número como string sin ningún formateo
+    return numeroEntero.toString();
+  }
+
   Widget _buildCardContent(
     String displayPrice,
     List<String> timeToGo,
     String travelTime,
     bool isTimeExceeded,
   ) {
+    final price = formatoChilenoSinSimbolo(displayPrice);
+
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -169,7 +183,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                       ),
                     ),
                     child: Text(
-                      "\$$displayPrice",
+                      "\$$price",
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),

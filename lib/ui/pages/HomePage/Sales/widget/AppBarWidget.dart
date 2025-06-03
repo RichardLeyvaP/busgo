@@ -18,23 +18,37 @@ class AppBarSalesWidget extends StatelessWidget {
         color: Colors.blue[400],
       ),
       child: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        padding:  const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
               onTap: () {
+                if (GoRouter.of(context).canPop()) {
+                  GoRouter.of(context).pop();
+                } else {
+                  GoRouter.of(context).go('/DashboardPage');
+                }
 
-                GoRouter.of(context).pop();
               },
-              child: const Padding(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: Icon(Icons.arrow_back, color: Colors.white),
+              child: AppBar(
+                backgroundColor: Colors.blue[400],
+                elevation: 0,
+                title: const Text('Viajes'),
+                centerTitle: true,
+                leading: IconButton(
+                    icon:const Icon(Icons.arrow_back, color: Colors.white,),
+                    onPressed:()=> GoRouter.of(context).go('/DashboardPage')
+                ),
+
               ),
-            ),
+
+              ) ,
+
+
             Padding(
-              padding: const EdgeInsets.fromLTRB(7, 25, 0, 0),
+              padding: const EdgeInsets.fromLTRB(7, 5, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

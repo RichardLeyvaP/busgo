@@ -20,14 +20,10 @@ Promotion _$PromotionFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Promotion {
-  int get id =>
-      throw _privateConstructorUsedError; // <-- Cambiado a required (siempre viene del API)
-  String get name =>
-      throw _privateConstructorUsedError; // <-- required (el API siempre lo envía)
-  String? get description =>
-      throw _privateConstructorUsedError; // <-- Permite nulos (si el API lo permite)
-  int get percentage =>
-      throw _privateConstructorUsedError; // <-- Cambiado a int (coincide con el API)
+  int get id => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
+  int get percentage => throw _privateConstructorUsedError;
   bool get active => throw _privateConstructorUsedError;
 
   /// Serializes this Promotion to a JSON map.
@@ -152,7 +148,8 @@ class __$$PromotionImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(explicitToJson: true)
 class _$PromotionImpl implements _Promotion {
   _$PromotionImpl(
       {required this.id,
@@ -166,16 +163,12 @@ class _$PromotionImpl implements _Promotion {
 
   @override
   final int id;
-// <-- Cambiado a required (siempre viene del API)
   @override
   final String name;
-// <-- required (el API siempre lo envía)
   @override
   final String? description;
-// <-- Permite nulos (si el API lo permite)
   @override
   final int percentage;
-// <-- Cambiado a int (coincide con el API)
   @override
   @JsonKey()
   final bool active;
@@ -238,13 +231,13 @@ abstract class _Promotion implements Promotion {
       _$PromotionImpl.fromJson;
 
   @override
-  int get id; // <-- Cambiado a required (siempre viene del API)
+  int get id;
   @override
-  String get name; // <-- required (el API siempre lo envía)
+  String get name;
   @override
-  String? get description; // <-- Permite nulos (si el API lo permite)
+  String? get description;
   @override
-  int get percentage; // <-- Cambiado a int (coincide con el API)
+  int get percentage;
   @override
   bool get active;
 

@@ -173,7 +173,7 @@ void dataSelectedRoute(int idTrip) {
   print('ruta seleccionada:${tripsSelectSignal.value}');
 }
 
-final paymentService = HaulmerPayment(apiKey: '', deviceId: '');
+final paymentService = HaulmerPayment(apiKey: '', deviceId: 'TJ44243320217');
 
 Future<Map<String, dynamic>> handlePayment(
     amount,

@@ -9,7 +9,7 @@ import 'package:BusGo/ui/pages/HomePage/Ticket/widget/customIcons.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:signals/signals_flutter.dart';
-
+import 'package:intl/intl.dart';
 import '../../../../../models/promotions/promotions_model.dart';
 
 class PaymentCard extends StatefulWidget {
@@ -38,23 +38,32 @@ class _PaymentCardState extends State<PaymentCard> {
     super.initState();
   }
 
+  String formatoChilenoSinSimbolo(int valor) {
+    final formatter = NumberFormat('####', 'es_CL');
+    return formatter.format(valor);
+  }
   @override
   Widget build(BuildContext context) {
     final double precioBase = double.parse(widget.price);
 
+    String value=(((_getPriceWithDiscount('Pasaje Normal', precioBase) *
+        quantitySignal.watch(context)) +
+        (_getPriceWithDiscount(
+            'Menores de Edad', precioBase) *
+            quantityMenoresSignal.watch(context)) +
+        (_getPriceWithDiscount(
+            'Adultos Mayores', precioBase) *
+            quantityAdultsSignal.watch(context))))
+        .toStringAsFixed(2);
+    int valorInt = double.tryParse(value)?.toInt() ?? 0;  // Si falla, usa 0
+    String valorFormateado = formatoChilenoSinSimbolo(valorInt);
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 5),
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade300,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
+
       ),
       child: Column(
         children: [
@@ -64,35 +73,7 @@ class _PaymentCardState extends State<PaymentCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    children: [
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      Row(
-                        children: [
-                          Icon(MdiIcons.currencyUsd,
-                              size: 15, color: Colors.black),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                'Precio: ',
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                              Text(
-                                widget.price.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+
                   const SizedBox(height: 5),
                   QuantitySelector(
                     title: 'Pasaje   Normal   ',
@@ -246,15 +227,7 @@ class _PaymentCardState extends State<PaymentCard> {
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   Text(
-                    (((_getPriceWithDiscount('Pasaje Normal', precioBase) *
-                                quantitySignal.watch(context)) +
-                            (_getPriceWithDiscount(
-                                    'Menores de Edad', precioBase) *
-                                quantityMenoresSignal.watch(context)) +
-                            (_getPriceWithDiscount(
-                                    'Adultos Mayores', precioBase) *
-                                quantityAdultsSignal.watch(context))))
-                        .toStringAsFixed(2),
+                      valorFormateado,
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.bold),
                   ),
@@ -359,7 +332,7 @@ void showSeatSelectionModal(
                     final cols = (w / minW).floor().clamp(2, 6);
                     final cell = w / cols;
                     return GridView.builder(
-                      padding: const EdgeInsets.all(8),
+                     padding: const EdgeInsets.all(8),
                       gridDelegate:
                       SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: cols,

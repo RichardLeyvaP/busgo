@@ -1,4 +1,3 @@
-
 import 'package:BusGo/models/ticket/ticket_dabase_local/ticket_dabase_local_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,26 +6,23 @@ import 'dart:io';
 
 class DatabaseHelper {
   static Database? _database;
-
   // Inicializa la base de datos
   Future<Database> get database async {
     if (_database != null) return _database!;
-
     _database = await _initDatabase();
     return _database!;
   }
 
   // Abre o crea la base de datos
-  _initDatabase() async {
+  Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'tickets.db');
-    return await openDatabase(path, version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
-  }
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _onCreate,
 
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      await db.execute('ALTER TABLE tickets ADD COLUMN printedAt TEXT');
-    }
+    );
   }
 
   // Crear las tablas
@@ -49,41 +45,44 @@ class DatabaseHelper {
         sequenceNumber TEXT,
         extraData TEXT,
         transactionTip REAL,
-        transactionCashback REAL
+        transactionCashback REAL,
       )
     ''');
   }
 
-  // Insertar un ticket con manejo de errores
-Future<int?> insertTicket(Ticket ticket) async {
-  try {
-    Database db = await database;
-    int id = await db.insert('tickets', ticket.toMap());
-    print('Ticket insertado con éxito, ID: $id');
-    return id; // Retorna el ID del ticket insertado
-  } catch (e) {
-    print('Error al insertar el ticket: $e');
-    return null; // Retorna null si la inserción falla
-  }
-}
+  // Migración de v1 → v2: añadir printedAt
+  // Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  //   if (oldVersion < 2) {
+  //     await db.execute('ALTER TABLE tickets ADD COLUMN printedAt TEXT;');
+  //   }
+  // }
 
+  // Insertar un ticket con manejo de errores
+  Future<int?> insertTicket(Ticket ticket) async {
+    try {
+      Database db = await database;
+      int id = await db.insert('tickets', ticket.toMap());
+      print('Ticket insertado con éxito, ID: \$id');
+      return id;
+    } catch (e) {
+      print('Error al insertar el ticket: \$e');
+      return null;
+    }
+  }
 
   // Obtener todos los tickets
   Future<List<Ticket>> getTickets() async {
     Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query('tickets');
-
-    return List.generate(maps.length, (i) {
-      return Ticket.fromMap(maps[i]);
-    });
+    return List.generate(maps.length, (i) => Ticket.fromMap(maps[i]));
   }
 
   Future<int> getTicketCount() async {
-  Database db = await database;
-  final List<Map<String, dynamic>> result = await db.rawQuery('SELECT COUNT(*) AS count FROM tickets');
-  return Sqflite.firstIntValue(result) ?? 0;
-}
-
+    Database db = await database;
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT COUNT(*) AS count FROM tickets');
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
 
   // Eliminar un ticket por ID
   Future<int> deleteTicket(int id) async {

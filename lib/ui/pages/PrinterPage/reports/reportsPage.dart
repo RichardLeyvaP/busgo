@@ -92,7 +92,12 @@ class _ReportsPageState extends State<ReportsPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           backgroundColor: Colors.orange,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white,),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           title:  const Padding(
             padding: EdgeInsets.all(0),
             child: Text(
